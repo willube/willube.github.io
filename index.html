@@ -1,1 +1,18 @@
-Lea stinkt nicht 
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Ich liebe Lea</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button id="liebesKnopf">Klick mich</button>
+    <p id="anzeigeText"></p>
+
+    <script>
+        document.getElementById("liebesKnopf").addEventListener("click", function() {
+            document.getElementById("anzeigeText").textContent = "Ich liebe Lea";
+        });
+    </script>
+</body>
+</html>
