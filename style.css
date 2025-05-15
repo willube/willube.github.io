@@ -1,3 +1,4 @@
+/* Basic Reset */
 * {
   margin: 0;
   padding: 0;
@@ -5,103 +6,75 @@
 }
 
 body {
-  background: linear-gradient(135deg, #1a001f, #0d001a);
-  color: #ffffff;
+  background: radial-gradient(circle at center, #1a001f, #0d001a);
+  color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  padding: 20px;
 }
 
+/* Card Container */
 .card {
   background-color: #22002d;
-  padding: 50px;
+  padding: 40px;
   border-radius: 35px;
   border: 2px solid #ff00cc;
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
+  box-shadow: 0 0 40px rgba(255, 0, 255, 0.4);
   text-align: center;
-  width: 90%;
-  max-width: 550px;
-  animation: popIn 0.8s ease-out forwards;
-  opacity: 0;
+  max-width: 500px;
+  width: 100%;
+  animation: fadeIn 1s ease-in-out;
 }
 
-.card h1 {
+/* Titel */
+h1.glow {
   font-size: 3em;
-  margin-bottom: 20px;
   font-weight: 900;
   color: #ff66cc;
-  text-transform: uppercase;
+  text-shadow: 0 0 5px #ff66cc, 0 0 10px #ff33cc, 0 0 20px #cc00ff, 0 0 30px #cc00ff;
+  margin-bottom: 10px;
 }
 
-.card p {
+/* Beschreibung */
+p.desc {
   font-size: 1.2em;
-  margin-bottom: 30px;
   color: #e0b3ff;
-  font-weight: 600;
+  font-weight: 500;
+  margin-bottom: 30px;
 }
 
+/* Links */
 .links a {
   display: block;
-  margin: 12px auto;
-  padding: 16px;
+  margin: 15px auto;
+  padding: 15px 20px;
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;
   background: linear-gradient(90deg, #ff00cc, #cc00ff);
-  color: #fff;
+  color: white;
+  font-size: 1.2em;
+  font-weight: 700;
   text-decoration: none;
   border-radius: 25px;
-  font-weight: 700;
-  font-size: 1.2em;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 0 20px #ff00cc;
+  box-shadow: 0 0 15px #ff00cc;
+  transition: 0.2s ease;
 }
 
 .links a:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 35px #ff33cc;
+  box-shadow: 0 0 30px #ff00cc;
 }
 
+/* Spotify */
 .spotify-embed {
   margin-top: 30px;
-  animation: fadeIn 1s ease-out forwards;
-  opacity: 0;
-  animation-delay: 1.2s;
+  animation: fadeIn 1.5s ease-out;
 }
 
-.glow {
-  color: #ff66cc;
-  text-shadow:
-    0 0 5px #ff66cc,
-    0 0 10px #ff33cc,
-    0 0 20px #cc00ff,
-    0 0 30px #cc00ff;
-}
-
-@keyframes popIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.fade-in {
-  opacity: 0;
-  animation: fadeIn 1s ease-out forwards;
-  animation-delay: 0.4s;
-}
-
-.fade-in-delay {
-  opacity: 0;
-  animation: fadeIn 1s ease-out forwards;
-  animation-delay: 0.8s;
-}
-
+/* Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
