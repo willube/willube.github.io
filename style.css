@@ -1,39 +1,100 @@
-body {
-  background-color: #000;
-  color: #fff;
-  font-family: 'IBM Plex Mono', monospace;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: left;
-  padding: 40px 20px;
-  min-height: 100vh;
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-main {
-  max-width: 600px;
-  line-height: 1.6;
+body {
+  background-color: #0d0d0d;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
 }
 
-h1 {
-  font-size: 3em;
-  margin-bottom: 0.2em;
+.card {
+  background-color: #1a1a1a;
+  padding: 40px;
+  border-radius: 16px;
+  border: 1px solid #00ffcc;
+  box-shadow: 0 0 25px rgba(0, 255, 200, 0.2);
+  text-align: center;
+  width: 90%;
+  max-width: 500px;
+  animation: popIn 0.8s ease-out forwards;
+  opacity: 0;
 }
 
-.label {
-  font-size: 0.9em;
-  color: #aaa;
-  letter-spacing: 2px;
-  margin-bottom: 2em;
+.card h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
 }
 
-section p {
-  margin-bottom: 1.5em;
+.card p {
+  font-size: 1.1em;
+  margin-bottom: 25px;
+  color: #cccccc;
 }
 
-footer {
-  margin-top: 3em;
-  font-size: 0.8em;
-  color: #555;
+.links a {
+  display: block;
+  margin: 12px auto;
+  padding: 12px;
+  width: 100%;
+  background-color: #00ffcc;
+  color: #000;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 10px #00ffcc;
+}
+
+.links a:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #00ffcc;
+}
+
+/* Glow-Effekt */
+.glow {
+  color: #00ffcc;
+  text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+}
+
+/* Animationen */
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease-out forwards;
+  animation-delay: 0.4s;
+}
+
+.fade-in-delay {
+  opacity: 0;
+  animation: fadeIn 1s ease-out forwards;
+  animation-delay: 0.8s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
