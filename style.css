@@ -5,70 +5,77 @@
 }
 
 body {
-  background-color: #0d0d0d;
+  background: linear-gradient(135deg, #1a001f, #0d001a);
   color: #ffffff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  overflow: hidden;
 }
 
 .card {
-  background-color: #1a1a1a;
-  padding: 40px;
-  border-radius: 16px;
-  border: 1px solid #00ffcc;
-  box-shadow: 0 0 25px rgba(0, 255, 200, 0.2);
+  background-color: #22002d;
+  padding: 50px;
+  border-radius: 35px;
+  border: 2px solid #ff00cc;
+  box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
   text-align: center;
   width: 90%;
-  max-width: 500px;
+  max-width: 520px;
   animation: popIn 0.8s ease-out forwards;
   opacity: 0;
 }
 
 .card h1 {
-  font-size: 2.5em;
+  font-size: 3em;
   margin-bottom: 20px;
+  font-weight: 900;
+  color: #ff66cc;
+  text-transform: uppercase;
 }
 
 .card p {
-  font-size: 1.1em;
-  margin-bottom: 25px;
-  color: #cccccc;
+  font-size: 1.2em;
+  margin-bottom: 30px;
+  color: #e0b3ff;
+  font-weight: 600;
 }
 
 .links a {
   display: block;
   margin: 12px auto;
-  padding: 12px;
+  padding: 16px;
   width: 100%;
-  background-color: #00ffcc;
-  color: #000;
+  max-width: 400px;
+  background: linear-gradient(90deg, #ff00cc, #cc00ff);
+  color: #fff;
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: bold;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 1.2em;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 0 10px #00ffcc;
+  box-shadow: 0 0 20px #ff00cc;
 }
 
 .links a:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 20px #00ffcc;
+  box-shadow: 0 0 35px #ff33cc;
 }
 
-/* Glow-Effekt */
 .glow {
-  color: #00ffcc;
-  text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+  color: #ff66cc;
+  text-shadow:
+    0 0 5px #ff66cc,
+    0 0 10px #ff33cc,
+    0 0 20px #cc00ff,
+    0 0 30px #cc00ff;
 }
 
-/* Animationen */
 @keyframes popIn {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.98);
+    transform: translateY(20px) scale(0.95);
   }
   to {
     opacity: 1;
