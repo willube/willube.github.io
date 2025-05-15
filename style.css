@@ -22,7 +22,7 @@ body {
   box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
   text-align: center;
   width: 90%;
-  max-width: 520px;
+  max-width: 550px;
   animation: popIn 0.8s ease-out forwards;
   opacity: 0;
 }
@@ -61,6 +61,13 @@ body {
 .links a:hover {
   transform: scale(1.05);
   box-shadow: 0 0 35px #ff33cc;
+}
+
+.spotify-embed {
+  margin-top: 30px;
+  animation: fadeIn 1s ease-out forwards;
+  opacity: 0;
+  animation-delay: 1.2s;
 }
 
 .glow {
@@ -104,3 +111,4 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
