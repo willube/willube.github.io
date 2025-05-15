@@ -1,7 +1,7 @@
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
 
-// Canvas-Größe an Fenster anpassen
+// Canvas-Größe anpassen
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -10,41 +10,42 @@ function resizeCanvas() {
 // Partikel-Klasse
 class Particle {
     constructor() {
+        this.reset();
+    }
+
+    reset() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2;
-        this.speedX = Math.random() * 3 - 1.5;
-        this.speedY = Math.random() * 3 - 1.5;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = Math.random() * 2 - 1;
+        this.speedY = Math.random() * 2 - 1;
+        this.alpha = Math.random() * 0.5 + 0.2;
     }
 
     update() {
         this.x += this.speedX;
         this.y += this.speedY;
 
-        if (this.x > canvas.width) this.x = 0;
-        if (this.x < 0) this.x = canvas.width;
-        if (this.y > canvas.height) this.y = 0;
-        if (this.y < 0) this.y = canvas.height;
+        // Wenn Partikel außerhalb des Bildschirms, zurücksetzen
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+            this.reset();
+        }
     }
 
     draw() {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 0, 255, ${this.alpha})`;
         ctx.fill();
     }
 }
 
 // Partikel erstellen
-const particles = [];
-for (let i = 0; i < 100; i++) {
-    particles.push(new Particle());
-}
+const particles = Array.from({ length: 100 }, () => new Particle());
 
 // Animation
 function animate() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     particles.forEach(particle => {
         particle.update();
@@ -54,7 +55,9 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-// Initialisierung
+// Event Listeners
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-animate();
+window.addEventListener('load', () => {
+    resizeCanvas();
+    animate();
+});
