@@ -29,7 +29,7 @@ body {
   background: transparent; /* Geändert von #1a0127 zu transparent */
 }
 
-/* Card Container */
+/* Card Container - Initial State */
 .card {
     background-color: #22002d;
     padding: 40px;
@@ -110,7 +110,7 @@ p.desc {
     pointer-events: none; /* Verhindert Interaktion während blur */
 }
 
-/* Unlock Screen mit Blur-Hintergrund */
+/* Unlock Screen */
 .unlock-screen {
     position: fixed;
     top: 0;
