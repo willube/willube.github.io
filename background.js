@@ -128,4 +128,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Initialisierung (alte Initialisierung entfernen)
 resizeCanvas();
-// animate() wird erst nach dem Unlock aufgerufen
+// animate() wird erst nach dem Unlock aufgeruf
