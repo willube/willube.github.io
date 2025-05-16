@@ -31,15 +31,18 @@ body {
 
 /* Card Container */
 .card {
-  background-color: #22002d;
-  padding: 40px;
-  border-radius: 35px;
-  border: 2px solid #ff00cc;
-  box-shadow: 0 0 40px rgba(255, 0, 255, 0.4);
-  text-align: center;
-  max-width: 500px;
-  width: 100%;
-  animation: fadeIn 1s ease-in-out;
+    background-color: #22002d;
+    padding: 40px;
+    border-radius: 35px;
+    border: 2px solid #ff00cc;
+    box-shadow: 0 0 40px rgba(255, 0, 255, 0.4);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    opacity: 0;
+    filter: blur(10px);
+    transition: all 0.8s ease-in-out;
+    pointer-events: none;
 }
 
 /* Titel */
@@ -118,26 +121,12 @@ p.desc {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    background: rgba(26, 1, 39, 0.5);
-    backdrop-filter: blur(10px);
+    background: rgba(26, 1, 39, 0.7);
+    backdrop-filter: blur(15px);
     transition: all 0.8s ease-in-out;
 }
 
-/* Sichtbarer Zustand nach Unlock */
-.visible {
-    opacity: 1;
-    filter: blur(0);
-    pointer-events: auto; /* Erlaubt Interaktion nach dem Unlock */
-}
-
-/* Ausgeblendeter Zustand */
-.hidden {
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.8s ease-in-out;
-}
-
-/* Unlock Button Styling */
+/* Unlock Button */
 .unlock-btn {
     padding: 15px 40px;
     font-size: 24px;
@@ -159,40 +148,15 @@ p.desc {
     box-shadow: 0 0 30px rgba(255, 0, 204, 0.5);
 }
 
-/* Initial Blur State */
-#main-content {
-    opacity: 0;
-    filter: blur(10px);
-    transition: all 0.8s ease-in-out;
-    pointer-events: none;
-}
-
-/* Unlock Screen */
-.unlock-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    background: rgba(26, 1, 39, 0.7);
-    backdrop-filter: blur(15px);
-    transition: all 0.8s ease-in-out;
-}
-
-/* Visible State */
+/* States */
 .visible {
     opacity: 1 !important;
     filter: blur(0) !important;
     pointer-events: auto !important;
 }
 
-/* Hidden State */
 .hidden {
     opacity: 0 !important;
     pointer-events: none !important;
-    filter: blur(10px) !important;
+    visibility: hidden !important;
 }
