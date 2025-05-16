@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d');
 const mouse = {
     x: undefined,
     y: undefined,
-    radius: 100  // Einflussbereich der Maus
+    radius: 150  // Vergrößerter Einflussbereich
 };
 
 // Canvas-Größe anpassen
@@ -46,20 +46,25 @@ class Particle {
                 const force = (mouse.radius - distance) / mouse.radius;
                 const angle = Math.atan2(dy, dx);
                 
-                // Partikel werden von der Maus weggedrückt
-                this.speedX = this.baseSpeedX - Math.cos(angle) * force * 2;
-                this.speedY = this.baseSpeedY - Math.sin(angle) * force * 2;
-            } else {
-                // Zurück zur normalen Geschwindigkeit
-                this.speedX = this.baseSpeedX;
-                this.speedY = this.baseSpeedY;
+                // Partikel werden zur Maus hingezogen
+                this.speedX += Math.cos(angle) * force * 0.5;
+                this.speedY += Math.sin(angle) * force * 0.5;
+                
+                // Geschwindigkeit begrenzen
+                const maxSpeed = 4;
+                const currentSpeed = Math.sqrt(this.speedX * this.speedX + this.speedY * this.speedY);
+                if (currentSpeed > maxSpeed) {
+                    this.speedX = (this.speedX / currentSpeed) * maxSpeed;
+                    this.speedY = (this.speedY / currentSpeed) * maxSpeed;
+                }
             }
         }
 
-        // Zurücksetzen wenn außerhalb des Bildschirms
-        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
-            this.reset();
-        }
+        // Bildschirmgrenzen
+        if (this.x < 0) this.x = canvas.width;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.y > canvas.height) this.y = 0;
     }
 
     draw() {
@@ -70,12 +75,13 @@ class Particle {
     }
 }
 
-// Partikel erstellen
-const particles = Array.from({ length: 100 }, () => new Particle());
+// Mehr Partikel erstellen
+const particles = Array.from({ length: 200 }, () => new Particle());
 
 // Animation
 function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(26, 1, 39, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     particles.forEach(particle => {
         particle.update();
@@ -87,18 +93,17 @@ function animate() {
 
 // Event Listeners
 window.addEventListener('resize', resizeCanvas);
-window.addEventListener('load', () => {
-    resizeCanvas();
-    animate();
+window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = event.clientX - rect.left;
+    mouse.y = event.clientY - rect.top;
 });
 
-// Maus-Event-Listener hinzufügen
-canvas.addEventListener('mousemove', (event) => {
-    mouse.x = event.x;
-    mouse.y = event.y;
-});
-
-canvas.addEventListener('mouseleave', () => {
+window.addEventListener('mouseleave', () => {
     mouse.x = undefined;
     mouse.y = undefined;
 });
+
+// Initialisierung
+resizeCanvas();
+animate();
