@@ -98,3 +98,59 @@ p.desc {
     transform: translateY(0);
   }
 }
+
+Users\Auri\Desktop\willube.github.io\style.css
+/* ...existing code... */
+
+.blur {
+    filter: blur(10px);
+    opacity: 0;
+    transition: all 1s ease-in-out;
+}
+
+.unlock-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(26, 1, 39, 0.3);
+    backdrop-filter: blur(5px);
+    transition: all 0.5s ease-in-out;
+}
+
+.unlock-btn {
+    padding: 15px 40px;
+    font-size: 24px;
+    background: transparent;
+    border: 2px solid #ff00cc;
+    color: #ff00cc;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    box-shadow: 0 0 20px rgba(255, 0, 204, 0.3);
+}
+
+.unlock-btn:hover {
+    background: #ff00cc;
+    color: #fff;
+    box-shadow: 0 0 30px rgba(255, 0, 204, 0.5);
+    transform: scale(1.05);
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.visible {
+    opacity: 1;
+    filter: blur(0);
+}

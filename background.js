@@ -109,6 +109,23 @@ window.addEventListener('mouseleave', () => {
     mouse.y = undefined;
 });
 
-// Initialisierung
+// Unlock Funktionalität
+document.addEventListener('DOMContentLoaded', () => {
+    const unlockScreen = document.getElementById('unlock-screen');
+    const unlockBtn = document.getElementById('unlock-btn');
+    const mainContent = document.getElementById('main-content');
+
+    unlockBtn.addEventListener('click', () => {
+        unlockScreen.classList.add('hidden');
+        mainContent.classList.add('visible');
+        mainContent.classList.remove('blur');
+        
+        // Canvas Animation starten
+        resizeCanvas();
+        animate();
+    });
+});
+
+// Initialisierung (alte Initialisierung entfernen)
 resizeCanvas();
-animate();
+// animate() wird erst nach dem Unlock aufgerufen
