@@ -80,7 +80,8 @@ const particles = Array.from({ length: 200 }, () => new Particle());
 
 // Animation
 function animate() {
-    ctx.fillStyle = 'rgba(26, 1, 39, 0.1)';
+    // Komplettes Löschen des Hintergrunds statt transparentes Übermalen
+    ctx.fillStyle = 'rgb(26, 1, 39)';  // Ohne Alpha-Wert
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     particles.forEach(particle => {
