@@ -1,17 +1,20 @@
 particlesJS("particles-js", {
   particles: {
-    number: { value: 80, density: { enable: true, value_area: 800 } },
+    number: {
+      value: 80,
+      density: { enable: true, value_area: 800 }
+    },
     color: { value: "#8A4FFF" },
     shape: { type: "circle" },
     opacity: {
       value: 0.5,
       random: true,
-      animation: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+      anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
     },
     size: {
       value: 3,
       random: true,
-      animation: { enable: true, speed: 2, minimumValue: 0.3, sync: false }
+      anim: { enable: true, speed: 2, size_min: 0.3, sync: false }
     },
     line_linked: {
       enable: true,
@@ -27,7 +30,7 @@ particlesJS("particles-js", {
       random: true,
       straight: false,
       out_mode: "out",
-      bounce: false,
+      bounce: false
     }
   },
   interactivity: {

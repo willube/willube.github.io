@@ -84,7 +84,8 @@ function showNotification(message, type) {
 
 // Scroll animations
 const observerOptions = {
-    threshold: 0.25
+    threshold: 0.25,
+    rootMargin: "0px 0px -50px 0px"
 };
 
 const observer = new IntersectionObserver((entries) => {
