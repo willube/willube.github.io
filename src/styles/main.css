@@ -392,4 +392,9 @@ button.btn:hover {
   .grid {
     grid-template-columns: 1fr;
   }
+  
+  .project-tags {
+    flex-direction: column;
+    align-items: center;
+  }
 }
