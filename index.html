@@ -1,50 +1,56 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AURY</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dein Name - Portfolio</title>
+    <link rel="stylesheet" href="../src/styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="bg-canvas"></canvas>
-    
-    <!-- Unlock Screen -->
-    <div id="unlock-screen" class="unlock-screen">
-        <button id="unlock-btn" class="unlock-btn">show me</button>
-    </div>
+    <div class="container">
+        <section class="hero">
+            <div>
+                <h1>Dein Name</h1>
+                <p>Entwickler & Designer</p>
+            </div>
+        </section>
 
-    <!-- Main Schwanz (verstecke scheisse) -->
-    <div id="main-content" class="card blur">
-        <h1 class="glow">AURY</h1>
-        <p class="desc">3</p>
+        <section class="section" id="about">
+            <h2>Über Mich</h2>
+            <div class="card">
+                <p>Hier kannst du deine Geschichte erzählen...</p>
+            </div>
+        </section>
 
-        <div class="links">
-            <a href="https://discord.com/users/1099636685467303986" target="_blank" class="discord-profile">
-                <div class="profile-img">
-                    <img src="avatar.png" alt="Discord Avatar">
+        <section class="section" id="skills">
+            <h2>Meine Skills</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Web Development</h3>
+                    <p>HTML, CSS, JavaScript</p>
                 </div>
-                <div class="profile-info">
-                    <span class="username">aury</span>
-                    <span class="status">penis&lt;3</span>
+                <div class="card">
+                    <h3>Design</h3>
+                    <p>UI/UX, Figma</p>
                 </div>
-            </a>
-            <a href="https://discord.gg/AA6mtkGKWh" target="_blank">penis</a>
-        </div>
+                <!-- Weitere Skills hier... -->
+            </div>
+        </section>
 
-        <div class="spotify-embed">
-            <iframe style="border-radius:12px"
-                src="https://open.spotify.com/embed/track/3jxYBt25X6flONzrYHQYOS?utm_source=generator"
-                width="100%" height="152" frameBorder="0" allowfullscreen=""
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy">
-            </iframe>
-        </div>
+        <section class="section" id="projects">
+            <h2>Projekte</h2>
+            <div class="grid">
+                <!-- Hier kommen deine Projekte rein -->
+            </div>
+        </section>
+
+        <section class="section" id="contact">
+            <h2>Kontakt</h2>
+            <div class="card">
+                <p>Deine Kontaktinformationen...</p>
+            </div>
+        </section>
     </div>
-    <script src="background.js"></script>
-    <script src="discord.js"></script>
 </body>
 </html>
