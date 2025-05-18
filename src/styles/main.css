@@ -97,6 +97,107 @@ body {
   color: var(--text-secondary);
 }
 
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(10, 10, 11, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    padding: 1rem 0;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+.social-links {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+.social-icon {
+    font-size: 1.5rem;
+    color: var(--text);
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    color: var(--primary);
+    transform: translateY(-3px);
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.stat-item h4 {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-item span {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.skill-list {
+    list-style: none;
+    margin-top: 1rem;
+}
+
+.skill-list li {
+    margin: 0.5rem 0;
+    color: var(--text-secondary);
+}
+
+.project-image img {
+    width: 100%;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: var(--primary);
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: var(--secondary);
+    transform: translateY(-2px);
+}
+
+.footer {
+    text-align: center;
+    padding: 2rem 0;
+    background: var(--surface);
+    margin-top: 4rem;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -117,6 +218,7 @@ body {
   }
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
   .hero h1 {
     font-size: 3rem;
@@ -133,4 +235,16 @@ body {
   .section h2 {
     font-size: 2rem;
   }
+  
+    .navbar {
+        padding: 1rem;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+    
+    .stats {
+        grid-template-columns: 1fr;
+    }
 }

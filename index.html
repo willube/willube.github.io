@@ -6,56 +6,133 @@
     <title>Dein Name - Portfolio</title>
     <link rel="stylesheet" href="../src/styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta name="theme-color" content="#8A4FFF">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">aury</div>
+            <ul class="nav-links">
+                <li><a href="#about">Über Mich</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projekte</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="container">
         <section class="hero">
             <div>
                 <h1>aury</h1>
-                <p>Entwickler & Designer</p>
+                <p class="subtitle">Music Producer & Developer</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-spotify"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-soundcloud"></i></a>
+                </div>
             </div>
         </section>
 
         <section class="section" id="about">
             <h2>Über Mich</h2>
-            <div class="card">
-                <p>Aury is an up-and-coming music producer from Germany with a focus on German rap and modern pop sounds. From a young age, he developed a strong sense for sound design and vocal processing.
-                
-                </p>
+            <div class="card about-card">
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>Als Musikproduzent und Developer verbinde ich zwei Welten: Die kreative Kraft der Musik und die technische Präzision der Programmierung.</p>
+                        <p>Meine Produktionen zeichnen sich durch moderne Sounddesigns und einzigartige Vocal-Bearbeitung aus. Mit über X Jahren Erfahrung in der Musikproduktion habe ich bereits mit verschiedenen Künstlern zusammengearbeitet.</p>
+                        <div class="stats">
+                            <div class="stat-item">
+                                <h4>Releases</h4>
+                                <span>50+</span>
+                            </div>
+                            <div class="stat-item">
+                                <h4>Streams</h4>
+                                <span>1M+</span>
+                            </div>
+                            <div class="stat-item">
+                                <h4>Projekte</h4>
+                                <span>100+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <section class="section" id="skills">
             <h2>Meine Skills</h2>
             <div class="grid">
-                <div class="card">
-                    <h3>Web Development</h3>
-                    <p>HTML, CSS, JavaScript</p>
+                <div class="card skill-card">
+                    <i class="fas fa-music"></i>
+                    <h3>Musikproduktion</h3>
+                    <ul class="skill-list">
+                        <li>FL Studio</li>
+                        <li>Vocal Processing</li>
+                        <li>Sound Design</li>
+                        <li>Mixing & Mastering</li>
+                    </ul>
                 </div>
-                <div class="card">
+                <div class="card skill-card">
+                    <i class="fas fa-code"></i>
+                    <h3>Development</h3>
+                    <ul class="skill-list">
+                        <li>HTML & CSS</li>
+                        <li>JavaScript</li>
+                        <li>React</li>
+                        <li>Node.js</li>
+                    </ul>
+                </div>
+                <div class="card skill-card">
+                    <i class="fas fa-paint-brush"></i>
                     <h3>Design</h3>
-                    <p>UI/UX, Figma</p>
+                    <ul class="skill-list">
+                        <li>UI/UX Design</li>
+                        <li>Figma</li>
+                        <li>Adobe Photoshop</li>
+                        <li>Cover Art</li>
+                    </ul>
                 </div>
-                <!-- Weitere Skills hier... -->
             </div>
         </section>
 
         <section class="section" id="projects">
-            <h2>Projekte</h2>
+            <h2>Aktuelle Projekte</h2>
             <div class="grid">
-                <!-- Hier kommen deine Projekte rein -->
+                <div class="card project-card">
+                    <div class="project-image">
+                        <img src="path-to-your-image.jpg" alt="Projekt 1">
+                    </div>
+                    <h3>Neueste Release</h3>
+                    <p>Beschreibung deiner neuesten Musikveröffentlichung</p>
+                    <a href="#" class="btn">Auf Spotify hören</a>
+                </div>
+                <!-- Weitere Projekte hier... -->
             </div>
         </section>
 
         <section class="section" id="contact">
             <h2>Kontakt</h2>
-            <div class="card">
-                <p>Deine Kontaktinformationen...</p>
+            <div class="card contact-card">
+                <div class="contact-info">
+                    <h3>Lass uns zusammenarbeiten</h3>
+                    <p>Du hast ein spannendes Projekt? Schreib mir!</p>
+                    <div class="contact-links">
+                        <a href="mailto:deine@email.de" class="btn"><i class="fas fa-envelope"></i> Email</a>
+                        <a href="#" class="btn"><i class="fab fa-instagram"></i> Instagram</a>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 aury. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
 </body>
 </html>
