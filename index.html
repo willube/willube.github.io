@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
             <ul class="nav-links">
                 <li><a href="#about">about me</a></li>
                 <li><a href="#skills">skills</a></li>
-                <li><a href="#projects">Projects</a></li>
+                <li><a href="#projects">projects</a></li>
                 <li><a href="#contact">contact</a></li>
             </ul>
         </div>
@@ -38,7 +38,7 @@
         </section>
 
         <section class="section" id="about">
-            <h2>Über Mich</h2>
+            <h2>About Me</h2>
             <div class="card about-card">
                 <div class="about-content">
                     <div class="about-text">
@@ -53,7 +53,7 @@
                                 <span>0</span>
                             </div>
                             <div class="stat-item">
-                                <h4>Projekte</h4>
+                                <h4>Projects</h4>
                                 <span>20+</span>
                             </div>
                         </div>
@@ -63,11 +63,11 @@
         </section>
 
         <section class="section" id="skills">
-            <h2>Meine Skills</h2>
+            <h2>My Skills</h2>
             <div class="grid">
                 <div class="card skill-card">
                     <i class="fas fa-music"></i>
-                    <h3>Musikproduktion</h3>
+                    <h3>Music Production</h3>
                     <ul class="skill-list">
                         <li>FL Studio</li>
                         <li>Vocal Processing</li>
@@ -97,31 +97,48 @@
         </section>
 
         <section class="section" id="projects">
-            <h2>Aktuelle Projekte</h2>
+            <h2>Current Projects</h2>
             <div class="grid">
                 <div class="card project-card">
                     <div class="project-image">
-                        <img src="path-to-your-image.jpg" alt="Projekt 1">
+                        <img src="path-to-your-image.jpg" alt="Project 1">
                     </div>
-                    <h3>Neueste Release</h3>
-                    <p>Beschreibung deiner neuesten Musikveröffentlichung</p>
-                    <a href="#" class="btn">Auf Spotify hören</a>
+                    <h3>Latest Release</h3>
+                    <p>Description of your latest music release</p>
+                    <a href="#" class="btn">Listen on Spotify</a>
                 </div>
-                <!-- Weitere Projekte hier... -->
             </div>
         </section>
 
         <section class="section" id="contact">
-            <h2>Kontakt</h2>
+            <h2>Contact</h2>
             <div class="card contact-card">
                 <div class="contact-info">
-                    <h3>Lass uns zusammenarbeiten</h3>
-                    <p>Du hast ein spannendes Projekt? Schreib mir!</p>
-                    <div class="contact-links">
-                        <!-- Email Link mit korrekter Formatierung und Encoding -->
-                        <a href="mailto:auripulina@gmail.com?subject=Projekt%20Anfrage" class="btn">
-                            <i class="fas fa-envelope"></i> Email
-                        </a>
+                    <h3>Let's Work Together</h3>
+                    <p>Got an exciting project? Get in touch!</p>
+                    
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-group">
+                            <label for="email">Your Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+
+                    <div class="social-links">
                         <a href="https://instagram.com/auritly" target="_blank" class="btn">
                             <i class="fab fa-instagram"></i> Instagram
                         </a>
@@ -133,7 +150,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 aury. Alle Rechte vorbehalten.</p>
+            <p>&copy; 2024 aury. All rights reserved.</p>
         </div>
     </footer>
 </body>
