@@ -6,6 +6,8 @@
   --text: #FFFFFF;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --gradient: linear-gradient(45deg, var(--primary), var(--secondary));
+  --bg: #121212;
+  --card-bg: #1E1E1E;
 }
 
 * {
@@ -19,7 +21,7 @@ html {
 }
 
 body {
-  background: var(--background);
+  background: var(--bg);
   color: var(--text);
   font-family: 'Inter', sans-serif;
   line-height: 1.6;
