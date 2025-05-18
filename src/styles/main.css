@@ -1,19 +1,22 @@
-// filepath: c:\Users\Auri\Desktop\willube.github.io\src\styles\main.css
+/* Reset and base styles */
 body, html {
     margin: 0;
     padding: 0;
+    min-height: 100vh;
     font-family: 'Inter', sans-serif;
     background: #0c0c0c;
     color: #ffffff;
     scroll-behavior: smooth;
 }
 
+/* Layout */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
+/* Navigation */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -26,6 +29,7 @@ body, html {
     background: rgba(12, 12, 12, 0.8);
     backdrop-filter: blur(10px);
     z-index: 1000;
+    width: 100%;
 }
 
 .logo {
@@ -56,11 +60,14 @@ body, html {
     color: #8A4FFF;
 }
 
+/* Hero Section */
 .hero {
     height: 100vh;
     display: flex;
     align-items: center;
+    justify-content: center;
     text-align: center;
+    padding-top: 60px;
 }
 
 .hero h1 {
@@ -75,6 +82,7 @@ body, html {
     opacity: 0.8;
 }
 
+/* Social Links */
 .social-links {
     margin-top: 2rem;
 }
@@ -90,8 +98,10 @@ body, html {
     color: #8A4FFF;
 }
 
+/* Sections */
 .section {
     padding: 6rem 0;
+    min-height: 50vh;
 }
 
 h2 {
@@ -99,11 +109,17 @@ h2 {
     margin-bottom: 2rem;
 }
 
+/* Cards */
 .card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     padding: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
 }
 
 .contact-card {
@@ -111,6 +127,7 @@ h2 {
     margin: 0 auto;
 }
 
+/* Forms */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -152,11 +169,14 @@ input:focus, textarea:focus {
     background: #7040CC;
 }
 
+/* Footer */
 .footer {
     text-align: center;
     padding: 1rem 0;
     background: rgba(12, 12, 12, 0.8);
     backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 1;
 }
 
 .footer p {
