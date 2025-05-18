@@ -1,3 +1,28 @@
+function updateActiveNavLink() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    
+    let currentSection = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.offsetHeight;
+        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+            currentSection = section.getAttribute('id');
+        }
+    });
+    
+    navLinks.forEach(link => {
+        link.parentElement.classList.remove('active');
+        if (link.getAttribute('href').slice(1) === currentSection) {
+            link.parentElement.classList.add('active');
+        }
+    });
+}
+
+window.addEventListener('scroll', updateActiveNavLink);
+window.addEventListener('load', updateActiveNavLink);
+
 document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -13,41 +38,36 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
 });
 
 const form = document.getElementById('contactForm');
-const submitButton = form.querySelector('button[type="submit"]');
-const originalButtonText = submitButton.innerHTML;
 
-async function handleSubmit(event) {
-    event.preventDefault();
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
     
     // Show loading state
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-
-    try {
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-
+    const button = form.querySelector('button[type="submit"]');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    
+    // Form handling
+    const formData = new FormData(form);
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => {
         if (response.ok) {
-            // Show success message
             showNotification('Message sent successfully! ✨', 'success');
             form.reset();
         } else {
-            // Show error message
-            showNotification('Oops! There was a problem.', 'error');
+            showNotification('Oops! Something went wrong.', 'error');
         }
-    } catch (error) {
-        showNotification('Oops! There was a problem.', 'error');
-    } finally {
-        // Reset button state
-        submitButton.disabled = false;
-        submitButton.innerHTML = originalButtonText;
-    }
-}
+        button.innerHTML = originalText;
+    }).catch(error => {
+        showNotification('Oops! Something went wrong.', 'error');
+        button.innerHTML = originalText;
+    });
+});
 
 function showNotification(message, type) {
     const notification = document.createElement('div');
@@ -55,14 +75,9 @@ function showNotification(message, type) {
     notification.textContent = message;
     document.body.appendChild(notification);
     
-    // Show notification
     setTimeout(() => notification.classList.add('show'), 100);
-    
-    // Remove notification after 3 seconds
     setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
-
-form.addEventListener('submit', handleSubmit);
