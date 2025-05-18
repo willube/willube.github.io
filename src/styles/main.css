@@ -20,15 +20,17 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Base styles */
 body, html {
     margin: 0;
     padding: 0;
     min-height: 100vh;
     background: #0c0c0c;
-    color: #fff;
+    color: #ffffff;
     font-family: 'Inter', sans-serif;
 }
 
+/* Particles background */
 #particles-js {
     position: fixed;
     top: 0;
@@ -36,17 +38,17 @@ body, html {
     width: 100%;
     height: 100vh;
     background: linear-gradient(45deg, #0c0c0c, #1a1a1a);
-    z-index: 1;
+    z-index: 0;
 }
 
+/* Main container */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  padding: 0 20px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 .hero {
@@ -74,8 +76,11 @@ body, html {
 }
 
 .section {
-  padding: 8rem 0;
+  padding: 6rem 0;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s ease-out;
@@ -95,14 +100,60 @@ body, html {
   -webkit-text-fill-color: transparent;
 }
 
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: rgba(12, 12, 12, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #8A4FFF;
+}
+
+/* Cards */
 .card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 2rem;
-  margin: 1rem 0;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1rem 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -127,89 +178,6 @@ body, html {
 
 .card p {
   color: var(--text-secondary);
-}
-
-.navbar {
-  background: rgba(12, 12, 12, 0.8);
-  backdrop-filter: blur(10px);
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-  padding: 1rem 0;
-}
-
-.navbar .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.nav-links a {
-  color: var(--text);
-  text-decoration: none;
-  font-weight: 500;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  letter-spacing: 1px;
-  position: relative;
-  padding: 0.5rem 0;
-}
-
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--primary);
-  transition: width 0.3s ease;
-}
-
-.nav-links a:hover::after {
-  width: 100%;
-}
-
-.nav-links .active a::after {
-  width: 100%;
-}
-
-.social-links {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
-.social-icon {
-  color: var(--text);
-  font-size: 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.social-icon:hover {
-  color: var(--primary);
-  transform: translateY(-3px);
 }
 
 .stats {
