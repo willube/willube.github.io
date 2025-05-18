@@ -20,17 +20,33 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  line-height: 1.6;
+body, html {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: #0c0c0c;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(45deg, #0c0c0c, #1a1a1a);
+    z-index: 1;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 0 20px;
 }
 
 .hero {
@@ -59,6 +75,15 @@ body {
 
 .section {
   padding: 8rem 0;
+  min-height: 100vh;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .section h2 {
@@ -71,16 +96,18 @@ body {
 }
 
 .card {
-  background: var(--surface);
-  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
   padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  margin: 1rem 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px -15px var(--primary);
+  box-shadow: 0 10px 30px rgba(138, 79, 255, 0.1);
 }
 
 .grid {
@@ -103,7 +130,7 @@ body {
 }
 
 .navbar {
-  background: rgba(18, 18, 18, 0.8);
+  background: rgba(12, 12, 12, 0.8);
   backdrop-filter: blur(10px);
   position: fixed;
   width: 100%;
@@ -375,17 +402,6 @@ button.btn:hover {
   animation: spin 1s linear infinite;
 }
 
-/* Particle Background */
-#particles-js {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, #0c0c0c, #1a1a1a);
-    z-index: -1;
-}
-
 /* Smooth Scroll Animations */
 .section {
     opacity: 0;
@@ -396,19 +412,6 @@ button.btn:hover {
 .section.visible {
     opacity: 1;
     transform: translateY(0);
-}
-
-/* Card Hover Effects */
-.card {
-    backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(138, 79, 255, 0.1);
 }
 
 /* Ensure content is above particles */
