@@ -5,9 +5,9 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     const subject = document.getElementById('subject').value;
     const message = document.getElementById('message').value;
     
-    // Email-Link mit den Formulardaten erstellen
+    // Create mailto link with form data
     const mailtoLink = `mailto:auripulina@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}%0A%0AFrom: ${encodeURIComponent(email)}`;
     
-    // Email-Client öffnen
+    // Open email client
     window.location.href = mailtoLink;
 });
