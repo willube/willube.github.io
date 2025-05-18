@@ -1,7 +1,6 @@
 function updateActiveNavLink() {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-links a');
-    
     let currentSection = '';
     
     sections.forEach(section => {
@@ -34,48 +33,3 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     
     window.location.href = mailtoLink;
 });
-
-const form = document.getElementById('contactForm');
-
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Show loading state
-    const button = form.querySelector('button[type="submit"]');
-    const originalText = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    
-    // Form handling
-    const formData = new FormData(form);
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json'
-        }
-    }).then(response => {
-        if (response.ok) {
-            showNotification('Message sent successfully! ✨', 'success');
-            form.reset();
-        } else {
-            showNotification('Oops! Something went wrong.', 'error');
-        }
-        button.innerHTML = originalText;
-    }).catch(error => {
-        showNotification('Oops! Something went wrong.', 'error');
-        button.innerHTML = originalText;
-    });
-});
-
-function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => notification.classList.add('show'), 100);
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
