@@ -62,19 +62,65 @@ body, html {
     color: #8A4FFF;
 }
 
-.cart-icon {
-    position: relative;
+/* Cart Sidebar */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: #0c0c0c;
+    border-left: 1px solid rgba(138, 79, 255, 0.1);
+    transition: right 0.3s ease;
+    z-index: 1001;
 }
 
-.cart-count {
+.cart-sidebar.active {
+    right: 0;
+}
+
+.cart-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(138, 79, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-header h3 {
+    margin: 0;
+}
+
+.close-cart {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+}
+
+.cart-items {
+    padding: 1.5rem;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.cart-footer {
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #8A4FFF;
-    color: white;
-    font-size: 0.75rem;
-    padding: 2px 6px;
-    border-radius: 50%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: #0c0c0c;
+    border-top: 1px solid rgba(138, 79, 255, 0.1);
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
 }
 
 /* Hero Section */
@@ -190,46 +236,6 @@ body, html {
     color: #8A4FFF;
     font-weight: 600;
     font-size: 1.2rem;
-}
-
-/* Cart Sidebar */
-.cart-sidebar {
-    position: fixed;
-    top: 0;
-    right: -400px;
-    width: 400px;
-    height: 100vh;
-    background: #0c0c0c;
-    border-left: 1px solid rgba(138, 79, 255, 0.1);
-    transition: right 0.3s ease;
-    z-index: 1001;
-}
-
-.cart-sidebar.active {
-    right: 0;
-}
-
-.cart-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(138, 79, 255, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.cart-items {
-    padding: 1.5rem;
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
-}
-
-.cart-footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1.5rem;
-    border-top: 1px solid rgba(138, 79, 255, 0.1);
 }
 
 /* Category Grid */
