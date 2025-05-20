@@ -37,84 +37,95 @@ let cart = [];
 
 // Cart functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // Cart open/close
     const cartIcon = document.querySelector('.cart-icon');
     const cartSidebar = document.querySelector('.cart-sidebar');
     const closeCart = document.querySelector('.close-cart');
-    const checkoutBtn = document.querySelector('.checkout-btn');
-
-    if (cartIcon) {
-        cartIcon.addEventListener('click', function(e) {
-            e.preventDefault();
-            cartSidebar.classList.add('active');
-            console.log('Cart opened'); // Debug
-        });
-    }
-
-    if (closeCart) {
-        closeCart.addEventListener('click', function() {
-            cartSidebar.classList.remove('active');
-            console.log('Cart closed'); // Debug
-        });
-    }
-
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function() {
-            if (cart.length > 0) {
-                const checkoutModal = document.getElementById('checkout-modal');
-                checkoutModal.classList.add('active');
-                console.log('Checkout opened'); // Debug
-            }
-        });
-    }
-
-    // Add to cart functionality
-    document.querySelectorAll('.btn-add-cart').forEach(button => {
-        button.addEventListener('click', function(e) {
-            const card = e.target.closest('.product-card');
-            const name = card.querySelector('h3').textContent;
-            const price = parseFloat(card.querySelector('.price').textContent.replace('€', ''));
-            
-            addToCart({ name, price });
-            console.log('Product added to cart:', name); // Debug
-        });
-    });
-});
-
-function addToCart(product) {
-    const existingItem = cart.find(item => item.name === product.name);
-    
-    if (existingItem) {
-        existingItem.quantity++;
-    } else {
-        cart.push({ ...product, quantity: 1 });
-    }
-    
-    updateCartDisplay();
-}
-
-function updateCartDisplay() {
-    const cartItems = document.querySelector('.cart-items');
     const cartCount = document.querySelector('.cart-count');
+    const cartItems = document.querySelector('.cart-items');
     const totalAmount = document.querySelector('.total-amount');
     
-    // Update cart count
-    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-    
-    // Update cart items
-    cartItems.innerHTML = cart.map(item => `
-        <div class="cart-item">
-            <h4>${item.name}</h4>
-            <div class="cart-item-details">
-                <span>€${item.price} × ${item.quantity}</span>
-                <span>€${(item.price * item.quantity).toFixed(2)}</span>
+    // Cart open
+    cartIcon.addEventListener('click', function(e) {
+        e.preventDefault(); // Verhindert das Neuladen der Seite
+        cartSidebar.classList.add('active');
+    });
+
+    // Cart close
+    closeCart.addEventListener('click', function() {
+        cartSidebar.classList.remove('active');
+    });
+
+    // Add to cart buttons
+    document.querySelectorAll('.btn-add-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            const card = this.closest('.product-card');
+            const product = {
+                name: card.querySelector('h3').textContent,
+                price: parseFloat(card.querySelector('.price').textContent.replace('€', '')),
+                quantity: 1
+            };
+            
+            addToCart(product);
+            cartSidebar.classList.add('active');
+        });
+    });
+
+    // Close cart when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!cartSidebar.contains(e.target) && 
+            !cartIcon.contains(e.target) && 
+            cartSidebar.classList.contains('active')) {
+            cartSidebar.classList.remove('active');
+        }
+    });
+
+    // Update cart functions
+    function addToCart(product) {
+        const existingItem = cart.find(item => item.name === product.name);
+        
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.push(product);
+        }
+        
+        updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+        cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+        
+        cartItems.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <h4>${item.name}</h4>
+                    <p class="cart-item-price">€${item.price}</p>
+                </div>
+                <div class="cart-item-quantity">
+                    <button onclick="updateQuantity('${item.name}', -1)">-</button>
+                    <span>${item.quantity}</span>
+                    <button onclick="updateQuantity('${item.name}', 1)">+</button>
+                </div>
             </div>
-        </div>
-    `).join('');
-    
-    // Update total
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    totalAmount.textContent = `€${total.toFixed(2)}`;
+        `).join('');
+        
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        totalAmount.textContent = `€${total.toFixed(2)}`;
+    }
+});
+
+// Global function for quantity updates
+function updateQuantity(productName, change) {
+    const item = cart.find(item => item.name === productName);
+    if (item) {
+        item.quantity += change;
+        if (item.quantity < 1) {
+            cart = cart.filter(i => i.name !== productName);
+        }
+        document.querySelector('.cart-count').textContent = 
+            cart.reduce((sum, item) => sum + item.quantity, 0);
+        updateCartDisplay();
+    }
 }
 
 // Checkout
