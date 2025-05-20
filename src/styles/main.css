@@ -485,7 +485,61 @@ body, html {
     background: #7040CC;
 }
 
+/* PayPal Button Container */
 #paypal-button-container {
     margin-top: 1rem;
     width: 100%;
+    min-height: 45px;
+}
+
+/* Cart Success/Error Messages */
+.cart-message {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.cart-success {
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+    color: #44ff44;
+}
+
+.cart-error {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    color: #ff4444;
+}
+
+/* Loading State */
+.cart-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.cart-loading::after {
+    content: '';
+    width: 30px;
+    height: 30px;
+    border: 2px solid #8A4FFF;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* PayPal Button Wrapper */
+.paypal-wrapper {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
 }

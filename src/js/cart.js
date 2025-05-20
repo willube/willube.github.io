@@ -1,5 +1,7 @@
 const cart = {
     items: [],
+    supabaseUrl: 'YOUR_SUPABASE_URL',
+    supabaseKey: 'YOUR_SUPABASE_ANON_KEY',
     
     init() {
         this.cartIcon = document.querySelector('.cart-icon');
@@ -42,29 +44,44 @@ const cart = {
     setupPayPal() {
         paypal.Buttons({
             createOrder: (data, actions) => {
-                const total = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
-                            value: total.toFixed(2)
-                        },
-                        description: 'Order from aury shop'
+                            value: this.getTotal().toFixed(2)
+                        }
                     }]
                 });
             },
-            onApprove: (data, actions) => {
-                return actions.order.capture().then((details) => {
-                    alert('Payment completed! Order ID: ' + details.id);
+            onApprove: async (data, actions) => {
+                try {
+                    const order = await actions.order.capture();
+                    await this.saveOrderToDatabase(order);
+                    this.showSuccess('Payment successful!');
                     this.clearCart();
-                    this.cartSidebar?.classList.remove('active');
-                });
-            },
-            onError: (err) => {
-                console.error('PayPal error:', err);
-                alert('Payment failed. Please try again.');
+                } catch (error) {
+                    this.showError('Payment failed. Please try again.');
+                    console.error(error);
+                }
             }
         }).render('#paypal-button-container');
+    },
+
+    async saveOrderToDatabase(order) {
+        const response = await fetch(`${this.supabaseUrl}/rest/v1/orders`, {
+            method: 'POST',
+            headers: {
+                'apikey': this.supabaseKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                paypal_order_id: order.id,
+                customer_email: order.payer.email_address,
+                items: this.items,
+                total: this.getTotal()
+            })
+        });
+
+        if (!response.ok) throw new Error('Failed to save order');
     },
 
     addItem(product) {
@@ -75,6 +92,10 @@ const cart = {
             this.items.push(product);
         }
         this.updateDisplay();
+    },
+
+    getTotal() {
+        return this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     },
 
     updateDisplay() {
@@ -101,10 +122,9 @@ const cart = {
         }
         
         // Update total
-        const total = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        document.querySelectorAll('.total-amount').forEach(el => {
-            el.textContent = `€${total.toFixed(2)}`;
-        });
+        if (this.totalAmount) {
+            this.totalAmount.textContent = `€${this.getTotal().toFixed(2)}`;
+        }
     },
 
     updateQuantity(id, change) {
@@ -121,6 +141,23 @@ const cart = {
     clearCart() {
         this.items = [];
         this.updateDisplay();
+        this.cartSidebar?.classList.remove('active');
+    },
+
+    showSuccess(message) {
+        this.showMessage(message, 'success');
+    },
+
+    showError(message) {
+        this.showMessage(message, 'error');
+    },
+
+    showMessage(message, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `cart-message cart-${type}`;
+        messageDiv.textContent = message;
+        this.cartItems.prepend(messageDiv);
+        setTimeout(() => messageDiv.remove(), 5000);
     }
 };
 
