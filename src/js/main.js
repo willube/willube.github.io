@@ -34,132 +34,72 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
 });
 
 // Cart functionality
-let cart = [];
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Get all cart elements
-    const cartIcon = document.querySelector('.cart-icon');
-    const cartSidebar = document.querySelector('.cart-sidebar');
-    const closeCart = document.querySelector('.close-cart');
-    const checkoutBtn = document.querySelector('.checkout-btn');
-    const checkoutModal = document.getElementById('checkout-modal');
-    const closeModal = document.querySelector('.close-modal');
-    const cartCount = document.querySelector('.cart-count');
-    const cartItems = document.querySelector('.cart-items');
-    const totalAmount = document.querySelector('.total-amount');
-    
-    // Debug log to check if elements are found
-    console.log('Cart Elements:', {
-        cartIcon, cartSidebar, closeCart, checkoutBtn,
-        checkoutModal, closeModal, cartCount
-    });
-
-    // Cart toggle
-    if (cartIcon && cartSidebar) {
-        cartIcon.addEventListener('click', function(e) {
-            e.preventDefault();
-            cartSidebar.classList.add('active');
-            console.log('Cart opened');
-        });
-    }
-
-    // Close cart
-    if (closeCart && cartSidebar) {
-        closeCart.addEventListener('click', function() {
-            cartSidebar.classList.remove('active');
-            console.log('Cart closed');
-        });
-    }
-
-    // Add to cart functionality
-    document.querySelectorAll('.btn-add-cart').forEach(button => {
-        button.addEventListener('click', function() {
-            const card = this.closest('.product-card');
-            const product = {
-                name: card.querySelector('h3').textContent,
-                price: parseFloat(card.querySelector('.price').textContent.replace('€', '')),
-                quantity: 1
-            };
+    // Initialize cart
+    const cart = {
+        items: [],
+        
+        // DOM Elements
+        elements: {
+            cartIcon: document.querySelector('.cart-icon'),
+            cartSidebar: document.querySelector('.cart-sidebar'),
+            closeCart: document.querySelector('.close-cart'),
+            cartCount: document.querySelector('.cart-count'),
+            cartItems: document.querySelector('.cart-items'),
+            totalAmount: document.querySelector('.total-amount')
+        },
+        
+        // Initialize cart functionality
+        init() {
+            if (!this.elements.cartIcon || !this.elements.cartSidebar) {
+                console.error('Required cart elements not found');
+                return;
+            }
             
-            addToCart(product);
-            updateCartDisplay();
-            cartSidebar.classList.add('active');
-        });
-    });
-
-    // Update cart display
-    function updateCartDisplay() {
-        if (cartCount && cartItems && totalAmount) {
-            // Update cart count
-            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            // Open cart
+            this.elements.cartIcon.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.elements.cartSidebar.classList.add('active');
+            });
+            
+            // Close cart
+            this.elements.closeCart.addEventListener('click', () => {
+                this.elements.cartSidebar.classList.remove('active');
+            });
+        },
+        
+        // Update cart display
+        updateDisplay() {
+            const {cartCount, cartItems, totalAmount} = this.elements;
+            
+            // Update count
+            const itemCount = this.items.reduce((sum, item) => sum + item.quantity, 0);
             cartCount.textContent = itemCount;
-
-            // Update cart items
-            cartItems.innerHTML = cart.map(item => `
+            
+            // Update items
+            cartItems.innerHTML = this.items.map(item => `
                 <div class="cart-item">
                     <div class="cart-item-info">
                         <h4>${item.name}</h4>
-                        <p class="cart-item-price">€${item.price.toFixed(2)}</p>
+                        <p>€${item.price.toFixed(2)}</p>
                     </div>
                     <div class="cart-item-quantity">
-                        <button onclick="updateQuantity('${item.name}', -1)">-</button>
+                        <button onclick="cart.updateQuantity('${item.name}', -1)">-</button>
                         <span>${item.quantity}</span>
-                        <button onclick="updateQuantity('${item.name}', 1)">+</button>
+                        <button onclick="cart.updateQuantity('${item.name}', 1)">+</button>
                     </div>
                 </div>
             `).join('');
-
+            
             // Update total
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             totalAmount.textContent = `€${total.toFixed(2)}`;
         }
-    }
-
-    // Helper function to add items to cart
-    function addToCart(product) {
-        const existingItem = cart.find(item => item.name === product.name);
-        if (existingItem) {
-            existingItem.quantity++;
-        } else {
-            cart.push(product);
-        }
-    }
-
-    // Outside click handler
-    document.addEventListener('click', function(e) {
-        if (cartSidebar && 
-            !cartSidebar.contains(e.target) && 
-            !cartIcon.contains(e.target) && 
-            cartSidebar.classList.contains('active')) {
-            cartSidebar.classList.remove('active');
-        }
-    });
-
-    // Stop propagation on cart sidebar clicks
-    if (cartSidebar) {
-        cartSidebar.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
-    }
+    };
+    
+    // Initialize cart
+    cart.init();
+    
+    // Make cart globally available
+    window.cart = cart;
 });
-
-// Global function for quantity updates
-function updateQuantity(productName, change) {
-    const item = cart.find(item => item.name === productName);
-    if (item) {
-        item.quantity += change;
-        if (item.quantity < 1) {
-            cart = cart.filter(i => i.name !== productName);
-        }
-        // Get elements inside the function to ensure they exist
-        const cartCount = document.querySelector('.cart-count');
-        const cartItems = document.querySelector('.cart-items');
-        const totalAmount = document.querySelector('.total-amount');
-        
-        if (cartCount && cartItems && totalAmount) {
-            cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            totalAmount.textContent = `€${total.toFixed(2)}`;
-        }
-    }
-}
