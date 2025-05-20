@@ -33,32 +33,55 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     window.location.href = mailtoLink;
 });
 
+// Cart functionality
 let cart = [];
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Simplified cart functionality
+    initializeCart();
+});
+
+function initializeCart() {
     const cartIcon = document.querySelector('.cart-icon');
     const cartSidebar = document.querySelector('.cart-sidebar');
     const closeCart = document.querySelector('.close-cart');
 
-    // Debug check if elements exist
-    console.log('Cart Icon:', cartIcon);
-    console.log('Cart Sidebar:', cartSidebar);
-    console.log('Close Cart:', closeCart);
+    // Debugging
+    console.log('Cart Elements:', {
+        cartIcon: cartIcon,
+        cartSidebar: cartSidebar,
+        closeCart: closeCart
+    });
 
-    if (cartIcon && cartSidebar && closeCart) {
-        // Open cart
-        cartIcon.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            cartSidebar.classList.add('active');
-            console.log('Opening cart');
-        });
-
-        // Close cart
-        closeCart.addEventListener('click', function() {
-            cartSidebar.classList.remove('active');
-            console.log('Closing cart');
-        });
+    if (!cartIcon || !cartSidebar || !closeCart) {
+        console.error('Cart elements not found!');
+        return;
     }
-});
+
+    // Open cart
+    cartIcon.addEventListener('click', function(e) {
+        e.preventDefault();
+        cartSidebar.classList.add('active');
+        console.log('Cart opened');
+    });
+
+    // Close cart
+    closeCart.addEventListener('click', function() {
+        cartSidebar.classList.remove('active');
+        console.log('Cart closed');
+    });
+
+    // Close cart when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!cartSidebar.contains(e.target) && 
+            !cartIcon.contains(e.target) && 
+            cartSidebar.classList.contains('active')) {
+            cartSidebar.classList.remove('active');
+            console.log('Cart closed (clicked outside)');
+        }
+    });
+
+    // Stop propagation for cart sidebar clicks
+    cartSidebar.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+}
