@@ -111,9 +111,100 @@ document.querySelector('.close-cart').addEventListener('click', () => {
 // Checkout
 document.querySelector('.checkout-btn').addEventListener('click', () => {
     if (cart.length > 0) {
-        alert('Thank you for your purchase!');
+        openCheckoutModal();
+    }
+});
+
+function openCheckoutModal() {
+    const modal = document.getElementById('checkout-modal');
+    const checkoutItems = modal.querySelector('.checkout-items');
+    const checkoutAmounts = modal.querySelectorAll('.checkout-amount');
+    
+    // Display cart items in checkout
+    checkoutItems.innerHTML = cart.map(item => `
+        <div class="checkout-item">
+            <span>${item.name} x${item.quantity}</span>
+            <span>€${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+    `).join('');
+    
+    // Update total amount
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    checkoutAmounts.forEach(el => el.textContent = `€${total.toFixed(2)}`);
+    
+    modal.classList.add('active');
+}
+
+// Close modal when clicking close button or outside
+document.querySelector('.close-modal').addEventListener('click', () => {
+    document.getElementById('checkout-modal').classList.remove('active');
+});
+
+document.getElementById('checkout-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'checkout-modal') {
+        e.target.classList.remove('active');
+    }
+});
+
+// Handle checkout form submission
+document.getElementById('checkout-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Simple form validation
+    const cardNumber = document.getElementById('card').value.replace(/\s/g, '');
+    const expiry = document.getElementById('expiry').value;
+    const cvv = document.getElementById('cvv').value;
+    
+    if (!/^\d{16}$/.test(cardNumber)) {
+        alert('Please enter a valid card number');
+        return;
+    }
+    
+    if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+        alert('Please enter a valid expiry date (MM/YY)');
+        return;
+    }
+    
+    if (!/^\d{3}$/.test(cvv)) {
+        alert('Please enter a valid CVV');
+        return;
+    }
+    
+    // Simulate payment processing
+    const btn = e.target.querySelector('.btn-pay');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Processing...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        alert('Payment successful! Thank you for your purchase.');
         cart = [];
         updateCart();
+        document.getElementById('checkout-modal').classList.remove('active');
         document.querySelector('.cart-sidebar').classList.remove('active');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        e.target.reset();
+    }, 1500);
+});
+
+// Format card number input
+document.getElementById('card').addEventListener('input', (e) => {
+    let value = e.target.value.replace(/\D/g, '');
+    value = value.replace(/(.{4})/g, '$1 ').trim();
+    e.target.value = value.substring(0, 19);
+});
+
+// Format expiry date input
+document.getElementById('expiry').addEventListener('input', (e) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
     }
+    e.target.value = value;
+});
+
+// Limit CVV to 3 digits
+document.getElementById('cvv').addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3);
 });

@@ -278,3 +278,87 @@ body, html {
     margin: 0;
     opacity: 0.8;
 }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    overflow-y: auto;
+}
+
+.modal.active {
+    display: block;
+}
+
+.modal-content {
+    background: #0c0c0c;
+    border: 1px solid rgba(138, 79, 255, 0.1);
+    border-radius: 16px;
+    max-width: 600px;
+    margin: 2rem auto;
+    position: relative;
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(138, 79, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.checkout-summary {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(138, 79, 255, 0.1);
+}
+
+.checkout-items {
+    margin: 1rem 0;
+}
+
+.checkout-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+}
+
+.btn-pay {
+    width: 100%;
+    margin-top: 1rem;
+    background: #8A4FFF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-pay:hover {
+    background: #7040CC;
+}
