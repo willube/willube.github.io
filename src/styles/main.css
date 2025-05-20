@@ -368,3 +368,54 @@ body, html {
 .btn-pay:hover {
     background: #7040CC;
 }
+
+/* Cart Item Styles */
+.cart-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(138, 79, 255, 0.1);
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item h4 {
+    margin: 0 0 0.5rem 0;
+}
+
+.cart-item-details {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Cart Button */
+.btn-add-cart {
+    background: #8A4FFF;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-add-cart:hover {
+    background: #7040CC;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #8A4FFF;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.checkout-btn:hover {
+    background: #7040CC;
+}
