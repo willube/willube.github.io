@@ -66,18 +66,17 @@ body, html {
 .cart-sidebar {
     position: fixed;
     top: 0;
-    right: -400px;
+    right: -400px; /* Ändern von right zu 0 */
     width: 400px;
     height: 100vh;
     background: #0c0c0c;
     border-left: 1px solid rgba(138, 79, 255, 0.1);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
+    transition: right 0.3s ease; /* Ändern von transform zu right */
     z-index: 1001;
 }
 
 .cart-sidebar.active {
-    transform: translateX(0);
+    right: 0; /* Ändern von transform zu right: 0 */
 }
 
 .cart-header {

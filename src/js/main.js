@@ -37,6 +37,7 @@ let cart = [];
 
 // Cart functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Cart Elements
     const cartIcon = document.querySelector('.cart-icon');
     const cartSidebar = document.querySelector('.cart-sidebar');
     const closeCart = document.querySelector('.close-cart');
@@ -44,15 +45,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartItems = document.querySelector('.cart-items');
     const totalAmount = document.querySelector('.total-amount');
     
-    // Cart open
+    // Cart Toggle
     cartIcon.addEventListener('click', function(e) {
-        e.preventDefault(); // Verhindert das Neuladen der Seite
+        e.preventDefault();
         cartSidebar.classList.add('active');
+        console.log('Cart opened'); // Debug line
     });
 
-    // Cart close
     closeCart.addEventListener('click', function() {
         cartSidebar.classList.remove('active');
+        console.log('Cart closed'); // Debug line
     });
 
     // Add to cart buttons
