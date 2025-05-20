@@ -9,12 +9,14 @@ body, html {
     scroll-behavior: smooth;
 }
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
 /* Navigation */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 2rem;
     position: fixed;
     top: 0;
     left: 0;
@@ -23,6 +25,13 @@ body, html {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(138, 79, 255, 0.1);
     z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
 }
 
 .logo {
@@ -51,6 +60,21 @@ body, html {
 
 .nav-links li.active a {
     color: #8A4FFF;
+}
+
+.cart-icon {
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #8A4FFF;
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 50%;
 }
 
 /* Hero Section */
@@ -108,80 +132,136 @@ body, html {
     border-color: rgba(138, 79, 255, 0.2);
 }
 
-/* Skills Section */
-.skills-grid {
+/* Products Grid */
+.products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 2rem;
     margin-top: 3rem;
 }
 
-.skill-card {
-    text-align: center;
-    padding: 2rem;
-}
-
-.skill-card i {
-    font-size: 2.5rem;
-    color: #8A4FFF;
-    margin-bottom: 1rem;
-}
-
-/* Contact Form */
-.contact-card {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.form-group {
-    margin-bottom: 2rem;
-}
-
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-input, textarea {
-    width: 100%;
-    padding: 1rem;
+.product-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(138, 79, 255, 0.1);
-    border-radius: 8px;
-    color: #ffffff;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
 }
 
-input:focus, textarea:focus {
-    outline: none;
-    border-color: #8A4FFF;
-    background: rgba(138, 79, 255, 0.05);
+.product-card:hover {
+    transform: translateY(-5px);
 }
 
-.btn {
-    background: linear-gradient(45deg, #8A4FFF, #A474FF);
-    color: #ffffff;
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    display: inline-flex;
+.product-image {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(12, 12, 12, 0.8);
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(138, 79, 255, 0.3);
+.product-card:hover .product-overlay {
+    opacity: 1;
 }
 
-.btn i {
-    font-size: 1.1rem;
+.product-info {
+    padding: 1.5rem;
+}
+
+.price {
+    color: #8A4FFF;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+/* Cart Sidebar */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: #0c0c0c;
+    border-left: 1px solid rgba(138, 79, 255, 0.1);
+    transition: right 0.3s ease;
+    z-index: 1001;
+}
+
+.cart-sidebar.active {
+    right: 0;
+}
+
+.cart-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(138, 79, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-items {
+    padding: 1.5rem;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.cart-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    border-top: 1px solid rgba(138, 79, 255, 0.1);
+}
+
+/* Category Grid */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.category-card {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    color: white;
+    text-decoration: none;
+}
+
+.category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-card h3 {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    margin: 0;
+    font-size: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 /* Footer */

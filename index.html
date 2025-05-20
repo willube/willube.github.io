@@ -3,121 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aury - Music Producer & Developer</title>
+    <title>aury - Streetwear Shop</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="src/styles/main.css">
 </head>
 <body>
-    <div class="container">
-        <nav class="navbar">
+    <nav class="navbar">
+        <div class="container">
             <div class="logo">aury</div>
             <ul class="nav-links">
-                <li><a href="#about">about me</a></li>
-                <li><a href="#skills">skills</a></li>
-                <li><a href="#projects">projects</a></li>
-                <li><a href="#contact">contact</a></li>
+                <li><a href="#new">New</a></li>
+                <li><a href="#clothing">Clothing</a></li>
+                <li><a href="#shoes">Shoes</a></li>
+                <li><a href="#accessories">Accessories</a></li>
+                <li><a href="#cart" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a></li>
             </ul>
-        </nav>
+        </div>
+    </nav>
 
-        <section class="hero">
-            <div>
-                <h1>aury</h1>
-                <p class="subtitle">Music Producer & Developer</p>
-                <div class="social-links">
-                    <a href="https://instagram.com/auritly" class="social-icon" target="_blank">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://soundcloud.com/yourprofile" class="social-icon" target="_blank">
-                        <i class="fab fa-soundcloud"></i>
-                    </a>
-                    <a href="https://github.com/yourprofile" class="social-icon" target="_blank">
-                        <i class="fab fa-github"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
+    <section class="hero">
+        <div class="container">
+            <h1>New Collection</h1>
+            <p class="subtitle">Exclusive Streetwear</p>
+            <a href="#new" class="btn">
+                Shop Now <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
 
-        <section class="section" id="about">
-            <h2>About Me</h2>
-            <div class="card">
-                <p>Hi, I'm aury! A passionate music producer and developer based in Germany. I blend creative sound design with technical expertise to create unique musical experiences.</p>
-                <p>With a background in both music production and software development, I bring a unique perspective to every project. My goal is to push the boundaries of what's possible in modern music production.</p>
-            </div>
-        </section>
-
-        <section class="section" id="skills">
-            <h2>Skills</h2>
-            <div class="skills-grid">
-                <div class="card skill-card">
-                    <i class="fas fa-music"></i>
-                    <h3>Music Production</h3>
-                    <p>FL Studio, Ableton Live, Sound Design, Mixing & Mastering</p>
-                </div>
-                <div class="card skill-card">
-                    <i class="fas fa-code"></i>
-                    <h3>Development</h3>
-                    <p>HTML, CSS, JavaScript, Modern Web Technologies</p>
-                </div>
-                <div class="card skill-card">
-                    <i class="fas fa-desktop"></i>
-                    <h3>Digital Audio</h3>
-                    <p>VST Plugins, Audio Processing, MIDI Production</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section" id="projects">
-            <h2>Projects</h2>
-            <div class="card">
-                <h3>Coming Soon</h3>
-                <p>Exciting new releases in the works. Stay tuned!</p>
-                <ul>
-                    <li>Modern German Rap Productions</li>
-                    <li>Experimental Sound Design</li>
-                    <li>Collaborative Projects</li>
-                </ul>
-            </div>
-        </section>
-
-        <section class="section" id="contact">
-            <h2>Contact</h2>
-            <div class="card contact-card">
-                <div class="contact-info">
-                    <h3>Let's Work Together</h3>
-                    <p>Got an exciting project? Get in touch!</p>
-                    <form id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
+    <section class="section" id="new">
+        <div class="container">
+            <h2>New Arrivals</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="src/images/product1.jpg" alt="Product">
+                        <div class="product-overlay">
+                            <button class="btn-add-cart">Add to Cart</button>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <input type="text" id="subject" name="subject" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" name="message" rows="5" required></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn">
-                            <i class="fas fa-paper-plane"></i> Send Message
-                        </button>
-                    </form>
+                    </div>
+                    <div class="product-info">
+                        <h3>Premium Hoodie</h3>
+                        <p class="price">€89.99</p>
+                    </div>
                 </div>
+                <!-- More product cards... -->
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+
+    <section class="section" id="categories">
+        <div class="container">
+            <div class="category-grid">
+                <a href="#clothing" class="category-card">
+                    <img src="src/images/clothing.jpg" alt="Clothing">
+                    <h3>Clothing</h3>
+                </a>
+                <a href="#shoes" class="category-card">
+                    <img src="src/images/shoes.jpg" alt="Shoes">
+                    <h3>Shoes</h3>
+                </a>
+                <a href="#accessories" class="category-card">
+                    <img src="src/images/accessories.jpg" alt="Accessories">
+                    <h3>Accessories</h3>
+                </a>
+            </div>
+        </div>
+    </section>
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 aury. All rights reserved.</p>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About</h3>
+                    <p>Premium streetwear for those who dare to be different.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Email: shop@aury.com</p>
+                    <p>Phone: +49 123 456789</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 aury. All rights reserved.</p>
+            </div>
         </div>
     </footer>
+
+    <div class="cart-sidebar" id="cart">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="close-cart"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span class="total-amount">€0.00</span>
+            </div>
+            <button class="btn checkout-btn">Checkout</button>
+        </div>
+    </div>
 
     <script src="src/js/main.js"></script>
 </body>
