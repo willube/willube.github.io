@@ -1,24 +1,26 @@
 // Navigation highlight
-function updateActiveNavLink() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-links a');
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.offsetHeight;
-        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-            navLinks.forEach(link => {
-                link.parentElement.classList.remove('active');
-                if (link.getAttribute('href').slice(1) === section.getAttribute('id')) {
-                    link.parentElement.classList.add('active');
-                }
-            });
-        }
-    });
-}
+document.addEventListener('DOMContentLoaded', function() {
+    function updateActiveNavLink() {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            const sectionHeight = section.offsetHeight;
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.parentElement.classList.remove('active');
+                    if (link.getAttribute('href').slice(1) === section.getAttribute('id')) {
+                        link.parentElement.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
 
-window.addEventListener('scroll', updateActiveNavLink);
-window.addEventListener('load', updateActiveNavLink);
+    window.addEventListener('scroll', updateActiveNavLink);
+    window.addEventListener('load', updateActiveNavLink);
+});
 
 // Contact form
 document.getElementById('contactForm').addEventListener('submit', function(e) {
