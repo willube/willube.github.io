@@ -484,3 +484,8 @@ body, html {
 .btn-pay:hover {
     background: #7040CC;
 }
+
+#paypal-button-container {
+    margin-top: 1rem;
+    width: 100%;
+}
