@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming PC Optimizer</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gaming PC Optimizer</h1>
+            <p>Optimiere deinen Gaming-PC für maximale Leistung!</p>
+        </header>
+        <main>
+            <div class="button-container">
+                <button id="optimize-ram" class="optimize-button">RAM optimieren</button>
+                <button id="disable-services" class="optimize-button">Hintergrunddienste deaktivieren</button>
+                <button id="optimize-gpu" class="optimize-button">Grafik optimieren</button>
+                <button id="activate-cpu" class="optimize-button">CPU-Leistungsprofil aktivieren</button>
+                <button id="delete-tempfiles" class="optimize-button">Temporäre Dateien löschen</button>
+                <button id="manage-autostart" class="optimize-button">Autostart-Programme verwalten</button>
+            </div>
+            <div id="status" class="status-message"></div>
+        </main>
+        <footer>
+            <p>&copy; 2023 Gaming PC Optimizer</p>
+        </footer>
+    </div>
+    <script src="../src/renderer.js"></script>
+</body>
+</html>
