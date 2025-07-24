@@ -3,51 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cer</title>
-    <meta name="description" content="cer - Digital Creator, Music Producer & Tech Innovator">
-    <meta name="keywords" content="cer, digital creator, music producer, developer, tech, innovation">
-    <meta name="author" content="cer">
+    <title>willube@terminal:~$</title>
+    <meta name="description" content="willube - Terminal-based bio inspired by fakecrime.bio">
+    <meta name="keywords" content="willube, terminal, hacker, developer, cyberpunk">
+    <meta name="author" content="willube">
     
-    <!-- Open Graph / Social Media -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="cer - Digital Creator">
-    <meta property="og:description" content="Creating digital experiences that push boundaries. Music • Code • Innovation">
+    <meta property="og:title" content="willube@terminal">
+    <meta property="og:description" content="Welcome to my terminal - A cyberpunk bio page">
     <meta property="og:url" content="https://willube.github.io">
-    <meta property="og:image" content="https://willube.github.io/og-image.png">
     
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23667eea'/><text x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-family='monospace'>C</text></svg>">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#667eea">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2300ff41'/><text x='50' y='65' font-size='40' text-anchor='middle' fill='black' font-family='monospace'>W</text></svg>">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- External CSS -->
+    <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="script.js" as="script">
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+
+    <!-- Matrix Background -->
+    <div class="matrix-container"></div>
+
     <!-- Loading Screen -->
     <div class="loading">
-        <div class="loading-container">
-            <div class="loading-logo">
-                <div class="logo-c">C</div>
-                <div class="logo-particles"></div>
+        <div class="terminal">
+            <div class="terminal-line">willube@terminal:~$ whoami</div>
+            <div class="terminal-line">Loading user data...</div>
+            <div class="terminal-line">Establishing secure connection...</div>
+            <div class="terminal-line">Welcome to the system <span class="loading-cursor">_</span></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">willube@terminal:~$</a>
+            <ul class="nav-menu">
+                <li><a href="#about" class="nav-link">./about</a></li>
+                <li><a href="#skills" class="nav-link">./skills</a></li>
+                <li><a href="#contact" class="nav-link">./contact</a></li>
+            </ul>
+            <button class="theme-toggle" aria-label="Toggle theme">
+                <span class="toggle-icon">◐</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <div class="hero-ascii">
+██╗    ██╗██╗██╗     ██╗     ██╗   ██╗██████╗ ███████╗
+██║    ██║██║██║     ██║     ██║   ██║██╔══██╗██╔════╝
+██║ █╗ ██║██║██║     ██║     ██║   ██║██████╔╝█████╗  
+██║███╗██║██║██║     ██║     ██║   ██║██╔══██╗██╔══╝  
+╚███╔███╔╝██║███████╗███████╗╚██████╔╝██████╔╝███████╗
+ ╚══╝╚══╝ ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚══════╝
+                </div>
+                
+                <h1 class="hero-title">
+                    <span class="title-main glitch" data-text="willube">willube</span>
+                </h1>
+                
+                <p class="hero-subtitle">
+                    <span class="typewriter">// Digital creator, developer & innovator</span>
+                </p>
+
+                <div class="status-container">
+                    <div class="online-status">
+                        <div class="status-dot"></div>
+                        <span>ONLINE</span>
+                    </div>
+                </div>
+
+                <div class="social-links">
+                    <a href="https://github.com/willube" class="social-link github" target="_blank">
+                        <span>></span> github
+                    </a>
+                    <a href="https://discord.gg/willube" class="social-link discord" target="_blank">
+                        <span>></span> discord
+                    </a>
+                    <a href="mailto:contact@willube.dev" class="social-link email">
+                        <span>></span> email
+                    </a>
+                </div>
+
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="terminal-title">willube@system:~</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="command-line">
+                            <span class="prompt">$</span>
+                            <span class="command">cat about.txt</span>
+                        </div>
+                        <div class="output">
+                            Hi there! I'm willube, a passionate developer who loves creating<br>
+                            digital experiences that push boundaries. When I'm not coding,<br>
+                            you'll find me exploring new technologies or producing music.
+                        </div>
+                        
+                        <div class="command-line">
+                            <span class="prompt">$</span>
+                            <span class="command">ls -la skills/</span>
+                        </div>
+                        <div class="output">
+                            drwxr-xr-x  2 willube willube 4096 Jan 24 2025 .<br>
+                            drwxr-xr-x  3 willube willube 4096 Jan 24 2025 ..<br>
+                            -rw-r--r--  1 willube willube  256 Jan 24 2025 javascript.js<br>
+                            -rw-r--r--  1 willube willube  512 Jan 24 2025 python.py<br>
+                            -rw-r--r--  1 willube willube  128 Jan 24 2025 react.jsx<br>
+                            -rw-r--r--  1 willube willube  384 Jan 24 2025 nodejs.js
+                        </div>
+                        
+                        <div class="command-line">
+                            <span class="prompt">$</span>
+                            <span class="command">echo "Thanks for visiting!"</span>
+                        </div>
+                        <div class="output">
+                            Thanks for visiting!
+                        </div>
+                        
+                        <div class="command-line">
+                            <span class="prompt">$</span>
+                            <span class="command"><span class="loading-cursor">_</span></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="loading-text">
-                <span class="loading-line">Initializing cer.exe</span>
-                <span class="loading-line">Loading neural networks...</span>
-                <span class="loading-line">Connecting to the matrix...</span>
-                <span class="loading-line">Welcome to my world</span>
+        </section>
+
+        <!-- Skills Section -->
+        <section class="skills-section" id="skills">
+            <h2 class="section-title">./skills --list</h2>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <div class="skill-name">JavaScript</div>
+                    <div class="skill-level">Advanced</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">Python</div>
+                    <div class="skill-level">Intermediate</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">React</div>
+                    <div class="skill-level">Advanced</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">Node.js</div>
+                    <div class="skill-level">Intermediate</div>
+                </div>
             </div>
-            <div class="loading-progress">
-                <div class="progress-fill"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-text">
+                willube@terminal:~$ echo "Made with ❤️ using terminal aesthetics"
             </div>
+            <div class="footer-links">
+                <a href="https://github.com/willube" class="footer-link">source</a>
+                <a href="mailto:contact@willube.dev" class="footer-link">contact</a>
+                <a href="#" class="footer-link">blog</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
         </div>
     </div>
 
