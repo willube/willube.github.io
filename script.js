@@ -1,52 +1,737 @@
-// Global variables
-let mouseX = 0, mouseY = 0;
-let particles = [];
-let audioContext;
-let analyzer;
-let dataArray;
-let matrixCanvas, matrixCtx;
-let matrixChars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-let matrixDrops = [];
+// Advanced Bio Page JavaScript - Inspired by fakecrime.bio
+class WillubeApp {
+    constructor() {
+        this.initializeApp();
+    }
 
-// DOM Elements
-const body = document.body;
-const loading = document.querySelector('.loading');
-const themeToggle = document.querySelector('.theme-toggle');
-const profileImg = document.querySelector('.profile-img');
-const cursorTrail = document.querySelector('.cursor-trail');
-const musicPlayer = document.querySelector('.music-player');
-const bgMusic = document.getElementById('bgMusic');
-const playBtn = document.getElementById('playBtn');
-const muteBtn = document.getElementById('muteBtn');
-const progressBar = document.querySelector('.progress-bar');
+    initializeApp() {
+        this.setupEventListeners();
+        this.createCustomCursor();
+        this.createBackgroundEffects();
+        this.initializeLoadingScreen();
+        this.initializeMusicPlayer();
+        this.setupThemeToggle();
+        this.createParticleSystem();
+        this.setupScrollEffects();
+        this.animateOnScroll();
+        this.createMatrixBackground();
+        this.setupProfileEffects();
+        this.initializeStats();
+        this.setupTypewriter();
+        this.initializeSkillBars();
+        this.createFloatingElements();
+    }
 
-// Initialize everything when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    initializeTheme();
-    initializeMatrix();
-    initializeMusicPlayer();
-    initializeParticles();
-    initializeCursor();
-    initializeAnimations();
-    initializeCounters();
-    addEventListeners();
-    hideLoading();
-    
-    // Start background effects
-    setTimeout(() => {
-        startMatrixEffect();
-        createFloatingElements();
-    }, 2000);
+    setupEventListeners() {
+        window.addEventListener('load', () => this.hideLoadingScreen());
+        window.addEventListener('scroll', () => this.handleScroll());
+        window.addEventListener('mousemove', (e) => this.updateCursor(e));
+        window.addEventListener('resize', () => this.handleResize());
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ') {
+                e.preventDefault();
+                this.toggleMusic();
+            }
+            if (e.key === 't' || e.key === 'T') {
+                this.toggleTheme();
+            }
+        });
+    }
+
+    // Custom Cursor System
+    createCustomCursor() {
+        const cursor = document.createElement('div');
+        cursor.className = 'cursor';
+        
+        const dot = document.createElement('div');
+        dot.className = 'cursor-dot';
+        
+        const ring = document.createElement('div');
+        ring.className = 'cursor-ring';
+        
+        cursor.appendChild(dot);
+        cursor.appendChild(ring);
+        document.body.appendChild(cursor);
+        
+        this.cursor = { dot, ring };
+        
+        // Hide default cursor on hover
+        document.querySelectorAll('a, button, [role="button"]').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                this.cursor.ring.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                this.cursor.ring.style.backgroundColor = 'rgba(102, 126, 234, 0.2)';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                this.cursor.ring.style.transform = 'translate(-50%, -50%) scale(1)';
+                this.cursor.ring.style.backgroundColor = 'transparent';
+            });
+        });
+    }
+
+    updateCursor(e) {
+        if (this.cursor) {
+            const { clientX: x, clientY: y } = e;
+            
+            this.cursor.dot.style.left = x + 'px';
+            this.cursor.dot.style.top = y + 'px';
+            
+            setTimeout(() => {
+                this.cursor.ring.style.left = x + 'px';
+                this.cursor.ring.style.top = y + 'px';
+            }, 100);
+        }
+    }
+
+    // Background Effects System
+    createBackgroundEffects() {
+        this.createMovingGradient();
+        this.createGridPattern();
+        this.createNoiseTexture();
+    }
+
+    createMovingGradient() {
+        const bgContainer = document.createElement('div');
+        bgContainer.className = 'bg-container';
+        
+        const gradient = document.createElement('div');
+        gradient.className = 'bg-gradient';
+        
+        const particles = document.createElement('div');
+        particles.className = 'bg-particles';
+        
+        const grid = document.createElement('div');
+        grid.className = 'bg-grid';
+        
+        const noise = document.createElement('div');
+        noise.className = 'bg-noise';
+        
+        bgContainer.appendChild(gradient);
+        bgContainer.appendChild(particles);
+        bgContainer.appendChild(grid);
+        bgContainer.appendChild(noise);
+        
+        document.body.appendChild(bgContainer);
+    }
+
+    createGridPattern() {
+        // Grid pattern is handled by CSS
+    }
+
+    createNoiseTexture() {
+        // Noise texture is handled by CSS
+    }
+
+    // Loading Screen System
+    initializeLoadingScreen() {
+        const loading = document.querySelector('.loading');
+        if (!loading) return;
+
+        const progressFill = loading.querySelector('.progress-fill');
+        const lines = loading.querySelectorAll('.loading-line');
+        
+        // Animate progress bar
+        setTimeout(() => {
+            if (progressFill) {
+                progressFill.style.width = '100%';
+            }
+        }, 500);
+        
+        // Animate loading text
+        lines.forEach((line, index) => {
+            setTimeout(() => {
+                line.style.opacity = '1';
+            }, 500 + (index * 500));
+        });
+    }
+
+    hideLoadingScreen() {
+        const loading = document.querySelector('.loading');
+        if (loading) {
+            setTimeout(() => {
+                loading.classList.add('hidden');
+                setTimeout(() => loading.remove(), 1000);
+            }, 3000);
+        }
+    }
+
+    // Music Player System
+    initializeMusicPlayer() {
+        this.musicState = {
+            isPlaying: false,
+            currentTime: 0,
+            duration: 240, // 4 minutes
+            volume: 0.7
+        };
+        
+        this.setupMusicControls();
+        this.animateMusicVisualizer();
+        this.updateMusicProgress();
+    }
+
+    setupMusicControls() {
+        const playBtn = document.querySelector('.play-btn');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const volumeBtn = document.querySelector('.volume-btn');
+        
+        if (playBtn) {
+            playBtn.addEventListener('click', () => this.toggleMusic());
+        }
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.previousTrack());
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.nextTrack());
+        }
+        
+        if (volumeBtn) {
+            volumeBtn.addEventListener('click', () => this.toggleVolume());
+        }
+    }
+
+    toggleMusic() {
+        this.musicState.isPlaying = !this.musicState.isPlaying;
+        const playBtn = document.querySelector('.play-btn');
+        
+        if (playBtn) {
+            playBtn.innerHTML = this.musicState.isPlaying ? '⏸️' : '▶️';
+        }
+        
+        if (this.musicState.isPlaying) {
+            this.startMusicAnimation();
+        } else {
+            this.stopMusicAnimation();
+        }
+    }
+
+    animateMusicVisualizer() {
+        const bars = document.querySelectorAll('.bar');
+        bars.forEach((bar, index) => {
+            const height = Math.random() * 25 + 5;
+            bar.style.height = height + 'px';
+            bar.style.animationDelay = (index * 0.1) + 's';
+        });
+        
+        if (this.musicState.isPlaying) {
+            setTimeout(() => this.animateMusicVisualizer(), 200);
+        }
+    }
+
+    updateMusicProgress() {
+        const progressBar = document.querySelector('.progress-bar::before');
+        const currentTimeEl = document.querySelector('.current-time');
+        const durationEl = document.querySelector('.duration-time');
+        
+        if (currentTimeEl) {
+            currentTimeEl.textContent = this.formatTime(this.musicState.currentTime);
+        }
+        
+        if (durationEl) {
+            durationEl.textContent = this.formatTime(this.musicState.duration);
+        }
+        
+        if (this.musicState.isPlaying) {
+            this.musicState.currentTime += 0.1;
+            if (this.musicState.currentTime >= this.musicState.duration) {
+                this.musicState.currentTime = 0;
+            }
+            setTimeout(() => this.updateMusicProgress(), 100);
+        }
+    }
+
+    formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    startMusicAnimation() {
+        this.animateMusicVisualizer();
+        this.updateMusicProgress();
+    }
+
+    stopMusicAnimation() {
+        // Animation stops naturally when isPlaying is false
+    }
+
+    previousTrack() {
+        this.musicState.currentTime = 0;
+        // Add track switching logic here
+    }
+
+    nextTrack() {
+        this.musicState.currentTime = 0;
+        // Add track switching logic here
+    }
+
+    toggleVolume() {
+        this.musicState.volume = this.musicState.volume > 0 ? 0 : 0.7;
+        const volumeBtn = document.querySelector('.volume-btn');
+        if (volumeBtn) {
+            volumeBtn.innerHTML = this.musicState.volume > 0 ? '🔊' : '🔇';
+        }
+    }
+
+    // Theme System
+    setupThemeToggle() {
+        const themeToggle = document.querySelector('.theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => this.toggleTheme());
+        }
+    }
+
+    toggleTheme() {
+        document.body.classList.toggle('dark-theme');
+        const toggleIcon = document.querySelector('.toggle-icon');
+        
+        if (toggleIcon) {
+            const isDark = document.body.classList.contains('dark-theme');
+            toggleIcon.textContent = isDark ? '☀️' : '🌙';
+        }
+    }
+
+    // Particle System
+    createParticleSystem() {
+        const particlesContainer = document.querySelector('.bg-particles');
+        if (!particlesContainer) return;
+        
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Matrix Background Effect
+    createMatrixBackground() {
+        const canvas = document.querySelector('.matrix-background');
+        if (!canvas) {
+            const matrixCanvas = document.createElement('canvas');
+            matrixCanvas.className = 'matrix-background';
+            document.querySelector('.bg-container').appendChild(matrixCanvas);
+            this.initMatrix(matrixCanvas);
+        }
+    }
+
+    initMatrix(canvas) {
+        const ctx = canvas.getContext('2d');
+        
+        const resize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        
+        resize();
+        window.addEventListener('resize', resize);
+        
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+        const charArray = chars.split('');
+        
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+        
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.1)';
+            ctx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        };
+        
+        setInterval(draw, 35);
+    }
+
+    // Scroll Effects
+    setupScrollEffects() {
+        this.lastScrollY = window.scrollY;
+        
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            const navbar = document.querySelector('.navbar');
+            
+            if (navbar) {
+                if (currentScrollY > this.lastScrollY && currentScrollY > 100) {
+                    navbar.style.transform = 'translateY(-100%)';
+                } else {
+                    navbar.style.transform = 'translateY(0)';
+                }
+            }
+            
+            this.lastScrollY = currentScrollY;
+        });
+    }
+
+    handleScroll() {
+        const scrolled = window.pageYOffset;
+        const parallax = document.querySelector('.hero-bg');
+        
+        if (parallax) {
+            const speed = scrolled * 0.5;
+            parallax.style.transform = `translateY(${speed}px)`;
+        }
+        
+        // Update progress indicators
+        const winHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+        const scrollPercent = scrolled / (docHeight - winHeight);
+        
+        // You can use scrollPercent to update any progress indicators
+    }
+
+    // Animation on Scroll
+    animateOnScroll() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                    
+                    // Animate skill bars when skills section is visible
+                    if (entry.target.classList.contains('skills-section')) {
+                        this.animateSkillBars();
+                    }
+                    
+                    // Start counter animation for stats
+                    if (entry.target.classList.contains('hero-stats')) {
+                        this.animateCounters();
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for animation
+        const elementsToObserve = document.querySelectorAll(
+            '.social-card, .skill-category, .stat-card, .hero-stats, .skills-section'
+        );
+        
+        elementsToObserve.forEach(el => observer.observe(el));
+    }
+
+    // Profile Effects
+    setupProfileEffects() {
+        const profileImg = document.querySelector('.profile-img');
+        if (!profileImg) return;
+        
+        profileImg.addEventListener('click', () => {
+            profileImg.style.transform = 'scale(1.2) rotate(360deg)';
+            setTimeout(() => {
+                profileImg.style.transform = 'scale(1) rotate(0deg)';
+            }, 1000);
+        });
+        
+        // Add floating animation to orbit dots
+        this.animateOrbitDots();
+    }
+
+    animateOrbitDots() {
+        const dots = document.querySelectorAll('.orbit-dot');
+        dots.forEach((dot, index) => {
+            const angle = (index * 120) * (Math.PI / 180);
+            const radius = 100 + (index * 20);
+            
+            let rotation = 0;
+            const animate = () => {
+                rotation += 0.5;
+                const x = Math.cos(angle + rotation * Math.PI / 180) * radius;
+                const y = Math.sin(angle + rotation * Math.PI / 180) * radius;
+                
+                dot.style.transform = `translate(${x}px, ${y}px)`;
+                requestAnimationFrame(animate);
+            };
+            
+            animate();
+        });
+    }
+
+    // Statistics Animation
+    initializeStats() {
+        this.stats = {
+            projects: { current: 0, target: 27, element: null },
+            experience: { current: 0, target: 5, element: null },
+            clients: { current: 0, target: 100, element: null }
+        };
+        
+        // Get stat elements
+        const statNumbers = document.querySelectorAll('.stat-number');
+        if (statNumbers.length >= 3) {
+            this.stats.projects.element = statNumbers[0];
+            this.stats.experience.element = statNumbers[1];
+            this.stats.clients.element = statNumbers[2];
+        }
+    }
+
+    animateCounters() {
+        Object.keys(this.stats).forEach(key => {
+            const stat = this.stats[key];
+            if (!stat.element) return;
+            
+            const increment = stat.target / 60; // 60 frames for 1 second at 60fps
+            const timer = setInterval(() => {
+                stat.current += increment;
+                if (stat.current >= stat.target) {
+                    stat.current = stat.target;
+                    clearInterval(timer);
+                }
+                
+                const displayValue = key === 'experience' 
+                    ? `${Math.floor(stat.current)}+`
+                    : `${Math.floor(stat.current)}${key === 'clients' ? '+' : ''}`;
+                    
+                stat.element.textContent = displayValue;
+            }, 16); // ~60fps
+        });
+    }
+
+    // Typewriter Effect
+    setupTypewriter() {
+        const typewriterElements = document.querySelectorAll('.typewriter');
+        
+        typewriterElements.forEach(element => {
+            const text = element.textContent;
+            element.textContent = '';
+            element.style.width = '0';
+            
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                    element.style.borderRight = 'none';
+                }
+            }, 100);
+        });
+    }
+
+    // Skill Bars Animation
+    initializeSkillBars() {
+        this.skillLevels = {
+            'JavaScript': 95,
+            'Python': 88,
+            'React': 90,
+            'Node.js': 85,
+            'CSS/SCSS': 92,
+            'Git': 87,
+            'Docker': 75,
+            'AWS': 70
+        };
+    }
+
+    animateSkillBars() {
+        const skillBars = document.querySelectorAll('.skill-progress');
+        
+        skillBars.forEach(bar => {
+            const skillName = bar.closest('.skill-item').querySelector('.skill-name').textContent;
+            const targetWidth = this.skillLevels[skillName] || 0;
+            
+            setTimeout(() => {
+                bar.style.width = targetWidth + '%';
+            }, Math.random() * 500);
+        });
+    }
+
+    // Floating Elements
+    createFloatingElements() {
+        const hero = document.querySelector('.hero');
+        if (!hero) return;
+        
+        for (let i = 0; i < 5; i++) {
+            const float = document.createElement('div');
+            float.className = 'floating-element';
+            float.style.cssText = `
+                position: absolute;
+                width: ${20 + Math.random() * 40}px;
+                height: ${20 + Math.random() * 40}px;
+                background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(240, 147, 251, 0.1));
+                border-radius: 50%;
+                pointer-events: none;
+                animation: float${i + 1} ${8 + Math.random() * 4}s ease-in-out infinite;
+                top: ${Math.random() * 100}%;
+                left: ${Math.random() * 100}%;
+            `;
+            
+            hero.appendChild(float);
+        }
+        
+        // Add keyframes for floating animation
+        this.addFloatingKeyframes();
+    }
+
+    addFloatingKeyframes() {
+        if (document.querySelector('#floating-styles')) return;
+        
+        const style = document.createElement('style');
+        style.id = 'floating-styles';
+        style.textContent = `
+            @keyframes float1 {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                50% { transform: translateY(-20px) rotate(180deg); }
+            }
+            @keyframes float2 {
+                0%, 100% { transform: translateX(0px) rotate(0deg); }
+                50% { transform: translateX(20px) rotate(-180deg); }
+            }
+            @keyframes float3 {
+                0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+                50% { transform: translate(15px, -15px) rotate(90deg); }
+            }
+            @keyframes float4 {
+                0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+                50% { transform: translate(-15px, 15px) rotate(-90deg); }
+            }
+            @keyframes float5 {
+                0%, 100% { transform: translateY(0px) scale(1); }
+                50% { transform: translateY(-25px) scale(1.1); }
+            }
+        `;
+        
+        document.head.appendChild(style);
+    }
+
+    // Resize Handler
+    handleResize() {
+        // Recalculate any size-dependent elements
+        const canvas = document.querySelector('.matrix-background');
+        if (canvas) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+    }
+
+    // Status Updates
+    updateStatus() {
+        const stats = document.querySelectorAll('.stat-value');
+        if (stats.length >= 3) {
+            // Update stats with real-time data if available
+            const visitors = 1337 + Math.floor(Math.random() * 100);
+            const uptime = '99.9%';
+            const ping = Math.floor(Math.random() * 50) + 10;
+            
+            if (stats[0]) stats[0].textContent = visitors;
+            if (stats[1]) stats[1].textContent = uptime;
+            if (stats[2]) stats[2].textContent = ping + 'ms';
+        }
+    }
+
+    // Smooth Scrolling for Navigation
+    setupSmoothScrolling() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    }
+
+    // Easter Eggs
+    setupEasterEggs() {
+        let konamiCode = [];
+        const konamiSequence = [
+            'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+            'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+            'KeyB', 'KeyA'
+        ];
+        
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.code);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.join(',') === konamiSequence.join(',')) {
+                this.activateEasterEgg();
+                konamiCode = [];
+            }
+        });
+    }
+
+    activateEasterEgg() {
+        // Fun easter egg - rainbow mode!
+        document.body.style.animation = 'rainbow 2s linear infinite';
+        
+        const rainbowStyle = document.createElement('style');
+        rainbowStyle.textContent = `
+            @keyframes rainbow {
+                0% { filter: hue-rotate(0deg); }
+                100% { filter: hue-rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(rainbowStyle);
+        
+        setTimeout(() => {
+            document.body.style.animation = '';
+            rainbowStyle.remove();
+        }, 10000);
+    }
+}
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', () => {
+    window.willubeApp = new WillubeApp();
 });
 
-// Loading Screen
-function hideLoading() {
-    setTimeout(() => {
-        loading.classList.add('hidden');
-        setTimeout(() => {
-            loading.style.display = 'none';
-        }, 800);
-    }, 1500);
+// Performance monitoring
+window.addEventListener('load', () => {
+    const loadTime = performance.now();
+    console.log(`🚀 WillUBE Bio loaded in ${Math.round(loadTime)}ms`);
+    
+    // Update status periodically
+    setInterval(() => {
+        if (window.willubeApp) {
+            window.willubeApp.updateStatus();
+        }
+    }, 30000); // Update every 30 seconds
+});
+
+// Service Worker Registration (for PWA)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
 }
 
 // Theme Management
