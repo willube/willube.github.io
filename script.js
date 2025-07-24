@@ -283,16 +283,29 @@ class WillubeApp {
         if (themeToggle) {
             themeToggle.addEventListener('click', () => this.toggleTheme());
         }
+        
+        // Load saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        this.setTheme(savedTheme);
     }
 
     toggleTheme() {
-        document.body.classList.toggle('dark-theme');
-        const toggleIcon = document.querySelector('.toggle-icon');
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        this.setTheme(newTheme);
+    }
+    
+    setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
         
+        const toggleIcon = document.querySelector('.toggle-icon');
         if (toggleIcon) {
-            const isDark = document.body.classList.contains('dark-theme');
-            toggleIcon.textContent = isDark ? '☀️' : '🌙';
+            toggleIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
         }
+        
+        // Update online status indicator color for theme
+        this.updateOnlineStatus();
     }
 
     // Particle System
@@ -638,6 +651,16 @@ class WillubeApp {
             if (stats[0]) stats[0].textContent = visitors;
             if (stats[1]) stats[1].textContent = uptime;
             if (stats[2]) stats[2].textContent = ping + 'ms';
+        }
+    }
+    
+    updateOnlineStatus() {
+        const onlineIndicator = document.querySelector('.online-indicator');
+        if (onlineIndicator) {
+            onlineIndicator.classList.add('pulse');
+            setTimeout(() => {
+                onlineIndicator.classList.remove('pulse');
+            }, 1000);
         }
     }
 
