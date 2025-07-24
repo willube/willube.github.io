@@ -1,1 +1,224 @@
-recon soon
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>willube - Digital Creator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .bio-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .name {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .links-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .social-links {
+            display: grid;
+            gap: 15px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 500;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .social-link .emoji {
+            font-size: 1.5em;
+            margin-right: 15px;
+        }
+
+        .skills {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .skill-tag {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 30px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .bio-card, .links-section, .skills {
+                padding: 20px;
+            }
+            
+            .name {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="bio-card">
+            <div class="profile-img">W</div>
+            <h1 class="name">willube</h1>
+            <p class="title">✨ Digital Creator & Developer</p>
+            <p class="description">
+                🚀 Passionate about creating amazing digital experiences<br>
+                💻 Building the future, one line of code at a time<br>
+                🎯 Always learning, always growing
+            </p>
+        </div>
+
+        <div class="links-section">
+            <h2 class="section-title">🔗 Connect With Me</h2>
+            <div class="social-links">
+                <a href="https://github.com/willube" class="social-link">
+                    <span class="emoji">💻</span>
+                    <span>GitHub - Check out my projects</span>
+                </a>
+                <a href="mailto:Aurijo@gmx.de" class="social-link">
+                    <span class="emoji">📧</span>
+                    <span>Email - Let's get in touch</span>
+                </a>
+                <a href="#" class="social-link">
+                    <span class="emoji">🐦</span>
+                    <span>Twitter - Follow my journey</span>
+                </a>
+                <a href="#" class="social-link">
+                    <span class="emoji">💼</span>
+                    <span>LinkedIn - Professional network</span>
+                </a>
+                <a href="#" class="social-link">
+                    <span class="emoji">🎵</span>
+                    <span>Spotify - My coding playlist</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="skills">
+            <h2 class="section-title">🛠️ Skills & Interests</h2>
+            <div class="skill-tags">
+                <span class="skill-tag">🌐 Web Development</span>
+                <span class="skill-tag">⚡ JavaScript</span>
+                <span class="skill-tag">🎨 UI/UX Design</span>
+                <span class="skill-tag">🔧 Problem Solving</span>
+                <span class="skill-tag">📱 Mobile Apps</span>
+                <span class="skill-tag">🚀 Innovation</span>
+                <span class="skill-tag">🎮 Gaming</span>
+                <span class="skill-tag">🎵 Music</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 willube - Crafted with 💜</p>
+        </div>
+    </div>
+</body>
+</html>
