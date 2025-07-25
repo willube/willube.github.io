@@ -284,7 +284,7 @@ function toggleMusic() {
     } catch (error) {
         console.log('🎵 Music control error:', error);
         // Fallback: open YouTube link
-        window.open('https://youtu.be/w-q6oZGZ2Bo', '_blank');
+        window.open('https://youtu.be/k6xFjFXji7A', '_blank');
     }
 }
 

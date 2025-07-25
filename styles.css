@@ -1559,6 +1559,7 @@ body::before {
     justify-content: center;
     opacity: 0;
     transition: opacity var(--transition-fast);
+    z-index: 2;
 }
 
 .music-artwork:hover .artwork-overlay {
@@ -1578,6 +1579,8 @@ body::before {
     color: white;
     cursor: pointer;
     transition: all var(--transition-fast);
+    z-index: 3;
+    position: relative;
 }
 
 .play-btn:hover {
