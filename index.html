@@ -90,9 +90,7 @@
             <div class="music-artist">Amo & Che Salah</div>
         </div>
         <div class="music-controls">
-            <button class="music-btn" id="prevBtn">⏮️</button>
             <button class="music-btn play-btn" id="playBtn">▶️</button>
-            <button class="music-btn" id="nextBtn">⏭️</button>
             <button class="music-btn" id="muteBtn">🔊</button>
         </div>
         <div class="music-progress">
@@ -101,6 +99,10 @@
                 <span id="currentTime">0:00</span>
                 <span id="totalTime">3:42</span>
             </div>
+        </div>
+        <!-- Embedded YouTube Player for requested song -->
+        <div class="music-embed">
+            <iframe id="ytplayer" width="0" height="0" src="https://www.youtube.com/embed/w-q6oZGZ2Bo?autoplay=0&controls=0&loop=1&playlist=w-q6oZGZ2Bo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="display:none;"></iframe>
         </div>
     </div>
 
