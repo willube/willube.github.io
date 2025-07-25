@@ -7,18 +7,19 @@
 
 :root {
     /* Color Palette */
-    --primary-bg: #0a0a0a;
-    --secondary-bg: #111111;
-    --card-bg: #1a1a1a;
-    --glass-bg: rgba(26, 26, 26, 0.8);
-    --accent-primary: #667eea;
-    --accent-secondary: #764ba2;
-    --accent-tertiary: #f093fb;
-    --text-primary: #ffffff;
-    --text-secondary: #b3b3b3;
-    --text-muted: #666666;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --glow-color: rgba(102, 126, 234, 0.3);
+    --primary-bg: #0f0f0f;
+    --secondary-bg: #1a1a1a;
+    --card-bg: #252525;
+    --glass-bg: rgba(37, 37, 37, 0.95);
+    --accent-primary: #8b5cf6;
+    --accent-secondary: #06b6d4;
+    --accent-tertiary: #f59e0b;
+    --accent-pink: #ec4899;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --border-color: rgba(139, 92, 246, 0.2);
+    --glow-color: rgba(139, 92, 246, 0.4);
     
     /* Typography */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -33,10 +34,10 @@
     --spacing-2xl: 3rem;
     
     /* Border Radius */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
     --radius-full: 50%;
     
     /* Shadows */
@@ -85,10 +86,12 @@ body {
     background: linear-gradient(
         135deg,
         var(--primary-bg) 0%,
-        var(--secondary-bg) 50%,
+        #1a1a2e 25%,
+        #16213e 50%,
+        #0f3460 75%,
         var(--primary-bg) 100%
     );
-    animation: gradientShift 20s ease infinite;
+    animation: gradientShift 25s ease infinite;
 }
 
 @keyframes gradientShift {
@@ -103,10 +106,11 @@ body {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(240, 147, 251, 0.1) 0%, transparent 50%);
-    animation: float 15s ease-in-out infinite;
+        radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 60% 40%, rgba(245, 158, 11, 0.10) 0%, transparent 50%);
+    animation: float 18s ease-in-out infinite;
 }
 
 @keyframes float {
@@ -267,7 +271,7 @@ body {
 
 /* ========== MAIN BIO CONTAINER ========== */
 .bio-container {
-    max-width: 480px;
+    max-width: 420px;
     margin: 0 auto;
     padding: var(--spacing-lg);
     min-height: 100vh;
@@ -291,21 +295,23 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-md);
+    padding: var(--spacing-lg);
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color);
+    backdrop-filter: blur(30px);
+    border: 2px solid var(--border-color);
     border-radius: var(--radius-xl);
     margin-bottom: var(--spacing-xl);
     position: sticky;
     top: var(--spacing-lg);
     z-index: 100;
     transition: all var(--transition-normal);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(139, 92, 246, 0.1);
 }
 
 .navbar:hover {
-    background: rgba(26, 26, 26, 0.9);
-    box-shadow: var(--shadow-md);
+    background: rgba(37, 37, 37, 0.98);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-color);
+    transform: translateY(-2px);
 }
 
 .nav-brand {
@@ -327,15 +333,16 @@ body {
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
     transition: all var(--transition-fast);
 }
 
 .nav-link:hover,
 .nav-link.active {
     color: var(--text-primary);
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(139, 92, 246, 0.15);
+    transform: translateY(-1px);
 }
 
 .theme-toggle {
@@ -362,13 +369,16 @@ body {
 
 .profile-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color);
+    backdrop-filter: blur(30px);
+    border: 2px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: var(--spacing-2xl);
     position: relative;
     overflow: hidden;
     transition: all var(--transition-normal);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4), 
+                0 0 0 1px rgba(139, 92, 246, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .profile-card::before {
@@ -377,14 +387,22 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-    opacity: 0.5;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--accent-primary), 
+        var(--accent-secondary), 
+        var(--accent-primary), 
+        transparent);
+    opacity: 0.8;
 }
 
 .profile-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 64px rgba(0, 0, 0, 0.5), 
+                0 0 0 1px var(--border-color),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    border-color: var(--accent-primary);
 }
 
 .profile-header {
@@ -402,20 +420,25 @@ body {
 }
 
 .avatar-inner {
-    width: 120px;
-    height: 120px;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--accent-pink));
     border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     transition: all var(--transition-normal);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3),
+                0 0 0 4px rgba(139, 92, 246, 0.1),
+                inset 0 2px 0 rgba(255, 255, 255, 0.2);
 }
 
 .avatar-inner:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-glow);
+    transform: scale(1.08);
+    box-shadow: 0 12px 48px rgba(139, 92, 246, 0.5),
+                0 0 0 6px rgba(139, 92, 246, 0.2),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3);
 }
 
 .avatar-letter {
@@ -584,16 +607,19 @@ body {
 
 .stat-item {
     text-align: center;
-    padding: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    background: rgba(139, 92, 246, 0.05);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
     transition: all var(--transition-normal);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .stat-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
+    background: rgba(139, 92, 246, 0.1);
+    transform: translateY(-4px);
+    border-color: var(--accent-primary);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
 }
 
 .stat-number {
@@ -642,18 +668,22 @@ body {
 
 .music-player {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color);
+    backdrop-filter: blur(30px);
+    border: 2px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: var(--spacing-xl);
     position: relative;
     overflow: hidden;
     transition: all var(--transition-normal);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(139, 92, 246, 0.1);
 }
 
 .music-player:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 64px rgba(0, 0, 0, 0.4),
+                0 0 0 1px var(--border-color);
+    border-color: var(--accent-secondary);
 }
 
 .music-visualizer {
@@ -711,10 +741,11 @@ body {
 }
 
 .artwork-img {
-    width: 80px;
-    height: 80px;
-    border-radius: var(--radius-md);
+    width: 100px;
+    height: 100px;
+    border-radius: var(--radius-lg);
     object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .artwork-overlay {
@@ -723,8 +754,8 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -849,19 +880,20 @@ body {
     display: block;
     text-decoration: none;
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color);
+    backdrop-filter: blur(30px);
+    border: 2px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     position: relative;
     overflow: hidden;
     transition: all var(--transition-normal);
     cursor: pointer;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .social-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
     border-color: var(--accent-primary);
 }
 
@@ -871,7 +903,9 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, transparent, rgba(102, 126, 234, 0.05));
+    background: linear-gradient(135deg, 
+        rgba(139, 92, 246, 0.05), 
+        rgba(6, 182, 212, 0.05));
     opacity: 0;
     transition: opacity var(--transition-normal);
 }
@@ -890,14 +924,15 @@ body {
 
 .card-icon {
     font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-sm);
+    background: rgba(139, 92, 246, 0.1);
+    border-radius: var(--radius-md);
     flex-shrink: 0;
+    border: 1px solid var(--border-color);
 }
 
 .card-icon svg {
@@ -951,12 +986,30 @@ body {
 }
 
 /* Social Card Specific Colors */
-.github:hover { border-color: #6366f1; }
-.email:hover { border-color: #f59e0b; }
-.discord:hover { border-color: #7c3aed; }
-.spotify:hover { border-color: #10b981; }
-.twitter:hover { border-color: #3b82f6; }
-.share-card:hover { border-color: #ec4899; }
+.github:hover { 
+    border-color: var(--accent-primary); 
+    box-shadow: 0 16px 48px rgba(139, 92, 246, 0.2);
+}
+.email:hover { 
+    border-color: var(--accent-tertiary); 
+    box-shadow: 0 16px 48px rgba(245, 158, 11, 0.2);
+}
+.discord:hover { 
+    border-color: var(--accent-primary); 
+    box-shadow: 0 16px 48px rgba(139, 92, 246, 0.2);
+}
+.spotify:hover { 
+    border-color: var(--accent-secondary); 
+    box-shadow: 0 16px 48px rgba(6, 182, 212, 0.2);
+}
+.twitter:hover { 
+    border-color: var(--accent-secondary); 
+    box-shadow: 0 16px 48px rgba(6, 182, 212, 0.2);
+}
+.share-card:hover { 
+    border-color: var(--accent-pink); 
+    box-shadow: 0 16px 48px rgba(236, 72, 153, 0.2);
+}
 
 /* ========== FOOTER ========== */
 .footer {
@@ -966,11 +1019,12 @@ body {
 
 .footer-content {
     text-align: center;
-    padding: var(--spacing-lg);
+    padding: var(--spacing-xl);
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color);
+    backdrop-filter: blur(30px);
+    border: 2px solid var(--border-color);
     border-radius: var(--radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .footer-content p {
