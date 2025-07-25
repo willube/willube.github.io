@@ -740,12 +740,13 @@ body::before {
 .profile-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
 }
 
 .stat-item {
     text-align: center;
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-sm);
     background: rgba(139, 92, 246, 0.05);
     border: 2px solid var(--border-color);
     border-radius: var(--radius-lg);
@@ -753,6 +754,11 @@ body::before {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .stat-item::before {
@@ -782,16 +788,21 @@ body::before {
 
 .stat-number {
     display: block;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 700;
     color: var(--accent-primary);
     margin-bottom: var(--spacing-xs);
+    line-height: 1;
 }
 
 .stat-label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
     font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 /* ========== MUSIC SECTION ========== */
@@ -1364,10 +1375,17 @@ body::before {
     
     .stat-item {
         padding: var(--spacing-sm);
+        min-height: 70px;
     }
     
     .stat-number {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
+        margin-bottom: 2px;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
+        line-height: 1.1;
     }
     
     .music-info {
@@ -1400,6 +1418,8 @@ body::before {
     .profile-stats {
         grid-template-columns: 1fr;
         gap: var(--spacing-sm);
+        max-width: 280px;
+        margin: var(--spacing-lg) auto 0;
     }
     
     .music-info {
