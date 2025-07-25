@@ -79,16 +79,59 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(600px circle at 0% 0%, rgba(139, 92, 246, 0.15), transparent 40%),
-        radial-gradient(800px circle at 100% 100%, rgba(6, 182, 212, 0.15), transparent 40%),
-        radial-gradient(400px circle at 50% 50%, rgba(236, 72, 153, 0.1), transparent 40%);
+        /* Cinematic spotlights */
+        radial-gradient(ellipse 1200px 800px at 20% 20%, rgba(255, 0, 150, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse 1000px 1200px at 80% 80%, rgba(0, 255, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 800px 600px at 50% 10%, rgba(255, 100, 0, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 1400px 1000px at 10% 90%, rgba(138, 43, 226, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 600px 900px at 90% 30%, rgba(0, 191, 255, 0.18) 0%, transparent 50%),
+        radial-gradient(ellipse 1100px 700px at 70% 70%, rgba(255, 20, 147, 0.12) 0%, transparent 60%),
+        /* Deep black base */
+        linear-gradient(135deg, 
+            rgba(0, 0, 0, 0.95) 0%, 
+            rgba(5, 5, 15, 0.98) 30%,
+            rgba(0, 0, 0, 0.92) 60%,
+            rgba(8, 0, 20, 0.96) 100%);
+    background-size: 100% 100%;
     z-index: -2;
-    animation: backgroundPulse 20s ease-in-out infinite;
+    animation: cinematicPulse 25s ease-in-out infinite, colorShift 40s linear infinite;
 }
 
-@keyframes backgroundPulse {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 1; }
+@keyframes cinematicPulse {
+    0%, 100% { 
+        opacity: 0.9; 
+        filter: brightness(1) contrast(1.1);
+    }
+    25% { 
+        opacity: 1; 
+        filter: brightness(1.2) contrast(1.2);
+    }
+    50% { 
+        opacity: 0.95; 
+        filter: brightness(0.9) contrast(1.3);
+    }
+    75% { 
+        opacity: 1.1; 
+        filter: brightness(1.1) contrast(1.1);
+    }
+}
+
+@keyframes colorShift {
+    0% { 
+        filter: hue-rotate(0deg) saturate(1.2);
+    }
+    25% { 
+        filter: hue-rotate(15deg) saturate(1.4);
+    }
+    50% { 
+        filter: hue-rotate(-10deg) saturate(1.1);
+    }
+    75% { 
+        filter: hue-rotate(25deg) saturate(1.3);
+    }
+    100% { 
+        filter: hue-rotate(0deg) saturate(1.2);
+    }
 }
 
 /* ========== BACKGROUND EFFECTS ========== */
@@ -109,44 +152,67 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.4) 0%, transparent 60%),
-        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.35) 0%, transparent 60%),
-        radial-gradient(circle at 40% 80%, rgba(236, 72, 153, 0.3) 0%, transparent 60%),
-        radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.25) 0%, transparent 60%),
-        radial-gradient(circle at 10% 10%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
+        /* Cinematic neon lights */
+        radial-gradient(ellipse 800px 1200px at 15% 30%, rgba(255, 0, 150, 0.4) 0%, transparent 70%),
+        radial-gradient(ellipse 1000px 600px at 85% 70%, rgba(0, 255, 255, 0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 800px at 50% 5%, rgba(255, 100, 0, 0.3) 0%, transparent 65%),
+        radial-gradient(ellipse 1200px 800px at 5% 95%, rgba(138, 43, 226, 0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 700px 1000px at 95% 25%, rgba(0, 191, 255, 0.3) 0%, transparent 65%),
+        radial-gradient(ellipse 900px 500px at 75% 85%, rgba(255, 20, 147, 0.25) 0%, transparent 75%),
+        /* Deep space gradient */
         linear-gradient(135deg, 
-            rgba(17, 17, 17, 0.95) 0%, 
-            rgba(23, 23, 35, 0.98) 25%,
-            rgba(22, 33, 62, 0.95) 50%,
-            rgba(15, 52, 96, 0.97) 75%,
-            rgba(17, 17, 17, 0.95) 100%);
-    background-size: 400% 400%, 350% 350%, 300% 300%, 450% 450%, 250% 250%, 100% 100%;
-    animation: gradientShift 30s ease-in-out infinite, gradientPulse 8s ease-in-out infinite;
+            rgba(0, 0, 0, 0.98) 0%, 
+            rgba(5, 0, 15, 0.95) 20%,
+            rgba(0, 5, 20, 0.92) 40%,
+            rgba(10, 0, 25, 0.95) 60%,
+            rgba(0, 0, 15, 0.98) 80%,
+            rgba(0, 0, 0, 0.98) 100%);
+    background-size: 120% 120%, 130% 130%, 110% 110%, 140% 140%, 125% 125%, 115% 115%, 100% 100%;
+    animation: cinematicShift 35s ease-in-out infinite, cinematicPulse 12s ease-in-out infinite, cinematicRotate 60s linear infinite;
 }
 
-@keyframes gradientShift {
+@keyframes cinematicShift {
     0%, 100% {
-        background-position: 0% 50%, 100% 0%, 50% 100%, 0% 0%, 100% 100%, 0% 0%;
+        background-position: 0% 50%, 100% 50%, 50% 0%, 0% 100%, 100% 0%, 50% 100%, 0% 0%;
+        transform: scale(1) rotate(0deg);
     }
-    25% {
-        background-position: 100% 100%, 0% 50%, 100% 0%, 50% 100%, 0% 0%, 25% 25%;
+    16% {
+        background-position: 20% 80%, 80% 20%, 70% 30%, 30% 70%, 90% 10%, 10% 90%, 15% 15%;
+        transform: scale(1.02) rotate(0.5deg);
+    }
+    33% {
+        background-position: 70% 30%, 30% 70%, 90% 60%, 60% 10%, 40% 80%, 80% 20%, 35% 35%;
+        transform: scale(0.98) rotate(-0.3deg);
     }
     50% {
-        background-position: 50% 0%, 100% 100%, 0% 50%, 100% 0%, 50% 50%, 50% 50%;
+        background-position: 100% 0%, 0% 100%, 20% 80%, 80% 20%, 10% 90%, 90% 10%, 50% 50%;
+        transform: scale(1.01) rotate(0.2deg);
     }
-    75% {
-        background-position: 0% 100%, 50% 0%, 100% 50%, 0% 100%, 100% 0%, 75% 75%;
+    66% {
+        background-position: 30% 70%, 70% 30%, 60% 90%, 40% 10%, 80% 20%, 20% 80%, 65% 65%;
+        transform: scale(0.99) rotate(-0.4deg);
+    }
+    83% {
+        background-position: 80% 20%, 20% 80%, 10% 40%, 90% 60%, 60% 40%, 40% 60%, 85% 85%;
+        transform: scale(1.03) rotate(0.6deg);
     }
 }
 
-@keyframes gradientPulse {
-    0%, 100% {
-        opacity: 1;
-        filter: blur(0px) brightness(1);
+@keyframes cinematicRotate {
+    0% { 
+        filter: hue-rotate(0deg) saturate(1.3) brightness(1);
     }
-    50% {
-        opacity: 0.9;
-        filter: blur(1px) brightness(1.1);
+    25% { 
+        filter: hue-rotate(20deg) saturate(1.5) brightness(1.1);
+    }
+    50% { 
+        filter: hue-rotate(-15deg) saturate(1.2) brightness(0.9);
+    }
+    75% { 
+        filter: hue-rotate(30deg) saturate(1.4) brightness(1.2);
+    }
+    100% { 
+        filter: hue-rotate(0deg) saturate(1.3) brightness(1);
     }
 }
 
@@ -157,64 +223,77 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 2px 2px, rgba(139, 92, 246, 0.3) 1px, transparent 0),
-        radial-gradient(circle at 1px 1px, rgba(59, 130, 246, 0.2) 1px, transparent 0),
-        radial-gradient(circle at 3px 3px, rgba(236, 72, 153, 0.15) 1px, transparent 0),
-        radial-gradient(circle at 1.5px 1.5px, rgba(6, 182, 212, 0.25) 1px, transparent 0);
-    background-size: 80px 80px, 120px 120px, 150px 150px, 100px 100px;
-    animation: float 25s ease-in-out infinite, particleRotate 40s linear infinite, particlePulse 12s ease-in-out infinite;
+        /* Bright neon particles */
+        radial-gradient(circle at 2px 2px, rgba(255, 0, 150, 0.6) 1px, transparent 0),
+        radial-gradient(circle at 1px 1px, rgba(0, 255, 255, 0.5) 1px, transparent 0),
+        radial-gradient(circle at 3px 3px, rgba(255, 100, 0, 0.4) 1px, transparent 0),
+        radial-gradient(circle at 1.5px 1.5px, rgba(138, 43, 226, 0.5) 1px, transparent 0),
+        radial-gradient(circle at 2.5px 2.5px, rgba(0, 191, 255, 0.45) 1px, transparent 0),
+        radial-gradient(circle at 1.8px 1.8px, rgba(255, 20, 147, 0.4) 1px, transparent 0);
+    background-size: 120px 120px, 180px 180px, 200px 200px, 150px 150px, 170px 170px, 140px 140px;
+    animation: cinematicFloat 30s ease-in-out infinite, particleGlow 15s ease-in-out infinite, particleDrift 45s linear infinite;
 }
 
-@keyframes float {
+@keyframes cinematicFloat {
     0%, 100% { 
-        transform: translateY(0px) translateX(0px); 
+        transform: translateY(0px) translateX(0px) scale(1); 
     }
-    25% { 
-        transform: translateY(-30px) translateX(20px); 
+    16% { 
+        transform: translateY(-40px) translateX(30px) scale(1.05); 
+    }
+    33% { 
+        transform: translateY(-20px) translateX(-25px) scale(0.95); 
     }
     50% { 
-        transform: translateY(-10px) translateX(-15px); 
+        transform: translateY(-60px) translateX(15px) scale(1.02); 
     }
-    75% { 
-        transform: translateY(-40px) translateX(10px); 
+    66% { 
+        transform: translateY(-35px) translateX(-40px) scale(0.98); 
+    }
+    83% { 
+        transform: translateY(-50px) translateX(25px) scale(1.03); 
     }
 }
 
-@keyframes particleRotate {
+@keyframes particleGlow {
+    0%, 100% {
+        opacity: 0.6;
+        filter: brightness(1) saturate(1.3);
+    }
+    25% {
+        opacity: 0.9;
+        filter: brightness(1.4) saturate(1.6);
+    }
+    50% {
+        opacity: 0.7;
+        filter: brightness(1.2) saturate(1.8);
+    }
+    75% {
+        opacity: 0.8;
+        filter: brightness(1.3) saturate(1.4);
+    }
+}
+
+@keyframes particleDrift {
     0% { 
-        transform: rotate(0deg) scale(1); 
-        background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+        transform: rotate(0deg) scale(1);
+        background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
     }
     25% { 
-        transform: rotate(5deg) scale(1.02); 
-        background-position: 10px 10px, -8px 15px, 12px -5px, -5px -10px;
+        transform: rotate(5deg) scale(1.02);
+        background-position: 20px 15px, -15px 25px, 25px -10px, -10px -20px, 18px 22px, -12px 18px;
     }
     50% { 
-        transform: rotate(0deg) scale(0.98); 
-        background-position: 20px 0px, -15px 0px, 0px -10px, -10px 20px;
+        transform: rotate(0deg) scale(0.98);
+        background-position: 40px 0px, -30px 0px, 0px -20px, -20px 40px, 35px 0px, -25px 35px;
     }
     75% { 
-        transform: rotate(-5deg) scale(1.01); 
-        background-position: 10px -10px, -8px -15px, -12px 5px, 5px 10px;
+        transform: rotate(-5deg) scale(1.01);
+        background-position: 20px -15px, -15px -25px, -25px 10px, 10px 20px, 18px -22px, 12px -18px;
     }
     100% { 
-        transform: rotate(0deg) scale(1); 
-        background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px;
-    }
-}
-
-@keyframes particlePulse {
-    0%, 100% {
-        opacity: 0.4;
-        background-size: 80px 80px, 120px 120px, 150px 150px, 100px 100px;
-    }
-    33% {
-        opacity: 0.7;
-        background-size: 90px 90px, 140px 140px, 170px 170px, 110px 110px;
-    }
-    66% {
-        opacity: 0.5;
-        background-size: 70px 70px, 100px 100px, 130px 130px, 90px 90px;
+        transform: rotate(0deg) scale(1);
+        background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
     }
 }
 
@@ -233,21 +312,35 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.03"/></svg>');
-    animation: noise 0.2s infinite;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.08"/></svg>');
+    mix-blend-mode: screen;
+    animation: cinematicNoise 0.15s infinite, noiseColor 10s ease-in-out infinite;
 }
 
-@keyframes noise {
-    0%, 100% { transform: translate(0, 0); }
-    10% { transform: translate(-5%, -5%); }
-    20% { transform: translate(-10%, 5%); }
-    30% { transform: translate(5%, -10%); }
-    40% { transform: translate(-5%, 15%); }
-    50% { transform: translate(-10%, 5%); }
-    60% { transform: translate(15%, 0%); }
-    70% { transform: translate(0%, 15%); }
-    80% { transform: translate(-15%, 10%); }
-    90% { transform: translate(10%, 5%); }
+@keyframes cinematicNoise {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    12% { transform: translate(-3%, -3%) scale(1.01); }
+    25% { transform: translate(-6%, 3%) scale(0.99); }
+    37% { transform: translate(3%, -6%) scale(1.02); }
+    50% { transform: translate(-3%, 8%) scale(0.98); }
+    62% { transform: translate(-6%, 3%) scale(1.01); }
+    75% { transform: translate(8%, 0%) scale(0.99); }
+    87% { transform: translate(0%, 8%) scale(1.02); }
+}
+
+@keyframes noiseColor {
+    0%, 100% {
+        filter: hue-rotate(0deg) brightness(1) contrast(1.2);
+    }
+    25% {
+        filter: hue-rotate(90deg) brightness(1.1) contrast(1.4);
+    }
+    50% {
+        filter: hue-rotate(180deg) brightness(0.9) contrast(1.1);
+    }
+    75% {
+        filter: hue-rotate(270deg) brightness(1.2) contrast(1.3);
+    }
 }
 
 /* ========== LOADING SCREEN ========== */
@@ -258,15 +351,20 @@ body::before {
     width: 100vw;
     height: 100vh;
     background: 
-        radial-gradient(ellipse at 70% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 60%),
-        radial-gradient(ellipse at 30% 70%, rgba(59, 130, 246, 0.12) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+        /* Cinematic loading screen with neon accents */
+        radial-gradient(ellipse 1000px 1200px at 25% 25%, rgba(255, 0, 150, 0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 1200px 800px at 75% 75%, rgba(0, 255, 255, 0.2) 0%, transparent 70%),
+        radial-gradient(ellipse 800px 1000px at 50% 10%, rgba(255, 100, 0, 0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 1400px 900px at 85% 45%, rgba(138, 43, 226, 0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 700px 1100px at 15% 85%, rgba(0, 191, 255, 0.2) 0%, transparent 65%),
+        radial-gradient(ellipse 1000px 600px at 60% 60%, rgba(255, 20, 147, 0.15) 0%, transparent 75%),
+        /* Pure black base with subtle depth */
         linear-gradient(135deg, 
-            rgba(7, 7, 17, 1) 0%, 
-            rgba(12, 12, 25, 0.98) 25%,
-            rgba(17, 17, 35, 0.95) 50%,
-            rgba(10, 10, 22, 0.97) 75%,
-            rgba(7, 7, 17, 1) 100%);
+            rgba(0, 0, 0, 1) 0%, 
+            rgba(5, 0, 10, 0.98) 25%,
+            rgba(0, 5, 15, 0.95) 50%,
+            rgba(8, 0, 20, 0.97) 75%,
+            rgba(0, 0, 0, 1) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -284,47 +382,68 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.25) 0%, transparent 50%),
-        radial-gradient(circle at 50% 10%, rgba(236, 72, 153, 0.2) 0%, transparent 50%),
-        radial-gradient(circle at 85% 45%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 15% 85%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
-        radial-gradient(circle at 60% 60%, rgba(245, 158, 11, 0.1) 0%, transparent 40%);
-    background-size: 500px 500px, 400px 400px, 350px 350px, 550px 550px, 450px 450px, 300px 300px;
-    animation: backgroundShift 15s ease-in-out infinite, backgroundPulse 8s ease-in-out infinite;
+        radial-gradient(circle at 25% 25%, rgba(255, 0, 150, 0.4) 0%, transparent 60%),
+        radial-gradient(circle at 75% 75%, rgba(0, 255, 255, 0.35) 0%, transparent 60%),
+        radial-gradient(circle at 50% 10%, rgba(255, 100, 0, 0.3) 0%, transparent 55%),
+        radial-gradient(circle at 85% 45%, rgba(138, 43, 226, 0.3) 0%, transparent 60%),
+        radial-gradient(circle at 15% 85%, rgba(0, 191, 255, 0.35) 0%, transparent 55%),
+        radial-gradient(circle at 60% 60%, rgba(255, 20, 147, 0.25) 0%, transparent 65%);
+    background-size: 600px 600px, 500px 500px, 450px 450px, 650px 650px, 550px 550px, 400px 400px;
+    animation: loadingCinematicShift 18s ease-in-out infinite, loadingPulse 10s ease-in-out infinite;
     z-index: -1;
 }
 
-@keyframes backgroundShift {
+@keyframes loadingCinematicShift {
     0%, 100% {
-        transform: translate(0, 0) scale(1);
+        transform: translate(0, 0) scale(1) rotate(0deg);
         background-position: 25% 25%, 75% 75%, 50% 10%, 85% 45%, 15% 85%, 60% 60%;
-        opacity: 0.8;
+        opacity: 0.9;
+        filter: hue-rotate(0deg) brightness(1);
     }
     16% {
-        transform: translate(-40px, -20px) scale(1.15);
+        transform: translate(-30px, -15px) scale(1.1) rotate(1deg);
         background-position: 35% 15%, 65% 85%, 70% 30%, 75% 25%, 25% 75%, 80% 40%;
-        opacity: 1;
+        opacity: 1.2;
+        filter: hue-rotate(30deg) brightness(1.2);
     }
     33% {
-        transform: translate(30px, 15px) scale(0.85);
+        transform: translate(25px, 12px) scale(0.9) rotate(-0.5deg);
         background-position: 45% 35%, 55% 65%, 90% 50%, 65% 65%, 35% 35%, 40% 80%;
-        opacity: 0.9;
+        opacity: 1;
+        filter: hue-rotate(-15deg) brightness(1.1);
     }
     50% {
-        transform: translate(-15px, 35px) scale(1.1);
+        transform: translate(-12px, 28px) scale(1.05) rotate(0.8deg);
         background-position: 65% 45%, 35% 55%, 10% 70%, 85% 85%, 15% 15%, 20% 60%;
-        opacity: 1.1;
+        opacity: 1.3;
+        filter: hue-rotate(45deg) brightness(1.3);
     }
     66% {
-        transform: translate(25px, -25px) scale(0.9);
+        transform: translate(20px, -20px) scale(0.95) rotate(-0.3deg);
         background-position: 75% 25%, 25% 75%, 30% 90%, 65% 45%, 35% 55%, 60% 20%;
-        opacity: 0.85;
+        opacity: 0.95;
+        filter: hue-rotate(60deg) brightness(0.9);
     }
     83% {
-        transform: translate(-35px, 20px) scale(1.05);
+        transform: translate(-28px, 16px) scale(1.08) rotate(0.6deg);
         background-position: 85% 65%, 15% 35%, 50% 10%, 45% 85%, 55% 15%, 80% 80%;
-        opacity: 0.95;
+        opacity: 1.1;
+        filter: hue-rotate(20deg) brightness(1.15);
+    }
+}
+
+@keyframes loadingPulse {
+    0%, 100% {
+        filter: brightness(1) contrast(1.2) saturate(1.3);
+    }
+    25% {
+        filter: brightness(1.3) contrast(1.4) saturate(1.6);
+    }
+    50% {
+        filter: brightness(0.9) contrast(1.1) saturate(1.8);
+    }
+    75% {
+        filter: brightness(1.2) contrast(1.3) saturate(1.4);
     }
 }
 
