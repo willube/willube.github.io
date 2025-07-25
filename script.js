@@ -90,6 +90,9 @@ function initializeLoading() {
         loadingScreen.classList.add('fade-out');
         isLoading = false;
         
+        // Add loaded class to body to show main content
+        document.body.classList.add('loaded');
+        
         // After the spectacular ending animation completes
         setTimeout(() => {
             loadingScreen.style.display = 'none';

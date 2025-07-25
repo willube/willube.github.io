@@ -72,6 +72,22 @@ body {
     z-index: 1;
 }
 
+/* Hide main content initially until loading completes */
+body:not(.loaded) .bio-container {
+    opacity: 0;
+    visibility: hidden;
+}
+
+body:not(.loaded) .bg-container {
+    opacity: 0;
+}
+
+/* Show content when loaded */
+body.loaded .bg-container {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
 body::before {
     content: '';
     position: fixed;
@@ -272,6 +288,7 @@ body::before {
 }
 
 /* ========== LOADING SCREEN ========== */
+/* Ensure loading screen is visible on page load */
 .loading {
     position: fixed;
     top: 0;
@@ -285,11 +302,12 @@ body::before {
         radial-gradient(circle 300px at 80% 30%, rgba(255, 100, 0, 0.1) 0%, transparent 60%),
         /* Pure black background */
         #000000;
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 99999;
     opacity: 1;
+    visibility: visible;
     transition: opacity var(--transition-slow), visibility var(--transition-slow);
     overflow: hidden;
 }
@@ -307,6 +325,12 @@ body::before {
         radial-gradient(circle 160px at 60% 20%, rgba(255, 100, 0, 0.15) 0%, transparent 50%);
     animation: simpleGlow 8s ease-in-out infinite;
     z-index: -1;
+}
+
+.loading.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 @keyframes simpleGlow {
@@ -379,7 +403,7 @@ body::before {
     text-align: center;
     animation: containerEntrance 1.5s ease-out;
     position: relative;
-    z-index: 10;
+    z-index: 100;
 }
 
 @keyframes containerEntrance {
@@ -407,6 +431,7 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 200;
 }
 
 .logo-aury {
