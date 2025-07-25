@@ -1954,19 +1954,19 @@ body::before {
 }
 
 /* ========== LOADING SCREEN END ANIMATIONS ========== */
-.loading-screen.fade-out .loading-text {
+.loading.fade-out .logo-aury {
     animation: letterDissolve 2s ease-in-out forwards;
 }
 
-.loading-screen.fade-out .ring {
+.loading.fade-out .loading-ring {
     animation: ringExplode 2s ease-in-out forwards;
 }
 
-.loading-screen.fade-out::before {
+.loading.fade-out .logo-particles {
     animation: particleStorm 2s ease-in-out forwards;
 }
 
-.loading-screen.fade-out {
+.loading.fade-out {
     animation: screenWipeOut 2.5s ease-in-out forwards;
 }
 

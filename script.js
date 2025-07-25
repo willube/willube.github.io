@@ -66,12 +66,12 @@ function initializeElements() {
 
 // ========== LOADING ANIMATION ==========
 function initializeLoading() {
-    const loadingScreen = document.querySelector('.loading-screen');
-    const progressBar = document.querySelector('.progress-bar');
-    const letters = document.querySelectorAll('.letter');
+    const loadingScreen = document.querySelector('.loading');
+    const progressFill = document.querySelector('.progress-fill');
+    const logoLetters = document.querySelectorAll('.logo-letter');
     
     // Animate letters one by one
-    letters.forEach((letter, index) => {
+    logoLetters.forEach((letter, index) => {
         setTimeout(() => {
             letter.style.animationDelay = `${index * 0.1}s`;
             letter.classList.add('animate');
@@ -80,7 +80,9 @@ function initializeLoading() {
     
     // Progress bar animation
     setTimeout(() => {
-        progressBar.style.width = '100%';
+        if (progressFill) {
+            progressFill.style.width = '100%';
+        }
     }, 500);
     
     // Enhanced ending animation sequence
