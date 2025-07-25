@@ -698,10 +698,10 @@ body::before {
     backdrop-filter: blur(30px);
     border: 2px solid var(--border-color);
     border-radius: var(--radius-xl);
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
     position: sticky;
     top: var(--spacing-md);
-    z-index: 100;
+    z-index: 1000;
     transition: all var(--transition-normal);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 
                 0 0 0 1px rgba(139, 92, 246, 0.1),
@@ -810,6 +810,7 @@ body::before {
 /* ========== PROFILE SECTION ========== */
 .profile-section {
     margin-bottom: var(--spacing-2xl);
+    padding-top: var(--spacing-md);
 }
 
 .profile-card {
@@ -947,6 +948,7 @@ body::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 1;
 }
 
 .ring {
@@ -992,6 +994,7 @@ body::before {
     transform: translate(-50%, -50%);
     width: 200px;
     height: 200px;
+    z-index: 1;
 }
 
 .orbit-dot {
@@ -1727,7 +1730,7 @@ body::before {
     .navbar {
         padding: var(--spacing-xs) var(--spacing-sm);
         top: var(--spacing-xs);
-        margin-bottom: var(--spacing-md);
+        margin-bottom: var(--spacing-xl);
         min-height: 50px;
     }
     
@@ -1820,6 +1823,7 @@ body::before {
         border-radius: var(--radius-lg);
         flex-wrap: nowrap;
         overflow: hidden;
+        margin-bottom: var(--spacing-lg);
     }
     
     .nav-menu {
