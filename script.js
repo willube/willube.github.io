@@ -66,16 +66,37 @@ function initializeElements() {
 
 // ========== LOADING ANIMATION ==========
 function initializeLoading() {
-    // Simulate loading process
+    const loadingScreen = document.querySelector('.loading-screen');
+    const progressBar = document.querySelector('.progress-bar');
+    const letters = document.querySelectorAll('.letter');
+    
+    // Animate letters one by one
+    letters.forEach((letter, index) => {
+        setTimeout(() => {
+            letter.style.animationDelay = `${index * 0.1}s`;
+            letter.classList.add('animate');
+        }, index * 100);
+    });
+    
+    // Progress bar animation
     setTimeout(() => {
-        elements.loading.classList.add('hidden');
+        progressBar.style.width = '100%';
+    }, 500);
+    
+    // Enhanced ending animation sequence
+    setTimeout(() => {
+        loadingScreen.classList.add('fade-out');
         isLoading = false;
         
-        // Start entrance animations
+        // After the spectacular ending animation completes
         setTimeout(() => {
-            startTypewriterEffect();
-            animateStatNumbers();
-        }, 500);
+            loadingScreen.style.display = 'none';
+            // Start entrance animations
+            setTimeout(() => {
+                startTypewriterEffect();
+                animateStatNumbers();
+            }, 200);
+        }, 2500); // Match the screenWipeOut animation duration
     }, 3000);
 }
 
