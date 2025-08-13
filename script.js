@@ -118,7 +118,22 @@ if (form) {
 }
 
 // Init
+// Ensure we start at the top on fresh load (ignore if navigating back with hash)
+const resetScrollIfNeeded = () => {
+  if (!location.hash) {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }
+};
+
+// Stagger hero entrance
+const heroEnter = () => {
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
+  hero.classList.add('visible');
+};
+
 window.addEventListener('DOMContentLoaded', () => {
+  resetScrollIfNeeded();
   reveals();
   parallax();
   tilt();
@@ -126,4 +141,5 @@ window.addEventListener('DOMContentLoaded', () => {
   navActive();
   smoothNav();
   hashFocus();
+  heroEnter();
 });
