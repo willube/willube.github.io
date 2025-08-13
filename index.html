@@ -114,7 +114,11 @@
       </section>
       <section class="panel reveal" id="contact">
         <h2 class="panel-title">Contact</h2>
-        <form id="contactForm" class="form-grid" autocomplete="off" novalidate>
+        <form id="contactForm" class="form-grid" autocomplete="off" novalidate action="https://formsubmit.co/aurischlauch@gmail.com" method="POST">
+          <input type="hidden" name="_subject" value="New message from aury.bio" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_next" value="thanks.html" />
           <label class="field">
             <span>Name</span>
             <input type="text" id="name" name="name" required class="fx-input" placeholder="Your name" />

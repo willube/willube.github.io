@@ -106,14 +106,20 @@ const tilt = () => {
 const form = document.getElementById('contactForm');
 if (form) {
   form.addEventListener('submit', (e) => {
-    e.preventDefault();
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const message = document.getElementById('message').value.trim();
-    if (!name || !email || !message) return;
-    const msg = document.getElementById('formMessage');
-    msg.textContent = `Thanks ${name}, I'll be in touch soon.`;
-    form.reset();
+    if (!name || !email || !message) {
+      e.preventDefault();
+      return;
+    }
+    // If offline or running from file://, show local success and prevent submit
+    if (location.protocol === 'file:') {
+      e.preventDefault();
+      const msg = document.getElementById('formMessage');
+      msg.textContent = `Thanks ${name}, I'll be in touch soon.`;
+      form.reset();
+    }
   });
 }
 
