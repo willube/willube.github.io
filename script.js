@@ -154,15 +154,18 @@ const heroEnter = () => {
 
 window.addEventListener('DOMContentLoaded', () => {
   resetScrollIfNeeded();
-  reveals();
-  parallax();
-  tilt();
   initPrefs();
-  navActive();
-  smoothNav();
-  hashFocus();
-  heroEnter();
-  typeWriter();
+  introSplash(() => {
+    // init after intro completes
+    reveals();
+    parallax();
+    tilt();
+    navActive();
+    smoothNav();
+    hashFocus();
+    heroEnter();
+    typeWriter();
+  });
 });
 
 // Simple typewriter that cycles through phrases
@@ -212,5 +215,35 @@ function typeWriter() {
     }
   });
   observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+}
+
+// Intro Splash controller
+function introSplash(done) {
+  const el = document.getElementById('intro');
+  if (!el) { done?.(); return; }
+
+  const skip = () => {
+    el.classList.add('hidden');
+    sessionStorage.setItem('intro-shown', '1');
+    setTimeout(() => { el.remove(); done?.(); }, 650);
+    window.removeEventListener('keydown', onKey);
+    el.removeEventListener('click', onClick);
+  };
+  const onKey = (e) => {
+    // Any key except modifier-only
+    if (e.key) skip();
+  };
+  const onClick = () => skip();
+
+  // Respect reduced motion or if shown once this session
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.body.classList.contains('motion-off');
+  const seen = sessionStorage.getItem('intro-shown') === '1';
+  if (reduced || seen) { skip(); return; }
+
+  // Auto-dismiss after letters settle
+  const AUTO = 2200; // ms
+  const timer = setTimeout(skip, AUTO);
+  el.addEventListener('click', onClick);
+  window.addEventListener('keydown', onKey);
 }
 
