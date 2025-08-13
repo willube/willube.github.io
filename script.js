@@ -105,20 +105,34 @@ const tilt = () => {
 // Form handler
 const form = document.getElementById('contactForm');
 if (form) {
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const message = document.getElementById('message').value.trim();
-    if (!name || !email || !message) {
-      e.preventDefault();
-      return;
-    }
-    // If offline or running from file://, show local success and prevent submit
+    if (!name || !email || !message) { e.preventDefault(); return; }
+
+    // If local file preview, show inline success and skip network
     if (location.protocol === 'file:') {
       e.preventDefault();
       const msg = document.getElementById('formMessage');
       msg.textContent = `Thanks ${name}, I'll be in touch soon.`;
       form.reset();
+      return;
+    }
+
+    // Use fetch POST to ensure the request is sent as POST and handle redirect
+    e.preventDefault();
+    try {
+      const formData = new FormData(form);
+      const res = await fetch(form.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        window.location.href = 'thanks.html';
+      } else {
+        // fallback to native submit if something odd happened
+        form.submit();
+      }
+    } catch (err) {
+      form.submit();
     }
   });
 }
