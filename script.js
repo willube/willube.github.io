@@ -142,4 +142,55 @@ window.addEventListener('DOMContentLoaded', () => {
   smoothNav();
   hashFocus();
   heroEnter();
+  typeWriter();
 });
+
+// Simple typewriter that cycles through phrases
+function typeWriter() {
+  const target = document.getElementById('typed');
+  if (!target) return;
+  let phrases = [];
+  try {
+    const raw = target.getAttribute('data-phrases') || '[]';
+    phrases = JSON.parse(raw);
+  } catch (_) { phrases = []; }
+  if (!Array.isArray(phrases) || phrases.length === 0) return;
+
+  const speed = { type: 70, erase: 40, pause: 1200 };
+  let pi = 0, ci = 0, typing = true, timeoutId = null;
+
+  const loop = () => {
+    if (document.body.classList.contains('motion-off')) return; // paused
+    const phrase = String(phrases[pi % phrases.length]);
+    if (typing) {
+      ci++;
+      target.textContent = phrase.slice(0, ci);
+      if (ci >= phrase.length) { typing = false; timeoutId = setTimeout(loop, speed.pause); return; }
+      timeoutId = setTimeout(loop, speed.type);
+    } else {
+      ci--;
+      target.textContent = phrase.slice(0, ci);
+      if (ci <= 0) { typing = true; ci = 0; pi++; timeoutId = setTimeout(loop, 250); return; }
+      timeoutId = setTimeout(loop, speed.erase);
+    }
+  };
+
+  // Start
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(loop, 250);
+
+  // React to motion toggle changes
+  const observer = new MutationObserver(() => {
+    const off = document.body.classList.contains('motion-off');
+    if (off) {
+      clearTimeout(timeoutId);
+      target.textContent = String(phrases[0] || '');
+    } else {
+      // restart typing from current phrase
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(loop, 300);
+    }
+  });
+  observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+}
+
