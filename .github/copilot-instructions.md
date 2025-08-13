@@ -1,0 +1,13 @@
+- [x] Clarify Project Requirements
+  - Project: Personal bio website for 'Aury', developer and music producer
+  - Tech: HTML, CSS, JavaScript
+  - Design: Dark theme inspired by fakecrime.bio
+  - Highlights: FL Studio, Logic Pro skills
+
+- [ ] Scaffold the Project
+- [ ] Customize the Project
+- [ ] Install Required Extensions
+- [ ] Compile the Project
+- [ ] Create and Run Task
+- [ ] Launch the Project
+- [ ] Ensure Documentation is Complete
