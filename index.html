@@ -1,24 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Aury | Developer & Music Producer</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="description" content="Aury – Developer & music producer blending code, FL Studio & Logic Pro to craft immersive web and audio experiences." />
+  <meta name="theme-color" content="#0a0611" />
+  <meta property="og:title" content="Aury | Developer & Music Producer" />
+  <meta property="og:description" content="Blending code and sound: full‑stack web, FL Studio, Logic Pro, sound design." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="" />
+  <meta property="og:image" content="/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Aury | Developer & Music Producer" />
+  <meta name="twitter:description" content="Full‑stack dev & producer: FL Studio · Logic Pro · Sound Design." />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preload" href="style.css" as="style" />
+  <link rel="stylesheet" href="style.css" />
+  <script type="application/ld+json">{
+    "@context":"https://schema.org",
+    "@type":"Person",
+    "name":"Aury",
+    "jobTitle":"Developer & Music Producer",
+    "description":"Developer & music producer blending code, FL Studio & Logic Pro to craft immersive experiences.",
+    "knowsAbout":["Web Development","Music Production","FL Studio","Logic Pro","Sound Design"],
+    "url":"",
+    "sameAs":["",""],
+    "skills":["JavaScript","CSS","HTML","Sound Design","Mixing","Mastering"]
+  }</script>
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
   <div class="decor-layer">
     <div class="orb orb-a"></div>
     <div class="orb orb-b"></div>
     <div class="orb orb-c"></div>
     <div class="scanline"></div>
   </div>
-  <div class="container shell">
-    <header class="hero reveal">
+  <div class="container shell" data-theme-state>
+    <header class="hero reveal" role="banner">
       <div class="hero-inner">
-        <h1 class="logo-txt gradient-text">Aury</h1>
-        <p class="tag">Developer · Music Producer</p>
+        <div class="top-bar">
+          <h1 class="logo-txt gradient-text">Aury</h1>
+          <div class="ui-toggles">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme" type="button"><span class="icon-sun" aria-hidden="true"></span></button>
+            <button class="motion-toggle" id="motionToggle" aria-label="Toggle motion effects" title="Toggle motion" type="button"><span class="icon-motion" aria-hidden="true">∞</span></button>
+          </div>
+        </div>
+        <p class="tag" aria-label="Roles">Developer · Music Producer</p>
         <p class="pitch">Crafting immersive web experiences & atmospheric sound. <span class="accent">FL Studio</span> & <span class="accent">Logic Pro</span> artisan blending code, rhythm, and texture.</p>
+        <nav class="primary-nav" aria-label="Primary">
+          <ul class="nav-list">
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
         <div class="pill-row">
           <span class="pill">Full‑Stack Web</span>
           <span class="pill">FL Studio</span>
@@ -32,7 +69,7 @@
         </div>
       </div>
     </header>
-    <main>
+    <main id="main" tabindex="-1">
       <section class="panel reveal" id="about">
         <h2 class="panel-title">About</h2>
         <p>I'm obsessed with elegant systems and evocative sound palettes. I iterate fast, ship clean, and treat every project like a hybrid track: structure, groove, contrast, release.</p>

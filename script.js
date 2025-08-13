@@ -2,6 +2,9 @@
 // Scroll reveal using IntersectionObserver
 const reveals = () => {
   const els = document.querySelectorAll('.reveal');
+  if (!window.IntersectionObserver) {
+    els.forEach(e => e.classList.add('visible')); return;
+  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -11,6 +14,65 @@ const reveals = () => {
     });
   }, { threshold: 0.18, rootMargin: '0px 0px -40px' });
   els.forEach(el => io.observe(el));
+};
+// Theme & motion toggles
+const initPrefs = () => {
+  const rootContainer = document.querySelector('[data-theme-state]');
+  if (!rootContainer) return;
+  const themeBtn = document.getElementById('themeToggle');
+  const motionBtn = document.getElementById('motionToggle');
+  const storedTheme = localStorage.getItem('pref-theme');
+  const storedMotion = localStorage.getItem('pref-motion');
+  if (storedTheme === 'light') rootContainer.setAttribute('data-theme', 'light');
+  if (storedMotion === 'off') document.body.classList.add('motion-off');
+  themeBtn?.addEventListener('click', () => {
+    const isLight = rootContainer.getAttribute('data-theme') === 'light';
+    if (isLight) { rootContainer.removeAttribute('data-theme'); localStorage.setItem('pref-theme','dark'); }
+    else { rootContainer.setAttribute('data-theme','light'); localStorage.setItem('pref-theme','light'); }
+  });
+  motionBtn?.addEventListener('click', () => {
+    const off = document.body.classList.toggle('motion-off');
+    localStorage.setItem('pref-motion', off ? 'off' : 'on');
+  });
+};
+
+// Active nav highlighting
+const navActive = () => {
+  const sections = [...document.querySelectorAll('main section[id]')];
+  const links = [...document.querySelectorAll('.nav-list a[href^="#"]')];
+  if (!sections.length || !links.length) return;
+  const setActive = (id) => {
+    links.forEach(l => l.classList.toggle('is-active', l.getAttribute('href') === `#${id}`));
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) setActive(entry.target.id);
+    });
+  }, { threshold: 0.5 });
+  sections.forEach(sec => io.observe(sec));
+};
+
+// Smooth scroll (native fallback)
+const smoothNav = () => {
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.pushState(null, '', `#${id}`);
+      target.focus({ preventScroll: true });
+    });
+  });
+};
+
+// Focus management for hash loads
+const hashFocus = () => {
+  if (location.hash) {
+    const el = document.getElementById(location.hash.slice(1));
+    if (el) setTimeout(() => el.focus({ preventScroll:true }), 150);
+  }
 };
 
 // Subtle parallax for decorative orbs
@@ -62,4 +124,8 @@ window.addEventListener('DOMContentLoaded', () => {
   reveals();
   parallax();
   tilt();
+  initPrefs();
+  navActive();
+  smoothNav();
+  hashFocus();
 });

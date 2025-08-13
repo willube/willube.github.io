@@ -22,6 +22,49 @@ body {
   overflow-x: hidden;
 }
 
+/* Skip link */
+.skip-link { position:absolute; left:-999px; top:auto; width:1px; height:1px; overflow:hidden; }
+.skip-link:focus { position:fixed; left:50%; top:1rem; transform:translateX(-50%); width:auto; height:auto; padding:.8rem 1.2rem; background:#241633; color:#fff; border:2px solid #a855f7; border-radius:8px; z-index:999; }
+
+/* Navigation */
+.primary-nav { margin:0 0 1.5rem; }
+.nav-list { list-style:none; padding:0; margin:0; display:flex; gap:1.4rem; flex-wrap:wrap; }
+.nav-list a { position:relative; display:inline-block; padding:.35rem .2rem; font-size:.78rem; letter-spacing:.18em; text-transform:uppercase; text-decoration:none; color:var(--muted); font-weight:600; transition:color .4s; }
+.nav-list a:after { content:""; position:absolute; left:0; bottom:0; height:2px; width:100%; background:var(--gradient); transform:scaleX(0); transform-origin:left; transition:transform .55s cubic-bezier(.19,1,.22,1); border-radius:2px; }
+.nav-list a:hover { color:var(--accent-warm); }
+.nav-list a:hover:after { transform:scaleX(1); }
+
+/* Top bar & toggles */
+.top-bar { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+.ui-toggles { display:flex; gap:.6rem; }
+.theme-toggle, .motion-toggle { background:#1c1227; border:1px solid #352245; color:var(--muted); width:40px; height:40px; border-radius:10px; cursor:pointer; position:relative; display:grid; place-items:center; font-size:1rem; transition:border-color .45s, color .45s, background .45s, box-shadow .55s; }
+.theme-toggle:hover, .motion-toggle:hover { color:var(--accent-warm); border-color:#553070; box-shadow:0 0 0 1px #553070, 0 0 18px -4px #a855f777; }
+.theme-toggle:active, .motion-toggle:active { transform:translateY(2px); }
+.icon-sun:before { content:"☀"; font-size:1rem; }
+.icon-motion { font-size:.9rem; font-weight:600; }
+
+/* Light theme variant */
+[data-theme='light'] body, body[data-theme='light'] { background: radial-gradient(circle at 20% 15%, #fdf4ff 0%, #f1e8ff 35%, #e7def7 55%, #dacff2 75%); color:#22162f; }
+[data-theme='light'] .panel { background: linear-gradient(150deg,#ffffffcc,#f7efffcc); border-color:#e4d4ef; box-shadow:0 6px 22px -8px #c7b6d9, 0 0 0 1px #decceb; }
+[data-theme='light'] .card { background: linear-gradient(150deg,#ffffff,#f3eafd); border-color:#e4d4ef; }
+[data-theme='light'] .card h3 { color:#7d33c9; }
+[data-theme='light'] .fx-input { background:#fff; border-color:#d5c4e3; color:#1d0f2a; }
+[data-theme='light'] .fx-input:focus { border-color:#a855f7; background:#faf5ff; }
+[data-theme='light'] .nav-list a { color:#5d4b6d; }
+[data-theme='light'] .nav-list a:hover { color:#7d33c9; }
+[data-theme='light'] .theme-toggle, [data-theme='light'] .motion-toggle { background:#ffffffd1; border-color:#d9c7e6; color:#5d4b6d; }
+[data-theme='light'] .pill { background: linear-gradient(145deg,#ede1f6,#e4d6f1); border-color:#d6c6e5; color:#6d5982; }
+[data-theme='light'] .pill:hover { color:#7d33c9; border-color:#c3a6e0; }
+[data-theme='light'] .site-foot { color:#7c6c8c; }
+[data-theme='light'] .gradient-text { filter: drop-shadow(0 0 12px #a855f722) drop-shadow(0 0 22px #d946ef22); }
+[data-theme='light'] .social-link { color:#6d5b80; border-color:#d8c8e6; }
+[data-theme='light'] .social-link:hover { color:#7d33c9; border-color:#c3a6e0; }
+
+/* Motion disabled state */
+.motion-off .orb, .motion-off .scanline { display:none !important; }
+.motion-off .card:hover, .motion-off .fx-btn:hover, .motion-off .pill:hover, .motion-off .social-link:hover { transform:none !important; }
+.motion-off .reveal { opacity:1 !important; transform:none !important; filter:none !important; transition:none !important; }
+
 /* Decorative orbs */
 .decor-layer { position: fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
 .orb { position:absolute; width:42vmin; height:42vmin; border-radius:50%; filter:blur(60px) saturate(140%); opacity:.25; mix-blend-mode:screen; background: radial-gradient(circle at 30% 30%, #f472b6 0%, #6d2196 60%, transparent 75%); animation: float 18s ease-in-out infinite; }
