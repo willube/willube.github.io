@@ -17,18 +17,16 @@ const reveals = () => {
 };
 // Theme & motion toggles
 const initPrefs = () => {
-  const rootContainer = document.querySelector('[data-theme-state]');
-  if (!rootContainer) return;
   const themeBtn = document.getElementById('themeToggle');
   const motionBtn = document.getElementById('motionToggle');
   const storedTheme = localStorage.getItem('pref-theme');
   const storedMotion = localStorage.getItem('pref-motion');
-  if (storedTheme === 'light') rootContainer.setAttribute('data-theme', 'light');
+  if (storedTheme === 'light') document.body.setAttribute('data-theme', 'light');
   if (storedMotion === 'off') document.body.classList.add('motion-off');
   themeBtn?.addEventListener('click', () => {
-    const isLight = rootContainer.getAttribute('data-theme') === 'light';
-    if (isLight) { rootContainer.removeAttribute('data-theme'); localStorage.setItem('pref-theme','dark'); }
-    else { rootContainer.setAttribute('data-theme','light'); localStorage.setItem('pref-theme','light'); }
+    const isLight = document.body.getAttribute('data-theme') === 'light';
+    if (isLight) { document.body.removeAttribute('data-theme'); localStorage.setItem('pref-theme','dark'); }
+    else { document.body.setAttribute('data-theme','light'); localStorage.setItem('pref-theme','light'); }
   });
   motionBtn?.addEventListener('click', () => {
     const off = document.body.classList.toggle('motion-off');
