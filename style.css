@@ -61,8 +61,13 @@ body[data-theme='light'] .social-link { color:#6d5b80; border-color:#d8c8e6; }
 body[data-theme='light'] .social-link:hover { color:#7d33c9; border-color:#c3a6e0; }
 
 /* Social icon buttons */
-.social-link { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:10px; }
-.social-link .icon { width:20px; height:20px; fill: currentColor; display:block; }
+.social-link { display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:12px; }
+.social-link .icon { width:28px; height:28px; fill: currentColor; display:block; }
+
+@media (max-width: 760px) {
+  .social-link { width:52px; height:52px; border-radius:12px; }
+  .social-link .icon { width:26px; height:26px; }
+}
 
 /* Motion disabled state */
 .motion-off .orb, .motion-off .scanline { display:none !important; }
