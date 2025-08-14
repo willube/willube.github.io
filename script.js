@@ -145,7 +145,7 @@ if (droiver) {
     if (!email) { e.preventDefault(); return; }
     if (location.protocol === 'file:') {
       e.preventDefault();
-      alert('Danke! Du stehst auf der Droiver.cc Warteliste.');
+  alert('Thanks! You\'re on the Droiver.cc waitlist.');
       droiver.reset();
     }
   });
