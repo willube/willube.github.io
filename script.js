@@ -268,6 +268,7 @@ function initLazyYouTube() {
         color: 'white',
         iv_load_policy: '3',
         playsinline: '1',
+        enablejsapi: '1'
       });
       let src = `https://www.youtube.com/embed/${id}?${params.toString()}`;
       if (list) src += `&list=${encodeURIComponent(list)}`;
@@ -278,6 +279,11 @@ function initLazyYouTube() {
       iframe.setAttribute('allowfullscreen', '');
       box.innerHTML = '';
       box.appendChild(iframe);
+
+      // store reference for controls
+      box.dataset.active = '1';
+      box._iframe = iframe;
+      wirePlayerControls(box);
     };
 
     box.addEventListener('click', activate, { once: true });
@@ -286,5 +292,30 @@ function initLazyYouTube() {
     box.setAttribute('role', 'button');
     box.setAttribute('aria-label', 'Play video');
   });
+}
+
+// Hook up stop + volume controls to the active YouTube iframe
+function wirePlayerControls(box) {
+  const container = box.closest('#music');
+  if (!container) return;
+  const stopBtn = container.querySelector('[data-action="stop"]');
+  const vol = container.querySelector('[data-volume]');
+  const post = (func, args = []) => {
+    if (!box._iframe) return;
+    box._iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args }), '*');
+  };
+  stopBtn?.addEventListener('click', () => {
+    // Stop: seek to 0 and pause
+    post('seekTo', [0, true]);
+    post('pauseVideo');
+  });
+  if (vol) {
+    const apply = (value) => {
+      const v = Math.max(0, Math.min(100, Number(value)));
+      post('setVolume', [v]);
+    };
+    apply(vol.value);
+    vol.addEventListener('input', (e) => apply(e.target.value));
+  }
 }
 
