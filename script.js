@@ -137,6 +137,20 @@ if (form) {
   });
 }
 
+// Droiver waitlist form (minimal validation/behavior)
+const droiver = document.getElementById('droiverForm');
+if (droiver) {
+  droiver.addEventListener('submit', (e) => {
+    const email = droiver.querySelector('input[name="email"]').value.trim();
+    if (!email) { e.preventDefault(); return; }
+    if (location.protocol === 'file:') {
+      e.preventDefault();
+      alert('Danke! Du stehst auf der Droiver.cc Warteliste.');
+      droiver.reset();
+    }
+  });
+}
+
 // Init
 // Ensure we start at the top on fresh load (ignore if navigating back with hash)
 const resetScrollIfNeeded = () => {
