@@ -165,6 +165,7 @@ window.addEventListener('DOMContentLoaded', () => {
     hashFocus();
     heroEnter();
     typeWriter();
+  initLazyYouTube();
   });
 });
 
@@ -245,5 +246,45 @@ function introSplash(done) {
   const timer = setTimeout(skip, AUTO);
   el.addEventListener('click', onClick);
   window.addEventListener('keydown', onKey);
+}
+
+// Lazy YouTube embed: show thumbnail + play button, load iframe on click
+function initLazyYouTube() {
+  const boxes = document.querySelectorAll('.embed-box.video[data-yt-id]');
+  boxes.forEach(box => {
+    const id = box.getAttribute('data-yt-id');
+    const list = box.getAttribute('data-yt-list');
+    const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+    box.style.backgroundImage = `url('${thumb}')`;
+    const btn = document.createElement('div');
+    btn.className = 'play';
+    box.appendChild(btn);
+
+    const activate = () => {
+      const params = new URLSearchParams({
+        autoplay: '1',
+        rel: '0',
+        modestbranding: '1',
+        color: 'white',
+        iv_load_policy: '3',
+        playsinline: '1',
+      });
+      let src = `https://www.youtube.com/embed/${id}?${params.toString()}`;
+      if (list) src += `&list=${encodeURIComponent(list)}`;
+      const iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.title = 'YouTube video player';
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+      iframe.setAttribute('allowfullscreen', '');
+      box.innerHTML = '';
+      box.appendChild(iframe);
+    };
+
+    box.addEventListener('click', activate, { once: true });
+    box.addEventListener('keypress', (e) => { if (e.key === 'Enter' || e.key === ' ') activate(); }, { once: true });
+    box.setAttribute('tabindex', '0');
+    box.setAttribute('role', 'button');
+    box.setAttribute('aria-label', 'Play video');
+  });
 }
 
