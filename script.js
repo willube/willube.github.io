@@ -284,6 +284,21 @@ function initLazyYouTube() {
       box.dataset.active = '1';
       box._iframe = iframe;
       wirePlayerControls(box);
+
+      // Subscribe to state changes to keep UI in sync
+      const origin = location.origin;
+      try {
+        iframe.contentWindow?.postMessage(JSON.stringify({ event: 'listening', id: 'aury-player' }), '*');
+      } catch (_) {}
+      window.addEventListener('message', (e) => {
+        // ignore non-YouTube messages
+        if (!e.data || typeof e.data !== 'string') return;
+        let data;
+        try { data = JSON.parse(e.data); } catch (_) { return; }
+        if (data?.event === 'onStateChange') {
+          updateToggleUI(containerFor(box), data?.info);
+        }
+      });
     };
 
     box.addEventListener('click', activate, { once: true });
@@ -298,16 +313,17 @@ function initLazyYouTube() {
 function wirePlayerControls(box) {
   const container = box.closest('#music');
   if (!container) return;
-  const stopBtn = container.querySelector('[data-action="stop"]');
+  const toggleBtn = container.querySelector('[data-action="toggle"]');
   const vol = container.querySelector('[data-volume]');
   const post = (func, args = []) => {
     if (!box._iframe) return;
     box._iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args }), '*');
   };
-  stopBtn?.addEventListener('click', () => {
-    // Stop: seek to 0 and pause
-    post('seekTo', [0, true]);
-    post('pauseVideo');
+  // Toggle play/pause
+  toggleBtn?.addEventListener('click', () => {
+    const state = container.getAttribute('data-state');
+    if (state === 'playing') { post('pauseVideo'); }
+    else { post('playVideo'); }
   });
   if (vol) {
     const apply = (value) => {
@@ -317,5 +333,20 @@ function wirePlayerControls(box) {
     apply(vol.value);
     vol.addEventListener('input', (e) => apply(e.target.value));
   }
+}
+
+function containerFor(box) {
+  return box.closest('#music');
+}
+
+// Update button label and aria based on YT state
+function updateToggleUI(container, state) {
+  if (!container) return;
+  // YT states: -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued
+  container.setAttribute('data-state', String(state));
+  const btn = container.querySelector('[data-action="toggle"]');
+  if (!btn) return;
+  if (state === 1) { btn.textContent = 'Pause'; btn.setAttribute('aria-label','Pause'); }
+  else { btn.textContent = 'Play'; btn.setAttribute('aria-label','Play'); }
 }
 
