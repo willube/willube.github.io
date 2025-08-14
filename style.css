@@ -182,6 +182,10 @@ body[data-theme='light'] .social-link:hover { color:#7d33c9; border-color:#c3a6e
 .card:hover { transform: translateY(-6px) rotate3d(.8,.3,0,6deg); border-color:#5d3577; box-shadow:0 10px 28px -10px #09020f, 0 0 0 1px #4a2f61, 0 0 40px -12px #d946ef55; }
 .card:hover:before { opacity:1; }
 
+/* Embeds */
+.embed-box { position:relative; border:1px solid #3a2947; border-radius:16px; overflow:hidden; background: linear-gradient(160deg,#301e42 0%, #20142d 65%); box-shadow:0 4px 18px -6px #000, 0 2px 0 #3b2550; }
+.spotify-embed { display:block; width:100%; border:0; }
+
 /* Form */
 .form-grid { display:grid; gap:1.2rem 1rem; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); align-items:start; }
 .field { display:flex; flex-direction:column; gap:.45rem; font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600; }
