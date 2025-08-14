@@ -165,7 +165,6 @@ window.addEventListener('DOMContentLoaded', () => {
     hashFocus();
     heroEnter();
     typeWriter();
-  initLazyYouTube();
   });
 });
 
@@ -248,105 +247,4 @@ function introSplash(done) {
   window.addEventListener('keydown', onKey);
 }
 
-// Lazy YouTube embed: show thumbnail + play button, load iframe on click
-function initLazyYouTube() {
-  const boxes = document.querySelectorAll('.embed-box.video[data-yt-id]');
-  boxes.forEach(box => {
-    const id = box.getAttribute('data-yt-id');
-    const list = box.getAttribute('data-yt-list');
-    const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-    box.style.backgroundImage = `url('${thumb}')`;
-    const btn = document.createElement('div');
-    btn.className = 'play';
-    box.appendChild(btn);
-
-    const activate = () => {
-      const params = new URLSearchParams({
-        autoplay: '1',
-        rel: '0',
-        modestbranding: '1',
-        color: 'white',
-        iv_load_policy: '3',
-        playsinline: '1',
-        enablejsapi: '1'
-      });
-      let src = `https://www.youtube.com/embed/${id}?${params.toString()}`;
-      if (list) src += `&list=${encodeURIComponent(list)}`;
-      const iframe = document.createElement('iframe');
-      iframe.src = src;
-      iframe.title = 'YouTube video player';
-      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
-      iframe.setAttribute('allowfullscreen', '');
-      box.innerHTML = '';
-      box.appendChild(iframe);
-
-      // store reference for controls
-      box.dataset.active = '1';
-      box._iframe = iframe;
-      wirePlayerControls(box);
-
-      // Subscribe to state changes to keep UI in sync
-      const origin = location.origin;
-      try {
-        iframe.contentWindow?.postMessage(JSON.stringify({ event: 'listening', id: 'aury-player' }), '*');
-      } catch (_) {}
-      window.addEventListener('message', (e) => {
-        // ignore non-YouTube messages
-        if (!e.data || typeof e.data !== 'string') return;
-        let data;
-        try { data = JSON.parse(e.data); } catch (_) { return; }
-        if (data?.event === 'onStateChange') {
-          updateToggleUI(containerFor(box), data?.info);
-        }
-      });
-    };
-
-    box.addEventListener('click', activate, { once: true });
-    box.addEventListener('keypress', (e) => { if (e.key === 'Enter' || e.key === ' ') activate(); }, { once: true });
-    box.setAttribute('tabindex', '0');
-    box.setAttribute('role', 'button');
-    box.setAttribute('aria-label', 'Play video');
-  });
-}
-
-// Hook up stop + volume controls to the active YouTube iframe
-function wirePlayerControls(box) {
-  const container = box.closest('#music');
-  if (!container) return;
-  const toggleBtn = container.querySelector('[data-action="toggle"]');
-  const vol = container.querySelector('[data-volume]');
-  const post = (func, args = []) => {
-    if (!box._iframe) return;
-    box._iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args }), '*');
-  };
-  // Toggle play/pause
-  toggleBtn?.addEventListener('click', () => {
-    const state = container.getAttribute('data-state');
-    if (state === 'playing') { post('pauseVideo'); }
-    else { post('playVideo'); }
-  });
-  if (vol) {
-    const apply = (value) => {
-      const v = Math.max(0, Math.min(100, Number(value)));
-      post('setVolume', [v]);
-    };
-    apply(vol.value);
-    vol.addEventListener('input', (e) => apply(e.target.value));
-  }
-}
-
-function containerFor(box) {
-  return box.closest('#music');
-}
-
-// Update button label and aria based on YT state
-function updateToggleUI(container, state) {
-  if (!container) return;
-  // YT states: -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued
-  container.setAttribute('data-state', String(state));
-  const btn = container.querySelector('[data-action="toggle"]');
-  if (!btn) return;
-  if (state === 1) { btn.textContent = 'Pause'; btn.setAttribute('aria-label','Pause'); }
-  else { btn.textContent = 'Play'; btn.setAttribute('aria-label','Play'); }
-}
 
