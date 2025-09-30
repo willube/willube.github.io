@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorkSphere – Dashboard für Unternehmen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-oz4h2nK0O+kO5RAwOB1p5MNDoAuCEi0aKBslZx2drXr/7EQo1gChX2NDVY5QZnQEqplLWYwgdENYBzZ5zQYkZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="navbar">
+        <a class="navbar__brand" href="./index.html">
+          <span class="badge"><i class="fa-solid fa-briefcase"></i></span>
+          WorkSphere
+        </a>
+        <div class="navbar__actions">
+          <a class="btn btn-secondary" href="./candidate-dashboard.html">Zum Talent-Dashboard</a>
+          <a class="btn btn-ghost" href="./auth.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <div class="container">
+      <header class="dashboard__header">
+        <div>
+          <h1 class="dashboard__title">Hallo, Alex – Recruiting bei BrightApps</h1>
+          <p class="muted">Verwalte Kandidaten, filtere neue Talente und lade dein Team zur Zusammenarbeit ein.</p>
+        </div>
+        <div class="dashboard__summary">
+          <div class="card">
+            <p class="muted text-sm">Offene Rollen</p>
+            <h3>6</h3>
+            <p class="text-xs muted">2 dringend · 4 geplant</p>
+          </div>
+          <div class="card">
+            <p class="muted text-sm">Neue Matches</p>
+            <h3>18</h3>
+            <p class="text-xs muted">In den letzten 7 Tagen</p>
+          </div>
+          <div class="card">
+            <p class="muted text-sm">Interviews diese Woche</p>
+            <h3>7</h3>
+            <p class="text-xs muted">4 Erstgespräche · 3 Finalrunden</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="dashboard__grid">
+        <div class="grid" style="gap: 1.5rem;">
+          <article class="card">
+            <div class="card__header">
+              <h2 class="card__title">Unternehmensprofil</h2>
+              <a class="text-sm" href="#">Profil bearbeiten</a>
+            </div>
+            <p class="muted text-sm">BrightApps GmbH · 250 Mitarbeitende · Hybrid (Berlin)</p>
+            <div class="flex" style="flex-wrap: wrap;">
+              <span class="chip">Tech</span>
+              <span class="chip">B2B SaaS</span>
+              <span class="chip">Series B</span>
+              <span class="chip">Remote Culture</span>
+            </div>
+            <p class="muted text-sm">Team-Kolleg:innen</p>
+            <div class="flex" style="flex-wrap: wrap;">
+              <span class="chip"><i class="fa-solid fa-user"></i> alex@brightapps.io</span>
+              <span class="chip"><i class="fa-solid fa-user"></i> julia@brightapps.io</span>
+              <span class="chip"><i class="fa-solid fa-user"></i> karim@brightapps.io</span>
+            </div>
+            <button class="btn btn-secondary">Neue Person einladen</button>
+          </article>
+
+          <article class="card">
+            <div class="card__header">
+              <h3 class="card__title">Filter & Talent-Suche</h3>
+              <a class="text-sm" href="#">Speichern</a>
+            </div>
+            <form class="filter-panel" action="#" method="get">
+              <!-- Backend: Bind form to candidate search endpoint -->
+              <div class="filter-panel__grid">
+                <div class="input-group">
+                  <label for="filter-role">Rolle</label>
+                  <input id="filter-role" name="role" placeholder="z. B. Frontend" />
+                </div>
+                <div class="input-group">
+                  <label for="filter-skill">Skill</label>
+                  <input id="filter-skill" name="skill" placeholder="React, Vue, DevOps …" />
+                </div>
+                <div class="input-group">
+                  <label for="filter-location">Standort</label>
+                  <input id="filter-location" name="location" placeholder="Remote, Berlin …" />
+                </div>
+                <div class="input-group">
+                  <label for="filter-seniority">Seniorität</label>
+                  <select id="filter-seniority" name="seniority">
+                    <option value="">Alle</option>
+                    <option value="junior">Junior</option>
+                    <option value="mid">Mid-Level</option>
+                    <option value="senior">Senior</option>
+                    <option value="lead">Lead</option>
+                  </select>
+                </div>
+              </div>
+              <div class="flex" style="flex-wrap: wrap;">
+                <button class="btn btn-primary" type="submit">Talente finden</button>
+                <button class="btn btn-secondary" type="reset">Zurücksetzen</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="card">
+            <div class="card__header">
+              <h3 class="card__title">Favorisierte Kandidaten</h3>
+              <a class="text-sm" href="#">Alle ansehen</a>
+            </div>
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Rolle</th>
+                    <th>Match</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Lina Schneider</td>
+                    <td>Senior Frontend Engineer</td>
+                    <td><span class="badge">95%</span></td>
+                    <td><span class="chip">Interview</span></td>
+                    <td><button class="btn btn-ghost">Details</button></td>
+                  </tr>
+                  <tr>
+                    <td>Mateo Alvarez</td>
+                    <td>DevOps Lead</td>
+                    <td><span class="badge">89%</span></td>
+                    <td><span class="chip">Shortlist</span></td>
+                    <td><button class="btn btn-ghost">Kontakt</button></td>
+                  </tr>
+                  <tr>
+                    <td>Hannah Fischer</td>
+                    <td>Product Designer</td>
+                    <td><span class="badge">84%</span></td>
+                    <td><span class="chip">Review</span></td>
+                    <td><button class="btn btn-ghost">Teilen</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card__header">
+              <h3 class="card__title">Pipeline-Übersicht</h3>
+              <a class="text-sm" href="#">Pipeline anpassen</a>
+            </div>
+            <div class="grid grid--3">
+              <div>
+                <p class="muted text-sm">Neu</p>
+                <h3>24</h3>
+              </div>
+              <div>
+                <p class="muted text-sm">Review</p>
+                <h3>18</h3>
+              </div>
+              <div>
+                <p class="muted text-sm">Interviews</p>
+                <h3>11</h3>
+              </div>
+              <div>
+                <p class="muted text-sm">Angebot</p>
+                <h3>3</h3>
+              </div>
+              <div>
+                <p class="muted text-sm">Eingestellt</p>
+                <h3>1</h3>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <aside class="grid" style="gap: 1.5rem;">
+          <article class="card">
+            <div class="card__header">
+              <h3 class="card__title">Schnellaktionen</h3>
+            </div>
+            <button class="btn btn-primary">Neue Rolle anlegen</button>
+            <button class="btn btn-secondary">Talentpool importieren</button>
+            <button class="btn btn-secondary">Interview-Feedback anfordern</button>
+          </article>
+
+          <article class="card">
+            <div class="card__header">
+              <h3 class="card__title">Team-Notizen</h3>
+              <a class="text-sm" href="#">Alle Notizen</a>
+            </div>
+            <ul class="muted text-sm" style="display: grid; gap: 0.75rem;">
+              <li><strong>Julia</strong>: Bitte Lina Schneider priorisieren – starke Frontend-Kandidatin.</li>
+              <li><strong>Karim</strong>: Reminder: DevOps-Rolle diese Woche closen.</li>
+              <li><strong>Alex</strong>: Nächste Hiring-Runde im Board posten.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card__header">
+              <h3 class="card__title">Recruiting Insights</h3>
+              <a class="text-sm" href="#">Report öffnen</a>
+            </div>
+            <ul class="muted text-sm" style="display: grid; gap: 0.75rem;">
+              <li><strong>Time-to-Hire</strong> aktuell 28 Tage (Ziel: 30).</li>
+              <li><strong>Quellen</strong>: 45% Direct, 35% Empfehlung, 20% Active Sourcing.</li>
+              <li><strong>Konvertierung</strong>: 68% aus Review → Interview.</li>
+            </ul>
+          </article>
+        </aside>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="site-footer__bottom">
+        <span>Benötigst du Unterstützung? Kontaktiere support@worksphere.com</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
