@@ -1,33 +1,47 @@
-# WorkSphere – Responsive Jobplattform UI
+# Auri – Entwickler & Musikproduzent Portfolio
 
-WorkSphere ist ein responsives HTML/CSS-Frontend für eine moderne Jobplattform, die Arbeitssuchende und Unternehmen miteinander vernetzt. Die Templates sind vollständig statisch und dienen als Grundlage für eine spätere Backend-Integration.
+Modernes, dunkles Portfolio für den jungen Entwickler und Musikproduzenten **Auri**. Die Seite ist als Single-Page-Application mit Vite, React und SCSS umgesetzt und deckt Hero-, Über-mich-, Projekt- und Kontaktsektionen ab.
 
-## Seitenüberblick
-- `index.html` – Landing Page mit Hero, Feature-Highlights und Call-to-Actions für Talente & Firmen.
-- `auth.html` – Login-/Registrierungsseite mit Formularen für Talente und Unternehmen.
-- `candidate-dashboard.html` – Dashboard-Layout für Arbeitssuchende (Profil, Skills, Erfahrung, KI-Bewerbungen, Bewerbungsstatus).
-- `employer-dashboard.html` – Dashboard-Layout für Unternehmen (Profilübersicht, Filter, Kandidatenlisten, Pipeline, Teamnotizen).
-- `styles.css` – Gemeinsames, mobile-first Stylesheet mit Flex/Grid-Layouts, Komponenten und Media Queries.
+## Highlights
+- Glasartiges Dark-Theme mit Akzenten in Cyan (`#00E5FF`) und Lila (`#8E2DE2`).
+- Sanfte Ladeanimation, Fade-in-Effekte beim Scrollen und dezente Parallax-Bewegung.
+- Responsives Grid für Projekte (3–6 Karten) mit Hover-Effekten und Tech-Stacks.
+- Minimalistisches Kontaktformular inklusive Social Links (Discord, GitHub, SoundCloud).
+- SEO-Meta-Tags, Open-Graph-Vorschaubild, Smooth Scrolling und `prefers-reduced-motion`-Support.
 
-## Features
-- Mobile-first Design mit klaren Breakpoints für Tablets und Desktop.
-- Sektionen & Komponenten (Hero, Karten, Tabellen, Filter, Toggles) lassen sich direkt mit Backend-Daten füllen.
-- Freundliche, vertrauenswürdige Farbpalette (Blau/Weiß mit Akzent Orange).
-- Eingebundene Icons via Font Awesome und Systemschrift „Inter“ für moderne Typografie.
-- Kommentierte Markup-Bereiche für zukünftige API- oder Formular-Endpunkte.
+## Projektstruktur
+- `index.html` – Einstiegspunkt mit Meta-Tags, Google Fonts und Mount-Element.
+- `vite.config.js` – Vite-Konfiguration für React.
+- `src/App.jsx` – Hauptkomponente mit allen Sektionen.
+- `src/styles/main.scss` – Globale Styles, Variablen, Animationen & Responsiveness.
+- `src/data/projects.js` – Projektdaten samt Assets.
+- `src/hooks/` – Custom-Hooks für Scroll-Reveal und Parallax.
+- `src/assets/` – SVG-Mockups der Projekte.
+- `public/favicon.svg` – Favicon im Neon-Stil.
 
-## Verwendung
-1. Projekt klonen oder Dateien lokal speichern.
-2. Öffne eine der HTML-Dateien direkt im Browser (z. B. per Doppelklick auf `index.html`).
-3. Navigiere über die Links im Header zwischen den Seiten.
+## Schnellstart
+```powershell
+git clone https://github.com/willube/willube.github.io.git
+cd willube.github.io
+npm install
+npm run dev
+```
 
-> Optional: Für eine lokale Entwicklung mit Live-Reload kann ein beliebiger Static-Server genutzt werden (z. B. `npx serve` oder die Live-Server-Erweiterung in VS Code).
+Danach ist die Seite standardmäßig unter <http://localhost:5173> erreichbar.
 
-## Weiterentwicklung
-- Ersetze Platzhaltertexte durch echte API-Daten.
-- Verbinde die Formulare (`auth.html`) mit deinen Auth-Endpunkten.
-- Ergänze JavaScript-Logik für dynamische Filter, Dashboard-Widgets oder Websocket-Updates.
-- Integriere ein Build-Setup (z. B. Vite) falls Komponenten modularisiert werden sollen.
+## Produktion bauen
+```powershell
+npm run build
+npm run preview
+```
+
+`npm run build` erzeugt das optimierte Bundle in `dist/`. `npm run preview` dient zum Smoke-Test der Produktion.
+
+## Anpassungen & Erweiterungen
+- Passe die Texte in `App.jsx` an Auris echte Vita an.
+- Ergänze eigene Projekt-Screenshots (`src/assets/`) oder binde externe Bilder ein.
+- Verknüpfe das Formular mit einem Mail-/Form-Service deiner Wahl (z. B. Formspree, Netlify Forms).
+- Ergänze Analytics, weitere Sektionen (Blog, Services) oder Internationalisierung.
 
 ---
-© 2025 WorkSphere Prototype. Alle Rechte vorbehalten.
+© 2025 Auri Studio. Crafted with Heart & Future Nostalgia.

@@ -1,0 +1,11 @@
+<svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">Auri Favicon</title>
+  <defs>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5FF" />
+      <stop offset="100%" stop-color="#8E2DE2" />
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="28" fill="#050810" />
+  <path d="M48 18 L72 68 H60.6 L53.2 53.6 H42.6 L36 68 H24.2 L40.6 33.2 L48 18 Z M45.2 44.4 H50.4 L47.8 38.6 L45.2 44.4 Z" fill="url(#accent)" />
+</svg>

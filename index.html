@@ -1,263 +1,30 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JobUs – Jobplattform für Talente & Unternehmen</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-oz4h2nK0O+kO5RAwOB1p5MNDoAuCEi0aKBslZx2drXr/7EQo1gChX2NDVY5QZnQEqplLWYwgdENYBzZ5zQYkZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="./styles.css" />
-</head>
-<body>
-  <header class="site-header">
-    <div class="container">
-      <div class="navbar">
-        <a class="navbar__brand" href="/">
-          <span class="badge"><i class="fa-solid fa-briefcase"></i></span>
-          JubUs
-        </a>
-        <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav">
-          <span class="visually-hidden">Menü öffnen</span>
-          <i class="fa-solid fa-bars"></i>
-        </button>
-        <nav class="navbar__menu" aria-label="Hauptnavigation">
-          <a href="#features">Features</a>
-          <a href="#talents">Für Talente</a>
-          <a href="#companies">Für Unternehmen</a>
-          <a href="#cta">Preise</a>
-        </nav>
-        <div class="navbar__actions">
-          <a class="btn btn-ghost" href="./auth.html">Login</a>
-          <a class="btn btn-primary" href="./auth.html#signup">Profil erstellen</a>
-        </div>
-      </div>
-      <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile Navigation">
-        <a href="#features">Features</a>
-        <a href="#talents">Für Talente</a>
-        <a href="#companies">Für Unternehmen</a>
-        <a href="#cta">Preise</a>
-        <div class="navbar__actions">
-          <a class="btn btn-secondary" href="./auth.html">Login</a>
-          <a class="btn btn-primary" href="./auth.html#signup">Profil erstellen</a>
-        </div>
-      </nav>
-    </div>
-  </header>
+<!doctype html>
+<html lang="de" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auri | Entwickler & Musikproduzent</title>
+    <meta name="description" content="Portfolio von Auri – Webdeveloper, Music Producer und Security-Enthusiast." />
+    <meta name="keywords" content="Portfolio, Webdeveloper, Music Producer, Auri, React, Tailwind, Roblox, Security" />
+    <meta name="author" content="GitHub Copilot" />
+  <meta name="theme-color" content="#050810" />
 
-  <main>
-    <section class="hero">
-      <div class="container hero__grid">
-        <div>
-          <p class="badge">Neue Chancen für Talente & Teams</p>
-          <h1 class="hero__headline">Finde die Talente, die wirklich zu deinem Team passen.</h1>
-          <p class="hero__copy">WorkSphere unterstützt Recruiting-Teams mit KI-gestützter Kandidatensuche, kuratierten Talentpools und klaren Insights für schnellere Einstellungen.</p>
-          <div class="hero__cta-group">
-            <a class="btn btn-primary" href="./auth.html#signup">Unternehmen registrieren</a>
-            <a class="btn btn-secondary" href="#features">Mehr erfahren</a>
-          </div>
-          <div class="hero__stats">
-            <div class="stat">
-              <div class="stat__value">12k+</div>
-              <div class="stat__label">Aktive Talente</div>
-            </div>
-            <div class="stat">
-              <div class="stat__value">2.5k</div>
-              <div class="stat__label">Unternehmen weltweit</div>
-            </div>
-            <div class="stat">
-              <div class="stat__value">94%</div>
-              <div class="stat__label">Match-Rate nach 14 Tagen</div>
-            </div>
-            <div class="stat">
-              <div class="stat__value">48h</div>
-              <div class="stat__label">Ø Zeit bis zur ersten Antwort</div>
-            </div>
-          </div>
-        </div>
-        <div class="hero__visual" aria-hidden="true">
-          <div class="hero__card">
-            <div>
-              <p class="muted text-sm">Live Matches</p>
-              <h3>Frontend Engineer · Berlin</h3>
-              <p class="muted">TechFlow GmbH bietet flexible Hybrid-Modelle.</p>
-              <div class="chip">€65k-80k</div>
-            </div>
-            <div>
-              <p class="muted text-sm">Neu für dich</p>
-              <h3>People & Culture Manager</h3>
-              <p class="muted">Human-first Führung, Remote möglich.</p>
-              <div class="chip">Senior</div>
-            </div>
-            <div class="hero__floating">
-              <i class="fa-solid fa-rocket"></i>
-              <div>
-                <p class="mb-0 text-xs">KI-Bewerbung aktiv</p>
-                <p class="mb-0 text-sm">2 Bewerbungen automatisch versendet</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <meta property="og:title" content="Auri | Entwickler & Musikproduzent" />
+    <meta property="og:description" content="Hallo, ich bin Auri – Entwickler, Musikproduzent und Security-Enthusiast." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://willube.github.io" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80" />
 
-    <section id="features" class="section">
-      <div class="container">
-        <div class="text-center">
-          <p class="badge">Warum WorkSphere?</p>
-          <h2>Eine Plattform – zwei Perspektiven</h2>
-          <p class="muted">Wir bringen Talente und Unternehmen effizienter zusammen und sparen Zeit in jedem Schritt.</p>
-        </div>
-        <div class="grid grid--3 mt-4">
-          <article class="feature-card">
-            <span class="feature-card__icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-            <h3>Intelligente Suche</h3>
-            <p class="muted">Finde passende Stellenangebote und Bewerber dank smarter Filter und KI-Matching.</p>
-          </article>
-          <article class="feature-card">
-            <span class="feature-card__icon"><i class="fa-solid fa-bolt"></i></span>
-            <h3>KI-Bewerbungen</h3>
-            <p class="muted">Aktiviere automatische Bewerbungen, die dein Profil mit echten Insights hervorheben.</p>
-          </article>
-          <article class="feature-card">
-            <span class="feature-card__icon"><i class="fa-solid fa-chart-line"></i></span>
-            <h3>Transparente Insights</h3>
-            <p class="muted">Analysen zeigen dir, wie viele Treffer, Antworten und Interviews du generierst.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="talents" class="section section--alt">
-      <div class="container grid grid--2">
-        <div class="card">
-          <div class="card__header">
-            <h3 class="card__title">Für Arbeitssuchende</h3>
-            <span class="tag">Kostenlos starten</span>
-          </div>
-          <ul class="muted">
-            <li>⚡ Kuratiertes Dashboard mit Skill-Highlights</li>
-            <li>🧠 KI-gestützter Lebenslauf-Check</li>
-            <li>📬 Automatisierte oder manuelle Bewerbungen</li>
-            <li>📊 Tracking für Antworten & Interviews</li>
-          </ul>
-          <a class="btn btn-primary" href="./auth.html#signup">Jetzt Profil erstellen</a>
-        </div>
-        <div class="card">
-          <h3 class="card__title">So funktioniert's</h3>
-          <ol class="muted">
-            <li>Profil inklusive Skills & Erfahrung anlegen</li>
-            <li>KI-Bewerbung aktivieren und Prioritäten festlegen</li>
-            <li>Feedback & Matches in Echtzeit verfolgen</li>
-          </ol>
-        </div>
-      </div>
-    </section>
-
-    <section id="companies" class="section">
-      <div class="container grid grid--2">
-        <div class="card card--highlight">
-          <div class="card__header">
-            <h3 class="card__title">Für Unternehmen</h3>
-            <span class="tag">14 Tage testen</span>
-          </div>
-          <ul class="muted">
-            <li>🧑‍💼 Vollständige Talentprofile mit Verfügbarkeiten</li>
-            <li>🔍 Multi-Filter (Skills, Standort, Seniorität)</li>
-            <li>🤝 Team-Accounts & Kollaboration</li>
-            <li>📈 Analytics zu Kampagnen & Hiring-Funnel</li>
-          </ul>
-          <a class="btn btn-secondary" href="./auth.html#signup">Test starten</a>
-        </div>
-        <div class="card">
-          <h3 class="card__title">Schneller zum Match</h3>
-          <p class="muted">Unsere Employer-Dashboards bündeln Bewerbungen, Talentpools und Bewerbungsstadien. Erstelle personalisierte Suchfilter, speichere Kandidatenlisten und lade Recruiting-Kolleg:innen zur gemeinsamen Bewertung ein.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--alt" id="cta">
-      <div class="container text-center">
-        <p class="badge">Bereit für den nächsten Schritt?</p>
-        <h2>Starte heute – individuelle Pakete für Teams jeder Größe</h2>
-        <p class="muted">WorkSphere passt sich deinem Wachstum an: vom Solo-Recruiter bis zur globalen Talentorganisation.</p>
-        <div class="hero__cta-group text-center" style="justify-content: center;">
-          <a class="btn btn-primary" href="./auth.html#signup">Profil erstellen</a>
-          <a class="btn btn-accent" href="mailto:sales@worksphere.com">Demo anfragen</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <div class="site-footer__top">
-        <div class="site-footer__brand">
-          <a class="navbar__brand" href="/" aria-label="WorkSphere Startseite">
-            <span class="badge"><i class="fa-solid fa-briefcase"></i></span>
-            WorkSphere
-          </a>
-          <p class="muted">Die Jobplattform für smarte Teams und ambitionierte Talente.</p>
-        </div>
-        <div class="site-footer__cols">
-          <div>
-            <h4>Produkte</h4>
-            <ul class="text-sm" aria-label="Produktlinks">
-              <li><a href="./candidate-dashboard.html">Dashboard Talente</a></li>
-              <li><a href="./employer-dashboard.html">Dashboard Unternehmen</a></li>
-              <li><a href="#">Preisübersicht</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Ressourcen</h4>
-            <ul class="text-sm" aria-label="Ressourcenlinks">
-              <li><a href="#">Support</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Datenschutz</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Kontakt</h4>
-            <ul class="text-sm" aria-label="Kontaktlinks">
-              <li><a href="mailto:hello@worksphere.com">hello@worksphere.com</a></li>
-              <li><a href="tel:+49301234567">+49 30 1234 567</a></li>
-              <li>Berlin · Remote First</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="site-footer__bottom">
-        <span>© <span id="year">2025</span> WorkSphere. Alle Rechte vorbehalten.</span>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Optional: Hook für Backend-Integration, z. B. zum Steuern des mobilen Menüs -->
-  <script>
-    const toggleButton = document.querySelector('.mobile-menu-toggle');
-    const mobileNav = document.getElementById('mobile-nav');
-
-    if (toggleButton && mobileNav) {
-      toggleButton.addEventListener('click', () => {
-        const expanded = toggleButton.getAttribute('aria-expanded') === 'true';
-        toggleButton.setAttribute('aria-expanded', String(!expanded));
-        mobileNav.style.display = expanded ? 'none' : 'flex';
-      });
-
-      const desktopQuery = window.matchMedia('(min-width: 1024px)');
-      desktopQuery.addEventListener('change', (event) => {
-        if (event.matches) {
-          toggleButton.setAttribute('aria-expanded', 'false');
-          mobileNav.style.display = 'none';
-        }
-      });
-    }
-
-    const yearElement = document.getElementById('year');
-    if (yearElement) {
-      yearElement.textContent = new Date().getFullYear();
-    }
-  </script>
-</body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="font-sans bg-slate-950 text-slate-100">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
