@@ -1,0 +1,27 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Roblox Procedural World</title>
+  <desc id="desc">Stylised render of a Roblox world with neon accents</desc>
+  <defs>
+    <linearGradient id="roblox-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#121b2f" />
+      <stop offset="100%" stop-color="#060912" />
+    </linearGradient>
+    <linearGradient id="roblox-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8E2DE2" />
+      <stop offset="100%" stop-color="#00E5FF" />
+    </linearGradient>
+  </defs>
+  <rect fill="url(#roblox-bg)" width="800" height="600" rx="44" />
+  <rect x="100" y="360" width="600" height="140" rx="36" fill="rgba(0,0,0,0.45)" />
+  <rect x="140" y="330" width="520" height="140" rx="32" fill="rgba(255,255,255,0.06)" stroke="rgba(0,229,255,0.28)" />
+  <path d="M160 390 L240 280 L320 420 L400 310 L480 430 L560 300 L640 410" fill="none" stroke="url(#roblox-accent)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+  <g opacity="0.8">
+    <rect x="190" y="200" width="120" height="140" rx="18" fill="rgba(142,45,226,0.55)" />
+    <rect x="330" y="160" width="140" height="180" rx="22" fill="rgba(0,229,255,0.42)" />
+    <rect x="490" y="220" width="140" height="120" rx="20" fill="rgba(255,255,255,0.08)" stroke="rgba(0,229,255,0.4)" />
+  </g>
+  <rect x="210" y="460" width="160" height="16" rx="8" fill="#8E2DE2" opacity="0.65" />
+  <rect x="400" y="460" width="190" height="16" rx="8" fill="#00E5FF" opacity="0.65" />
+  <rect x="140" y="520" width="520" height="40" rx="20" fill="rgba(255,255,255,0.08)" />
+  <rect x="180" y="528" width="160" height="24" rx="12" fill="url(#roblox-accent)" opacity="0.75" />
+</svg>
