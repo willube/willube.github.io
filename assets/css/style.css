@@ -326,9 +326,9 @@ body::before {
     z-index: 1;
     inset: 0;
     border-radius: 28px;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.32), rgba(3, 6, 20, 0.6)),
-        url("../img/auri-portrait.jpg") center/cover;
-    filter: saturate(1.05) contrast(1.06);
+    background: radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.48), rgba(5, 7, 18, 0.45)),
+        url("https://ibb.co/TBh7ZmFq") center/cover;
+    filter: saturate(1.08) contrast(1.03);
 }
 
 .section {
