@@ -326,9 +326,9 @@ body::before {
     z-index: 1;
     inset: 0;
     border-radius: 28px;
-    background: radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.48), rgba(5, 7, 18, 0.45)),
-        url("https://ibb.co/TBh7ZmFq") center/cover;
-    filter: saturate(1.08) contrast(1.03);
+    background: radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.42), rgba(5, 7, 18, 0.5)),
+    url("https://i.ibb.co/7JyZH26N/0de6477d75b03793b2b3910b00b2d045.jpg") center/cover;
+    filter: saturate(1.08) contrast(1.04);
 }
 
 .section {
