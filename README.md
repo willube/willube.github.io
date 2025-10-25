@@ -1,47 +1,44 @@
-# Auri – Entwickler & Musikproduzent Portfolio
+# Willube · Animated Bio Page
 
-Modernes, dunkles Portfolio für den jungen Entwickler und Musikproduzenten **Auri**. Die Seite ist als Single-Page-Application mit Vite, React und SCSS umgesetzt und deckt Hero-, Über-mich-, Projekt- und Kontaktsektionen ab.
+A modern, animation-rich biography page built with semantic HTML, expressive CSS, and lightweight JavaScript interactions.
 
-## Highlights
-- Glasartiges Dark-Theme mit Akzenten in Cyan (`#00E5FF`) und Lila (`#8E2DE2`).
-- Sanfte Ladeanimation, Fade-in-Effekte beim Scrollen und dezente Parallax-Bewegung.
-- Responsives Grid für Projekte (3–6 Karten) mit Hover-Effekten und Tech-Stacks.
-- Minimalistisches Kontaktformular inklusive Social Links (Discord, GitHub, SoundCloud).
-- SEO-Meta-Tags, Open-Graph-Vorschaubild, Smooth Scrolling und `prefers-reduced-motion`-Support.
+## ✨ Highlights
 
-## Projektstruktur
-- `index.html` – Einstiegspunkt mit Meta-Tags, Google Fonts und Mount-Element.
-- `vite.config.js` – Vite-Konfiguration für React.
-- `src/App.jsx` – Hauptkomponente mit allen Sektionen.
-- `src/styles/main.scss` – Globale Styles, Variablen, Animationen & Responsiveness.
-- `src/data/projects.js` – Projektdaten samt Assets.
-- `src/hooks/` – Custom-Hooks für Scroll-Reveal und Parallax.
-- `src/assets/` – SVG-Mockups der Projekte.
-- `public/favicon.svg` – Favicon im Neon-Stil.
+- Fluid gradients, glassmorphism-inspired cards, and floating ambient blobs for a cinematic backdrop.
+- Intersection Observer powered reveal animations that respect `prefers-reduced-motion` settings.
+- Responsive navigation with a touch-friendly toggle and smooth section reveals.
+- Modular structure with dedicated folders for styles and scripts.
 
-## Schnellstart
-```powershell
-git clone https://github.com/willube/willube.github.io.git
-cd willube.github.io
-npm install
-npm run dev
+## 📂 Project Structure
+
+```
+index.html
+assets/
+  css/
+    style.css
+  js/
+    main.js
 ```
 
-Danach ist die Seite standardmäßig unter <http://localhost:5173> erreichbar.
+## 🚀 Getting Started
 
-## Produktion bauen
+Open `index.html` in your preferred browser. No build step is required.
+
+For local development with live reload, you can use any static server. Example (PowerShell):
+
 ```powershell
-npm run build
-npm run preview
+npx serve .
 ```
 
-`npm run build` erzeugt das optimierte Bundle in `dist/`. `npm run preview` dient zum Smoke-Test der Produktion.
+## 🛠 Customization Tips
 
-## Anpassungen & Erweiterungen
-- Passe die Texte in `App.jsx` an Auris echte Vita an.
-- Ergänze eigene Projekt-Screenshots (`src/assets/`) oder binde externe Bilder ein.
-- Verknüpfe das Formular mit einem Mail-/Form-Service deiner Wahl (z. B. Formspree, Netlify Forms).
-- Ergänze Analytics, weitere Sektionen (Blog, Services) oder Internationalisierung.
+- Update the biography copy, timeline entries, and project spotlights directly in `index.html`.
+- Swap the portrait background image inside the `.portrait` class in `assets/css/style.css`.
+- Adjust animation timings and delays via the CSS custom properties and `data-delay` attributes on elements with the `reveal` class.
+
+## ♿ Accessibility & Motion
+
+Animations pause and elements remain visible when visitors prefer reduced motion, honoring operating-system accessibility preferences.
 
 ---
-© 2025 Auri Studio. Crafted with Heart & Future Nostalgia.
+Crafted with curiosity and ready for your personal touch.

@@ -1,30 +1,253 @@
-<!doctype html>
-<html lang="de" class="dark">
-  <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aury | Entwickler & Musikproduzent</title>
-    <meta name="description" content="Portfolio von Auri – Webdeveloper, Music Producer und Security-Enthusiast." />
-    <meta name="keywords" content="Portfolio, Webdeveloper, Music Producer, Auri, React, Tailwind, Roblox, Security" />
-    <meta name="author" content="Aury" />
-  <meta name="theme-color" content="#050810" />
-
-    <meta property="og:title" content="Auri | Entwickler & Musikproduzent" />
-    <meta property="og:description" content="Hallo, ich bin Auri – Entwickler, Musikproduzent und Security-Enthusiast." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://willube.github.io" />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80" />
-
+    <meta name="description" content="Modern animated biography page for showcasing Willube's story, skills, and contact details." />
+    <title>Willube · Bio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body class="font-sans bg-slate-950 text-slate-100">
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="backdrop">
+        <span class="blob blob-one"></span>
+        <span class="blob blob-two"></span>
+        <span class="blob blob-three"></span>
+    </div>
+
+    <header class="site-header">
+        <div class="container">
+            <div class="brand">
+                <span class="brand__logo" aria-hidden="true">W</span>
+                <span class="brand__name">Willube</span>
+            </div>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="#about">About</a>
+                <a href="#timeline">Journey</a>
+                <a href="#skills">Skills</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <button class="nav-toggle" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="top">
+            <div class="container hero__content">
+                <div class="hero__text reveal" data-delay="0">
+                    <p class="eyebrow">Biography</p>
+                    <h1>
+                        Hello, I'm <span class="gradient-text">Willube</span><br />
+                        a creative explorer of the digital world.
+                    </h1>
+                    <p class="lead">
+                        I turn curiosity into craft, experimenting with design, code, and storytelling to build immersive experiences that feel alive.
+                    </p>
+                    <div class="hero__actions">
+                        <a class="btn primary" href="#contact">Let's collaborate</a>
+                        <a class="btn ghost" href="#timeline">See my journey</a>
+                    </div>
+                </div>
+                <div class="hero__portrait reveal" data-delay="150">
+                    <div class="portrait-frame">
+                        <div class="portrait-glow"></div>
+                        <div class="portrait"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator" role="presentation">
+                <span class="scroll-indicator__mouse">
+                    <span class="scroll-indicator__wheel"></span>
+                </span>
+                <span class="scroll-indicator__label">Scroll</span>
+            </div>
+        </section>
+
+        <section class="section about" id="about">
+            <div class="container grid-2">
+                <div class="reveal" data-delay="0">
+                    <h2 class="section__title">Crafting stories with movement.</h2>
+                    <p>
+                        From interactive installations to narrative-driven web experiences, I love building moments that surprise and delight.
+                        I blend visual storytelling with technical experimentation, constantly looking for new ways to blur the line between art and technology.
+                    </p>
+                    <p>
+                        My work is shaped by diverse collaborations across music, film, and education. Each project sharpens the way I think about empathy, accessibility,
+                        and the emotional rhythm of a digital experience.
+                    </p>
+                </div>
+                <div class="about__cards reveal" data-delay="120">
+                    <article class="card">
+                        <h3>Values</h3>
+                        <ul>
+                            <li>Curiosity-first thinking</li>
+                            <li>Inclusive, accessible design</li>
+                            <li>Iterate with intention</li>
+                        </ul>
+                    </article>
+                    <article class="card">
+                        <h3>Focus Areas</h3>
+                        <ul>
+                            <li>Immersive web & storytelling</li>
+                            <li>Motion design systems</li>
+                            <li>Creative coding workshops</li>
+                        </ul>
+                    </article>
+                    <article class="card">
+                        <h3>Currently Exploring</h3>
+                        <ul>
+                            <li>WebGL generative worlds</li>
+                            <li>Haptics for web experiences</li>
+                            <li>Adaptive narrative AI</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section timeline" id="timeline">
+            <div class="container">
+                <h2 class="section__title reveal" data-delay="0">Journey so far</h2>
+                <div class="timeline__wrapper">
+                    <div class="timeline__line" aria-hidden="true"></div>
+                    <article class="timeline__item reveal" data-delay="0">
+                        <span class="timeline__year">2025</span>
+                        <h3>Leading immersive brand moments</h3>
+                        <p>
+                            Designing narrative-driven experiences for forward-thinking brands, weaving motion, sound, and interaction into cohesive stories.
+                        </p>
+                    </article>
+                    <article class="timeline__item reveal" data-delay="120">
+                        <span class="timeline__year">2023</span>
+                        <h3>Creative technologist at Studio Flux</h3>
+                        <p>
+                            Brought experimental prototypes to life across web and XR, facilitating workshops to teach artists how to code their own ideas.
+                        </p>
+                    </article>
+                    <article class="timeline__item reveal" data-delay="240">
+                        <span class="timeline__year">2021</span>
+                        <h3>Independent digital storyteller</h3>
+                        <p>
+                            Collaborated with musicians and filmmakers to craft interactive releases and digital stages that responded to live performances.
+                        </p>
+                    </article>
+                    <article class="timeline__item reveal" data-delay="360">
+                        <span class="timeline__year">2019</span>
+                        <h3>Graduated with a BFA in New Media</h3>
+                        <p>
+                            Studied the intersection of design, code, and narrative, focusing on how motion influences emotional resonance.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section skills" id="skills">
+            <div class="container">
+                <div class="section__header reveal" data-delay="0">
+                    <h2 class="section__title">Tools & superpowers</h2>
+                    <p>Highlights of my toolkit for building immersive experiences.</p>
+                </div>
+                <div class="skills__grid">
+                    <article class="skill-card reveal" data-delay="0">
+                        <h3>Experience Design</h3>
+                        <p>Journey mapping, storyboarding, motion systems, accessibility reviews.</p>
+                        <ul>
+                            <li>Figma & FigJam</li>
+                            <li>After Effects</li>
+                            <li>Principle</li>
+                        </ul>
+                    </article>
+                    <article class="skill-card reveal" data-delay="120">
+                        <h3>Creative Coding</h3>
+                        <p>Generative visuals, rapid prototyping, interactive installations.</p>
+                        <ul>
+                            <li>Three.js / WebGL</li>
+                            <li>p5.js</li>
+                            <li>TouchDesigner</li>
+                        </ul>
+                    </article>
+                    <article class="skill-card reveal" data-delay="240">
+                        <h3>Story-Led Dev</h3>
+                        <p>Responsive front-ends with thoughtful animation and performance.</p>
+                        <ul>
+                            <li>TypeScript</li>
+                            <li>Astro & Next.js</li>
+                            <li>GSAP</li>
+                        </ul>
+                    </article>
+                    <article class="skill-card reveal" data-delay="360">
+                        <h3>Community</h3>
+                        <p>Workshops, mentoring, and open-source contributions to inclusive tech.</p>
+                        <ul>
+                            <li>Creative youth labs</li>
+                            <li>Open-source design kits</li>
+                            <li>Speaker & facilitator</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section spotlight" aria-label="Highlighted projects">
+            <div class="container">
+                <div class="spotlight__grid">
+                    <article class="spotlight__item reveal" data-delay="0">
+                        <h3>Sonar Bloom</h3>
+                        <p>
+                            An interactive audiovisual album release where visitors shaped the soundscape through motion, rendered in real-time WebGL.
+                        </p>
+                        <span class="tag">Featured on CreativeApps</span>
+                    </article>
+                    <article class="spotlight__item reveal" data-delay="120">
+                        <h3>Memory Atlas</h3>
+                        <p>
+                            A collaborative narrative map exploring memories of home, blending typography, photography, and AR overlays.
+                        </p>
+                        <span class="tag">SXSW finalist</span>
+                    </article>
+                    <article class="spotlight__item reveal" data-delay="240">
+                        <h3>Pulsar Sessions</h3>
+                        <p>
+                            Live-streamed performances with reactive stage visuals driven by MIDI and crowd interactions.
+                        </p>
+                        <span class="tag">Award-winning</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section contact" id="contact">
+            <div class="container">
+                <div class="contact__inner reveal" data-delay="0">
+                    <h2 class="section__title">Let's build something memorable</h2>
+                    <p>
+                        I'm currently booking collaborations for 2026. Whether it's a bold campaign, an experimental experience, or a community workshop,
+                        I'd love to hear what you're dreaming up.
+                    </p>
+                    <div class="contact__actions">
+                        <a class="btn primary" href="mailto:hello@willube.com">hello@willube.com</a>
+                        <a class="btn ghost" href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
+                        <a class="btn ghost" href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>© <span id="year"></span> Willube. Crafted with curiosity.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js" defer></script>
+</body>
 </html>
