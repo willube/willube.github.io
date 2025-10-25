@@ -1,6 +1,6 @@
-# Willube · Animated Bio Page
+# Auri · Animated Bio Page
 
-A modern, animation-rich biography page built with semantic HTML, expressive CSS, and lightweight JavaScript interactions.
+A modern, animation-rich biography page for Auri—a 16-year-old music producer & developer from Weimar—built with semantic HTML, expressive CSS, and lightweight JavaScript interactions.
 
 ## ✨ Highlights
 
