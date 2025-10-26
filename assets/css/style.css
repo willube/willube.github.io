@@ -327,7 +327,7 @@ body::before {
     inset: 0;
     border-radius: 28px;
     background: radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.42), rgba(5, 7, 18, 0.5)),
-    url("leck meine eier wenn diese center img nicht funktioniert") center/cover;
+        url("../img/auri-portrait.jpg") center/cover;
     filter: saturate(1.08) contrast(1.04);
 }
 
