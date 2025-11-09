@@ -85,10 +85,26 @@
                             Meine neue Single droppt bald auf Spotify. Hol dir einen ersten Eindruck, hör in die Preview rein
                             und sag mir, wie du die Vibes findest.
                         </p>
-                        <audio class="release__player" controls preload="none">
-                            <source src="assets/js/audio/LILA-FANTA-7.mp3" type="audio/mpeg" />
-                            Dein Browser unterstützt das Audio-Element nicht.
-                        </audio>
+                        <div class="release__player" data-player>
+                            <button class="player__control player__play" type="button" aria-label="Track abspielen">
+                                <span class="player__icon player__icon--play" aria-hidden="true"></span>
+                            </button>
+                            <div class="player__track">
+                                <span class="player__time player__time--current">0:00</span>
+                                <input class="player__seek" type="range" value="0" min="0" max="100" step="0.1" aria-label="Track-Position" disabled />
+                                <span class="player__time player__time--total">0:00</span>
+                            </div>
+                            <div class="player__volume">
+                                <button class="player__control player__mute" type="button" aria-label="Stumm schalten">
+                                    <span class="player__icon player__icon--volume" aria-hidden="true"></span>
+                                </button>
+                                <input class="player__volume-slider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Lautstärke" />
+                            </div>
+                            <audio class="player__audio" preload="metadata">
+                                <source src="assets/js/audio/LILA-FANTA-7%20(mp3cut.net).mp3" type="audio/mpeg" />
+                                Dein Browser unterstützt das Audio-Element nicht.
+                            </audio>
+                        </div>
                     </div>
                 </div>
             </div>
