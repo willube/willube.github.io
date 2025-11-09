@@ -110,14 +110,14 @@ docReady(() => {
             playButton?.classList.toggle("is-playing", isPlaying);
             playButton?.setAttribute(
                 "aria-label",
-                isPlaying ? "Track pausieren" : "Track abspielen",
+                isPlaying ? "Pause track" : "Play track",
             );
         };
 
         const updateMuteState = (volume) => {
             const muted = volume === 0;
             muteButton?.classList.toggle("is-muted", muted);
-            muteButton?.setAttribute("aria-label", muted ? "Stumm aufheben" : "Stumm schalten");
+            muteButton?.setAttribute("aria-label", muted ? "Unmute" : "Mute");
         };
 
         playButton?.addEventListener("click", () => {
