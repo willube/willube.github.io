@@ -985,6 +985,20 @@ body::before {
         flex-wrap: wrap;
     }
 
+    .release__inner {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .release__info p {
+        margin-inline: auto;
+    }
+
+    .release__player {
+        width: min(480px, 100%);
+    }
+
     .timeline__wrapper {
         padding-left: 2rem;
     }
@@ -1020,6 +1034,37 @@ body::before {
     .skills__grid,
     .about__cards {
         grid-template-columns: 1fr;
+    }
+
+    .release__player {
+        grid-template-columns: 1fr;
+        justify-items: stretch;
+        gap: 1.1rem;
+        padding: 1.2rem;
+    }
+
+    .release__player::after {
+        inset: 62% -20% -48% 0;
+    }
+
+    .release__player .player__control {
+        width: 48px;
+        height: 48px;
+        justify-self: center;
+    }
+
+    .player__track {
+        width: 100%;
+    }
+
+    .player__volume {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .player__volume-slider {
+        flex: 1 1 auto;
+        width: 100%;
     }
 
     .contact__actions {
