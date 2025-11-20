@@ -131,6 +131,17 @@ body::before {
     text-transform: uppercase;
 }
 
+.brand__logo {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(140deg, rgba(99, 102, 241, 0.45), rgba(236, 72, 153, 0.45));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(16px);
+}
+
 .site-nav {
     display: flex;
     gap: clamp(1.5rem, 2vw, 2.5rem);
@@ -237,11 +248,69 @@ body::before {
 .btn {
     display: inline-flex;
     align-items: center;
-    .hero__actions {
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.85rem 1.7rem;
     border-radius: 999px;
     font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    color: white;
+    box-shadow: var(--shadow-lg);
+}
+
+.btn.primary:hover,
+.btn.primary:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-xl);
+}
+
+.btn.ghost {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    background: rgba(10, 12, 30, 0.45);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn.ghost:hover,
+.btn.ghost:focus-visible {
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-3px);
+}
+
+.hero__portrait {
+    display: flex;
+    justify-content: center;
+}
+
+.portrait-frame {
+    position: relative;
+    width: clamp(240px, 28vw, 320px);
+    aspect-ratio: 1 / 1.2;
+    border-radius: 40px;
+    background: linear-gradient(150deg, rgba(99, 102, 241, 0.35), rgba(236, 72, 153, 0.35));
+    padding: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    animation: float 8s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-16px);
+    }
+}
 
 .portrait-glow {
     position: absolute;
