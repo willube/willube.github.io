@@ -74,27 +74,19 @@
                         <span class="release__meta">Latest Release</span>
                         <h2 class="section__title">LILA FANTA</h2>
                         <p>
-                            Stream the current single and reach out for licensing, remix, or production inquiries.
+                            Stream the album directly on Spotify and reach out for licensing, remix, or production inquiries.
                         </p>
-                        <div class="release__player" data-player>
-                            <button class="player__control player__play" type="button" aria-label="Play track">
-                                <span class="player__icon player__icon--play" aria-hidden="true"></span>
-                            </button>
-                            <div class="player__track">
-                                <span class="player__time player__time--current">0:00</span>
-                                <input class="player__seek" type="range" value="0" min="0" max="100" step="0.1" aria-label="Track position" disabled />
-                                <span class="player__time player__time--total">0:00</span>
-                            </div>
-                            <div class="player__volume">
-                                <button class="player__control player__mute" type="button" aria-label="Mute">
-                                    <span class="player__icon player__icon--volume" aria-hidden="true"></span>
-                                </button>
-                                <input class="player__volume-slider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume" />
-                            </div>
-                            <audio class="player__audio" preload="metadata">
-                                <source src="assets/js/audio/LILA-FANTA-7%20(mp3cut.net).mp3" type="audio/mpeg" />
-                                Your browser does not support the audio element.
-                            </audio>
+                        <div class="release__embed">
+                            <iframe
+                                title="Spotify album player"
+                                style="border-radius: 12px"
+                                src="https://open.spotify.com/embed/album/59uIX8D3SOCtkVpQPg8YoO?utm_source=generator"
+                                width="100%"
+                                height="352"
+                                frameborder="0"
+                                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                                loading="lazy"
+                            ></iframe>
                         </div>
                     </div>
                 </div>
