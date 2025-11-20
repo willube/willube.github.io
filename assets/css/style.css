@@ -887,6 +887,39 @@ body::before {
     gap: 1rem;
 }
 
+.legal {
+    background: rgba(5, 6, 15, 0.55);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.legal__inner {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 520px;
+}
+
+.legal__inner p {
+    margin: 0;
+}
+
+.legal__meta {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.legal__label {
+    display: inline-block;
+    min-width: 72px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
 .site-footer {
     padding: 2rem 0 3rem;
     text-align: center;
