@@ -131,17 +131,6 @@ body::before {
     text-transform: uppercase;
 }
 
-.brand__logo {
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
-    background: linear-gradient(140deg, rgba(99, 102, 241, 0.45), rgba(236, 72, 153, 0.45));
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(16px);
-}
-
 .site-nav {
     display: flex;
     gap: clamp(1.5rem, 2vw, 2.5rem);
