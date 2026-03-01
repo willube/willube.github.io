@@ -13,7 +13,7 @@
 </head>
 <body>
     <div class="background-bleed"></div>
-    <div class="app-shell">
+    <div id="app-shell" class="app-shell">
         <nav class="server-rail" aria-label="Server">
             <button class="server" aria-label="Home">
                 <span>∞</span>
@@ -155,6 +155,55 @@
                 <button class="pill ghost" type="button" data-close-settings>Schließen</button>
                 <button class="pill" type="button">Speichern</button>
             </footer>
+        </div>
+    </div>
+
+    <div class="auth-modal is-visible" data-auth-modal aria-hidden="false">
+        <div class="auth-overlay"></div>
+        <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+            <header class="auth-header">
+                <div>
+                    <p class="eyebrow">Willkommen bei</p>
+                    <h2 id="auth-title">Sync</h2>
+                    <p class="auth-sub">Bleib verbunden. Organisiere dich. Chatte in Echtzeit.</p>
+                </div>
+            </header>
+            <div class="auth-tabs" role="tablist" aria-label="Auth Tabs">
+                <button class="auth-tab active" data-auth-tab="login" aria-selected="true">Login</button>
+                <button class="auth-tab" data-auth-tab="register" aria-selected="false">Registrieren</button>
+            </div>
+            <div class="auth-body">
+                <form class="auth-form" data-auth-panel="login">
+                    <label>
+                        <span>E-Mail</span>
+                        <input type="email" name="email" required autocomplete="email" />
+                    </label>
+                    <label>
+                        <span>Passwort</span>
+                        <input type="password" name="password" required autocomplete="current-password" />
+                    </label>
+                    <button class="pill" type="submit">Login</button>
+                    <p class="auth-hint">Noch keinen Account? Wechsel auf Registrieren.</p>
+                    <p class="auth-error" data-auth-error></p>
+                </form>
+                <form class="auth-form hidden" data-auth-panel="register">
+                    <label>
+                        <span>Username</span>
+                        <input type="text" name="username" required autocomplete="nickname" />
+                    </label>
+                    <label>
+                        <span>E-Mail</span>
+                        <input type="email" name="email" required autocomplete="email" />
+                    </label>
+                    <label>
+                        <span>Passwort</span>
+                        <input type="password" name="password" required autocomplete="new-password" />
+                    </label>
+                    <button class="pill" type="submit">Account erstellen</button>
+                    <p class="auth-hint">Du hast schon einen Account? Wechsel auf Login.</p>
+                    <p class="auth-error" data-auth-error></p>
+                </form>
+            </div>
         </div>
     </div>
 

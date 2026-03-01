@@ -384,6 +384,117 @@ a:hover {
     animation: pop 260ms ease;
 }
 
+.app-shell.blurred {
+    filter: blur(8px);
+    transition: filter var(--transition);
+}
+
+.auth-modal {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 20;
+}
+
+.auth-modal:not(.is-visible) {
+    display: none;
+}
+
+.auth-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(12px);
+}
+
+.auth-card {
+    position: relative;
+    width: min(520px, 92vw);
+    background: var(--bg-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 24px 24px 18px;
+    z-index: 1;
+    animation: pop 260ms ease;
+}
+
+.auth-header h2 {
+    margin: 6px 0 4px;
+    font-size: 1.8rem;
+    letter-spacing: 0.04em;
+}
+
+.auth-sub {
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.auth-tabs {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.auth-tab {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    color: var(--text-strong);
+    cursor: pointer;
+    transition: background var(--transition), border var(--transition);
+}
+
+.auth-tab.active {
+    background: rgba(88, 101, 242, 0.16);
+    border-color: rgba(88, 101, 242, 0.35);
+}
+
+.auth-body {
+    margin-top: 12px;
+}
+
+.auth-form {
+    display: grid;
+    gap: 12px;
+}
+
+.auth-form label {
+    display: grid;
+    gap: 6px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.auth-form input {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-strong);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    font-size: 1rem;
+}
+
+.auth-hint {
+    margin: 4px 0 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.auth-error {
+    margin: 0;
+    color: var(--danger);
+    min-height: 18px;
+    font-size: 0.9rem;
+}
+
+.hidden {
+    display: none;
+}
+
 .modal-header {
     display: flex;
     align-items: center;

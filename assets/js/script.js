@@ -6,13 +6,61 @@ document.addEventListener("DOMContentLoaded", () => {
     const activeChannelLabel = document.querySelector("[data-active-channel]");
     const composerInput = document.querySelector(".composer input[type='text']");
     const messageList = document.querySelector(".message-list");
+    const appShell = document.getElementById("app-shell");
     const modal = document.querySelector("[data-modal]");
     const modalCard = modal?.querySelector(".modal-card");
     const openModalButtons = document.querySelectorAll("[data-open-settings]");
     const closeModalButtons = document.querySelectorAll("[data-close-settings]");
+    const authModal = document.querySelector("[data-auth-modal]");
+    const authTabs = Array.from(document.querySelectorAll("[data-auth-tab]"));
+    const authPanels = Array.from(document.querySelectorAll("[data-auth-panel]"));
+    const loginForm = document.querySelector("[data-auth-panel='login']");
+    const registerForm = document.querySelector("[data-auth-panel='register']");
 
     const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const usernameFallback = "web-user";
+    let currentUserName = "web-user";
+
+    const showAuthModal = () => {
+        authModal?.classList.add("is-visible");
+        authModal?.setAttribute("aria-hidden", "false");
+        appShell?.classList.add("blurred");
+    };
+
+    const hideAuthModal = () => {
+        authModal?.classList.remove("is-visible");
+        authModal?.setAttribute("aria-hidden", "true");
+        appShell?.classList.remove("blurred");
+    };
+
+    const setUserFromSession = (session) => {
+        const user = session?.user;
+        if (!user) {
+            showAuthModal();
+            return;
+        }
+        const metaName = user.user_metadata?.username;
+        const emailName = user.email ? user.email.split("@")[0] : null;
+        currentUserName = metaName || emailName || "sync-user";
+        hideAuthModal();
+    };
+
+    const handleAuthTabs = () => {
+        authTabs.forEach((tab) => {
+            tab.addEventListener("click", () => {
+                const target = tab.dataset.authTab;
+                authTabs.forEach((t) => {
+                    const isActive = t === tab;
+                    t.classList.toggle("active", isActive);
+                    t.setAttribute("aria-selected", isActive ? "true" : "false");
+                });
+                authPanels.forEach((panel) => {
+                    panel.classList.toggle("hidden", panel.dataset.authPanel !== target);
+                });
+            });
+        });
+    };
+
+    const getErrorField = (form) => form?.querySelector("[data-auth-error]");
 
     const renderMessage = ({ content, username, created_at }) => {
         if (!messageList) return;
@@ -84,13 +132,61 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!composerInput || !supabaseClient) return;
         const content = composerInput.value.trim();
         if (!content) return;
-        const username = usernameFallback;
+        const username = currentUserName || "sync-user";
         const { error } = await supabaseClient.from("messages").insert({ content, username });
         if (error) {
             console.error("Supabase insert error", error);
             return;
         }
         composerInput.value = "";
+    };
+
+    const handleLogin = () => {
+        loginForm?.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (!supabaseClient || !(event.target instanceof HTMLFormElement)) return;
+            const formData = new FormData(event.target);
+            const email = (formData.get("email") || "").toString();
+            const password = (formData.get("password") || "").toString();
+            const errorField = getErrorField(event.target);
+            errorField && (errorField.textContent = "");
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) {
+                errorField && (errorField.textContent = error.message);
+                return;
+            }
+            setUserFromSession(data.session);
+        });
+    };
+
+    const handleRegister = () => {
+        registerForm?.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (!supabaseClient || !(event.target instanceof HTMLFormElement)) return;
+            const formData = new FormData(event.target);
+            const username = (formData.get("username") || "").toString();
+            const email = (formData.get("email") || "").toString();
+            const password = (formData.get("password") || "").toString();
+            const errorField = getErrorField(event.target);
+            errorField && (errorField.textContent = "");
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: { data: { username } },
+            });
+
+            if (error) {
+                errorField && (errorField.textContent = error.message);
+                return;
+            }
+
+            setUserFromSession(data.session);
+            if (!data.session) {
+                errorField && (errorField.textContent = "Bestätige bitte Deine E-Mail, um dich einzuloggen.");
+            }
+        });
     };
 
     const setActiveChannel = (button) => {
@@ -150,6 +246,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (supabaseClient) {
+        handleAuthTabs();
+        handleLogin();
+        handleRegister();
+        supabaseClient.auth.getSession().then(({ data }) => {
+            setUserFromSession(data.session);
+        });
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+                setUserFromSession(session);
+            }
+            if (event === "SIGNED_OUT") {
+                currentUserName = "sync-user";
+                showAuthModal();
+            }
+        });
         void loadMessages();
         subscribeToMessages();
     } else {
