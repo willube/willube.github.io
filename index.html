@@ -1,249 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Portfolio for Auri Loco, a music producer and developer delivering polished recordings and secure digital solutions." />
-    <title>Auri &middot; Bio</title>
+    <meta name="description" content="Discord-ähnliche Chat-Oberfläche als modulares Frontend-Grundgerüst." />
+    <title>Discord Clone · Frontend</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-    <div class="noise"></div>
-    <div class="backdrop">
-        <span class="blob blob-one"></span>
-        <span class="blob blob-two"></span>
-        <span class="blob blob-three"></span>
+    <div class="background-bleed"></div>
+    <div class="app-shell">
+        <nav class="server-rail" aria-label="Server">
+            <button class="server" aria-label="Home">
+                <span>∞</span>
+            </button>
+            <button class="server" aria-label="Auri Labs">
+                <span>AL</span>
+            </button>
+            <button class="server" aria-label="Community">
+                <span>CM</span>
+            </button>
+            <button class="server muted" aria-label="Add Server">
+                <span>+</span>
+            </button>
+        </nav>
+
+        <aside class="channel-panel" aria-label="Channel Liste">
+            <header class="panel-header">
+                <div>
+                    <p class="workspace">Auri Crew</p>
+                    <p class="presence">online · produktiv</p>
+                </div>
+                <div class="panel-actions">
+                    <button class="icon-btn" type="button" aria-label="Suche">
+                        <span class="icon">⌕</span>
+                    </button>
+                    <button class="icon-btn" type="button" data-open-settings aria-label="Einstellungen öffnen">
+                        <span class="icon">⚙</span>
+                    </button>
+                </div>
+            </header>
+
+            <section class="channel-section" aria-label="Textkanäle">
+                <p class="section-label">Text Channels</p>
+                <ul class="channel-list">
+                    <li><button class="channel active" data-channel data-channel-name="general"># general</button></li>
+                    <li><button class="channel" data-channel data-channel-name="launch"># launch</button></li>
+                    <li><button class="channel" data-channel data-channel-name="design"># design</button></li>
+                    <li><button class="channel" data-channel data-channel-name="roadmap"># roadmap</button></li>
+                </ul>
+            </section>
+
+            <section class="channel-section" aria-label="Voicekanäle">
+                <p class="section-label">Voice</p>
+                <ul class="channel-list">
+                    <li><button class="channel" data-channel data-channel-name="lounge">🔊 lounge</button></li>
+                    <li><button class="channel" data-channel data-channel-name="session">🔊 session</button></li>
+                </ul>
+            </section>
+        </aside>
+
+        <main class="chat" aria-label="Chatbereich">
+            <header class="chat-header">
+                <div class="channel-meta">
+                    <h1 class="channel-name" data-active-channel># general</h1>
+                    <p class="channel-topic">Releaseplanung, QA und schnelle Drops.</p>
+                </div>
+                <div class="chat-actions">
+                    <button class="pill" type="button" data-open-settings>Open Settings</button>
+                    <button class="icon-btn" type="button" aria-label="Benachrichtigungen">
+                        <span class="icon">🔔</span>
+                    </button>
+                    <button class="icon-btn" type="button" aria-label="Mehr">
+                        <span class="icon">⋯</span>
+                    </button>
+                </div>
+            </header>
+
+            <section class="message-list" aria-label="Nachrichten">
+                <article class="message">
+                    <div class="avatar">A</div>
+                    <div class="message-body">
+                        <div class="meta">
+                            <span class="author">Auri</span>
+                            <time datetime="2026-03-01T09:00">Heute, 09:00</time>
+                        </div>
+                        <p>Roadmap-Board aktualisiert. Bitte die neuen QA-Checklisten im Launch-Channel pinnen.</p>
+                    </div>
+                </article>
+                <article class="message">
+                    <div class="avatar accent">S</div>
+                    <div class="message-body">
+                        <div class="meta">
+                            <span class="author">Sven</span>
+                            <time datetime="2026-03-01T09:07">Heute, 09:07</time>
+                        </div>
+                        <p>Mockups für den neuen Invite-Flow sind fertig. Feedback welcome → <a href="#">Figma</a>.</p>
+                    </div>
+                </article>
+                <article class="message">
+                    <div class="avatar">N</div>
+                    <div class="message-body">
+                        <div class="meta">
+                            <span class="author">Nora</span>
+                            <time datetime="2026-03-01T09:12">Heute, 09:12</time>
+                        </div>
+                        <p>Deploy-Preview läuft, wir testen den neuen Message-Poller. Bitte auf Latenzen achten.</p>
+                    </div>
+                </article>
+            </section>
+
+            <form class="composer" aria-label="Nachricht schreiben">
+                <div class="composer-inner">
+                    <input type="text" name="message" placeholder="Nachricht an #general" aria-label="Nachricht" />
+                    <div class="composer-actions">
+                        <button class="icon-btn" type="button" aria-label="Emoji">😊</button>
+                        <button class="icon-btn" type="button" aria-label="Upload">📎</button>
+                        <button class="pill" type="submit">Senden</button>
+                    </div>
+                </div>
+            </form>
+        </main>
     </div>
 
-    <header class="site-header">
-        <div class="container">
-            <div class="brand">
-                <span class="brand__name">Auri</span>
+    <div class="settings-modal" data-modal aria-hidden="true">
+        <div class="modal-overlay" data-close-settings aria-hidden="true"></div>
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+            <header class="modal-header">
+                <h2 id="settings-title">Settings</h2>
+                <button class="icon-btn" type="button" data-close-settings aria-label="Schließen">✕</button>
+            </header>
+            <div class="modal-body">
+                <p>Schalte Channels um, ändere Theme-Intensität oder setze Statusmeldungen. Diese Modal-Logik ist modular und leicht erweiterbar.</p>
+                <div class="setting-grid">
+                    <label class="switch">
+                        <input type="checkbox" checked />
+                        <span>Desktop Notifications</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" />
+                        <span>Do Not Disturb</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" checked />
+                        <span>Show Typing Indicator</span>
+                    </label>
+                </div>
             </div>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="#release">Release</a>
-                <a href="#about">About</a>
-                <a href="#timeline">Journey</a>
-                <a href="#contact">Contact</a>
-                <a href="#impressum">Impressum</a>
-            </nav>
-            <button class="nav-toggle" aria-label="Open navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <footer class="modal-footer">
+                <button class="pill ghost" type="button" data-close-settings>Schließen</button>
+                <button class="pill" type="button">Speichern</button>
+            </footer>
         </div>
-    </header>
+    </div>
 
-    <main>
-        <section class="hero" id="top">
-            <div class="container hero__content">
-                <div class="hero__text reveal" data-delay="0">
-                    <p class="eyebrow">Biography</p>
-                    <h1>
-                        Hey, I'm <span class="gradient-text">Auri</span><br />
-                        Music Artist & Developer in Erfurt.
-                    </h1>
-                    <p class="lead">
-                        I produce contemporary pop and hip-hop releases and create secure digital tools for artists and partners.
-                    </p>
-                    <div class="hero__actions">
-                        <a class="btn primary" href="#contact">Email me</a>
-                        <a class="btn ghost" href="#timeline">My journey</a>
-                    </div>
-                </div>
-            </div>
-            <div class="scroll-indicator" role="presentation">
-                <span class="scroll-indicator__mouse">
-                    <span class="scroll-indicator__wheel"></span>
-                </span>
-                <span class="scroll-indicator__label">Scroll</span>
-            </div>
-        </section>
-
-        <section class="section release" id="release">
-            <div class="container">
-                <div class="release__inner">
-                    <div class="release__art reveal" data-delay="0">
-                        <img src="assets/img/album.png" alt="Album cover for Lila Fanta" loading="lazy" />
-                    </div>
-                    <div class="release__info reveal" data-delay="120">
-                        <span class="release__meta">Latest Release</span>
-                        <h2 class="section__title">LILA FANTA</h2>
-                        <p>
-                            Stream the current single and reach out for licensing, remix, or production inquiries.
-                        </p>
-                        <div class="release__player" data-player>
-                            <button class="player__control player__play" type="button" aria-label="Play track">
-                                <span class="player__icon player__icon--play" aria-hidden="true"></span>
-                            </button>
-                            <div class="player__track">
-                                <span class="player__time player__time--current">0:00</span>
-                                <input class="player__seek" type="range" value="0" min="0" max="100" step="0.1" aria-label="Track position" disabled />
-                                <span class="player__time player__time--total">0:00</span>
-                            </div>
-                            <div class="player__volume">
-                                <button class="player__control player__mute" type="button" aria-label="Mute">
-                                    <span class="player__icon player__icon--volume" aria-hidden="true"></span>
-                                </button>
-                                <input class="player__volume-slider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume" />
-                            </div>
-                            <audio class="player__audio" preload="metadata">
-                                <source src="assets/js/audio/LILA-FANTA-7%20(mp3cut.net).mp3" type="audio/mpeg" />
-                                Your browser does not support the audio element.
-                            </audio>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section about" id="about">
-            <div class="container grid-2">
-                <div class="reveal" data-delay="0">
-                    <h2 class="section__title">Studio-led, tech-enabled.</h2>
-                    <p>
-                        I deliver end-to-end music production for artists and brands, from songwriting and vocal direction through to mix preparation and release support.
-                    </p>
-                    <p>
-                        Alongside the studio I advise on secure infrastructure and automation that keeps creative operations dependable and compliant.
-                    </p>
-                </div>
-                <div class="about__cards reveal" data-delay="120">
-                    <article class="card">
-                        <h3>Workflow</h3>
-                        <ul>
-                            <li>Structured pre-production and songwriting sprints</li>
-                            <li>Session versioning with clear deliverables</li>
-                            <li>Transparent project communication</li>
-                        </ul>
-                    </article>
-                    <article class="card">
-                        <h3>Focus Areas</h3>
-                        <ul>
-                            <li>Single and EP production</li>
-                            <li>Artist development and coaching</li>
-                            <li>Audio post for campaigns and events</li>
-                        </ul>
-                    </article>
-                    <article class="card">
-                        <h3>Technical Services</h3>
-                        <ul>
-                            <li>Secure API architecture for creative platforms</li>
-                            <li>Automation of release workflows</li>
-                            <li>Privacy-first data handling strategies</li>
-                        </ul>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section class="section timeline" id="timeline">
-            <div class="container">
-                <h2 class="section__title reveal" data-delay="0">Journey so far</h2>
-                <div class="timeline__wrapper">
-                    <div class="timeline__line" aria-hidden="true"></div>
-                    <article class="timeline__item reveal" data-delay="0">
-                        <span class="timeline__year">2025</span>
-                        <h3>Collaboration security</h3>
-                        <p>
-                            Rolled out authentication frameworks for partner portals so production assets stay protected during review cycles.
-                        </p>
-                    </article>
-                    <article class="timeline__item reveal" data-delay="120">
-                        <span class="timeline__year">2024</span>
-                        <h3>Release-ready productions</h3>
-                        <p>
-                            Led single and EP projects end to end, coordinating vocal production, mix prep, and launch assets for independent artists.
-                        </p>
-                    </article>
-                    <article class="timeline__item reveal" data-delay="240">
-                        <span class="timeline__year">2022</span>
-                        <h3>Workflow engineering</h3>
-                        <p>
-                            Integrated cross-platform tooling to streamline production, backup, and testing pipelines for hybrid creative-technological teams.
-                        </p>
-                    </article>
-                    <article class="timeline__item reveal" data-delay="360">
-                        <span class="timeline__year">2020</span>
-                        <h3>Independent launch</h3>
-                        <p>
-                            Released the first independent production and established a dual focus on music creation and digital product development.
-                        </p>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section class="section spotlight" aria-label="Highlighted projects">
-            <div class="container">
-                <div class="spotlight__grid">
-                    <article class="spotlight__item reveal" data-delay="0">
-                        <h3>Campaign Rework</h3>
-                        <p>
-                            Produced a rights-cleared reinterpretation for a live campaign, delivering arrangement updates, playback stems, and technical documentation.
-                        </p>
-                        <span class="tag">Delivered</span>
-                    </article>
-                    <article class="spotlight__item reveal" data-delay="120">
-                        <h3>Secure Beat API</h3>
-                        <p>
-                            Designed a token-based collaboration service with multi-factor access, audit logging, and automated session expiry.
-                        </p>
-                        <span class="tag">Work in Progress</span>
-                    </article>
-                    <article class="spotlight__item reveal" data-delay="240">
-                        <h3>TweakDash Local</h3>
-                        <p>
-                            Built a local control panel that orchestrates performance profiles, low-latency audio modes, and scheduled backups for studio systems.
-                        </p>
-                        <span class="tag">Beta</span>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section class="section contact" id="contact">
-            <div class="container">
-                <div class="contact__inner reveal" data-delay="0">
-                    <h2 class="section__title">Let's connect beats & builds</h2>
-                    <p>
-                        Open for production mandates, audio post projects, and technical integrations that support artists, agencies, and brands.
-                        Share a short brief and we'll scope the sound and the system behind it.
-                    </p>
-                    <div class="contact__actions">
-                        <a class="btn primary" href="mailto:privataury@gmail.com">privataury@gmail.com</a>
-                        <a class="btn ghost" href="https://github.com/willube" target="_blank" rel="noreferrer">GitHub</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section legal" id="impressum" aria-labelledby="impressum-title">
-            <div class="container legal__inner">
-                <h2 class="section__title" id="impressum-title">Impressum</h2>
-                <p class="legal__meta">Angaben gemäß § 5 TMG</p>
-                <p>
-                    <span class="legal__label">Name:</span>
-                    <span>Aury Loco</span>
-                </p>
-                <p>
-                    <span class="legal__label">E-Mail:</span>
-                    <a href="mailto:auripulina@gmail.com">auripulina@gmail.com</a>
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; <span id="year"></span> Willube. Crafted with curiosity.</p>
-        </div>
-    </footer>
-
-    <script src="assets/js/main.js" defer></script>
+    <script src="assets/js/script.js" defer></script>
 </body>
 </html>
