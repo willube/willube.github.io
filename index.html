@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Screen · Futuristisches Realtime Chat UI" />
-    <title>Screen · Futuristic Chat</title>
+    <meta name="description" content="Screen · Futuristic realtime chat UI" />
+    <title>Screen · Futuristic chat</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -16,117 +16,42 @@
 <body>
     <div class="bg-noise"></div>
     <div class="bg-glow"></div>
-    <div class="app">
-        <aside class="sidebar" aria-label="Server und DMs">
+    <div class="app" data-app>
+        <aside class="sidebar" aria-label="Servers and DMs">
             <div class="sidebar-top">
-                <button class="icon-stack" data-dm aria-label="Direct Messages">
+                <button class="icon-stack" data-dm aria-label="Direct messages">
                     <span class="neon-ring"></span>
                     <span class="dm-badge" data-dm-badge aria-hidden="true"></span>
                     <span class="icon">∞</span>
                 </button>
-                <div class="sidebar-sep"></div>
-                <button class="icon-stack active" data-server="core" aria-label="Core">
-                    <span class="neon-ring"></span>
-                    <span class="icon">SC</span>
-                </button>
-                <button class="icon-stack" data-server="labs" aria-label="Labs">
-                    <span class="neon-ring"></span>
-                    <span class="icon">LX</span>
-                </button>
-                <button class="icon-stack muted" data-server="add" aria-label="Server hinzufügen">
-                    <span class="icon">+</span>
-                </button>
             </div>
             <div class="sidebar-bottom">
-                <button class="profile-chip" aria-label="Profil">
+                <button class="profile-chip" aria-label="Profile">
                     <div class="avatar-sm">AU</div>
                     <div class="status-dot online"></div>
                 </button>
             </div>
         </aside>
 
-        <aside class="channel-bar" aria-label="Channel Leiste">
-            <div class="view" data-view="server">
-                <header class="channel-header">
-                    <div>
-                        <p class="eyebrow">Workspace</p>
-                        <h2>Screen</h2>
-                    </div>
-                    <button class="ghost-btn" aria-label="Suche">⌕</button>
-                </header>
-
-                <section class="channel-group" aria-label="Text Channels">
-                    <p class="label">Text</p>
-                    <ul class="channel-list">
-                        <li><button class="channel is-active" data-channel="quantum-lab"># quantum-lab</button></li>
-                        <li><button class="channel" data-channel="shiproom"># shiproom</button></li>
-                        <li><button class="channel" data-channel="neon-ui"># neon-ui</button></li>
-                        <li><button class="channel" data-channel="ml-sync"># ml-sync</button></li>
-                    </ul>
-                </section>
-
-                <section class="channel-group" aria-label="Voice">
-                    <p class="label">Voice</p>
-                    <ul class="channel-list">
-                        <li><button class="channel" data-channel="control-room">🔊 control-room</button></li>
-                        <li><button class="channel" data-channel="focus-pod">🔊 focus-pod</button></li>
-                    </ul>
-                </section>
-            </div>
-
-            <div class="view is-hidden" data-view="dm">
+        <aside class="channel-bar" aria-label="Channel rail">
+            <div class="view" data-view="dm">
                 <header class="channel-header">
                     <div>
                         <p class="eyebrow">Direct</p>
                         <h2>Friends</h2>
                     </div>
-                    <button class="ghost-btn" aria-label="Friend Search">⌕</button>
+                    <button class="ghost-btn" aria-label="Search friends">⌕</button>
                 </header>
 
-                <section class="channel-group" aria-label="Direct Messages">
+                <section class="channel-group" aria-label="Direct messages">
                     <p class="label">Messages</p>
                     <ul class="dm-list" data-dm-list></ul>
                 </section>
             </div>
         </aside>
 
-        <main class="main" aria-label="Chat Bereich">
-            <div class="view" data-view="server">
-                <header class="main-header">
-                    <div class="title-stack">
-                        <p class="eyebrow">Channel</p>
-                        <div class="title-row">
-                            <h1 data-active-channel># quantum-lab</h1>
-                            <div class="live-pill">
-                                <span class="dot"></span>sync
-                            </div>
-                        </div>
-                        <p class="subline">Realtime Connection</p>
-                    </div>
-                    <div class="header-actions">
-                        <button class="ghost-btn" aria-label="Pin">📌</button>
-                        <button class="ghost-btn" aria-label="Share">↗</button>
-                        <button class="primary-btn" aria-label="Launch Panel">Launch</button>
-                    </div>
-                </header>
-
-                <section class="message-zone" aria-live="polite">
-                    <div class="message-list" data-message-list></div>
-                </section>
-
-                <form class="composer" data-composer aria-label="Nachricht verfassen">
-                    <div class="composer-shell">
-                        <input type="text" name="message" autocomplete="off" placeholder="Impulse to #quantum-lab" />
-                        <div class="composer-actions">
-                            <button type="button" class="ghost-btn" aria-label="Emoji">😊</button>
-                            <button type="button" class="ghost-btn" aria-label="Upload">📎</button>
-                            <button type="submit" class="primary-btn">Senden</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="view is-hidden" data-view="dm">
+        <main class="main" aria-label="Chat area">
+            <div class="view" data-view="dm">
                 <header class="main-header">
                     <div class="title-stack">
                         <p class="eyebrow">Friends</p>
@@ -139,43 +64,12 @@
                         <p class="subline">Futuristic DM dashboard</p>
                     </div>
                     <div class="header-actions">
-                        <button class="primary-btn" type="button">Freund hinzufügen</button>
+                        <button class="primary-btn" type="button" data-open-friend-page>Add friend</button>
                     </div>
                 </header>
 
-                <section class="friends-tabs" role="tablist" aria-label="Friends Tabs">
-                    <button class="tab is-active" data-tab="online" aria-selected="true">Online</button>
-                    <button class="tab" data-tab="all" aria-selected="false">Alle</button>
-                    <button class="tab" data-tab="pending" aria-selected="false">Ausstehend</button>
-                </section>
-
-                <section class="add-friend" aria-label="Freund hinzufügen">
-                    <form class="add-friend-form" data-add-friend>
-                        <input type="text" name="friend-username" placeholder="Username oder Handle" autocomplete="off" />
-                        <button type="submit" class="primary-btn">Anfrage senden</button>
-                    </form>
-                    <p class="add-friend-hint">Public usernames only · keine E-Mail nötig.</p>
-                </section>
-
-                <section class="friends-grid" data-friends-grid>
-                    <div class="friend-card">
-                        <div class="friend-avatar">NO <span class="status-dot online"></span></div>
-                        <div class="friend-meta">
-                            <p class="friend-name">Nora</p>
-                            <p class="friend-sub">design ops</p>
-                        </div>
-                    </div>
-                    <div class="friend-card">
-                        <div class="friend-avatar">SV <span class="status-dot online"></span></div>
-                        <div class="friend-meta">
-                            <p class="friend-name">Sven</p>
-                            <p class="friend-sub">neon ui</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="pending" aria-label="Ausstehende Anfragen">
-                    <h3>Ausstehend</h3>
+                <section class="pending" aria-label="Pending requests">
+                    <h3>Pending</h3>
                     <ul class="pending-list" data-pending-list></ul>
                 </section>
 
@@ -183,18 +77,79 @@
                     <div class="message-list" data-dm-thread></div>
                 </section>
 
-                <form class="composer" data-dm-composer aria-label="DM verfassen">
+                <form class="composer" data-dm-composer aria-label="Compose DM">
                     <div class="composer-shell">
-                        <input type="text" name="dm-message" autocomplete="off" placeholder="Schreibe eine Direktnachricht" />
+                        <input type="text" name="dm-message" autocomplete="off" placeholder="Write a direct message" />
                         <div class="composer-actions">
                             <button type="button" class="ghost-btn" aria-label="Emoji">😊</button>
                             <button type="button" class="ghost-btn" aria-label="Upload">📎</button>
-                            <button type="submit" class="primary-btn">Senden</button>
+                            <button type="submit" class="primary-btn">Send</button>
                         </div>
                     </div>
                 </form>
             </div>
+
+            <div class="view is-hidden" data-view="friend-add">
+                <header class="main-header">
+                    <div class="title-stack">
+                        <p class="eyebrow">Friendship</p>
+                        <div class="title-row">
+                            <h1>Invite a friend</h1>
+                        </div>
+                        <p class="subline">Minimal, zen, neon.</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="ghost-btn" type="button" data-back-to-dm aria-label="Back to DMs">← Back</button>
+                    </div>
+                </header>
+
+                <section class="friend-add-zone" aria-label="Add a friend">
+                    <form class="friend-add-form" data-friend-form>
+                        <input type="text" name="friend-handle" placeholder="Enter username" autocomplete="off" />
+                        <button type="submit" class="primary-btn">Send request</button>
+                    </form>
+                    <p class="friend-add-hint" data-friend-hint>Use the public username. Supabase sender/receiver will handle routing.</p>
+                    <p class="friend-add-error" data-friend-error></p>
+                    <p class="friend-add-success" data-friend-success></p>
+                </section>
+            </div>
         </main>
+    </div>
+
+    <div class="auth-layer is-hidden" data-auth-layer>
+        <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+            <div class="auth-header">
+                <p class="eyebrow">Welcome to Screen</p>
+                <h2 id="auth-title">Login</h2>
+                <p class="auth-sub">Neon chat. Realtime sync.</p>
+            </div>
+            <form class="auth-form" data-auth-form="login">
+                <label>
+                    <span>Email</span>
+                    <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+                </label>
+                <label>
+                    <span>Password</span>
+                    <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+                </label>
+                <button type="submit" class="primary-btn">Login</button>
+                <p class="auth-switch" data-auth-switch data-target="register">No account? Register</p>
+                <p class="auth-error" data-auth-error></p>
+            </form>
+            <form class="auth-form is-hidden" data-auth-form="register">
+                <label>
+                    <span>Email</span>
+                    <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+                </label>
+                <label>
+                    <span>Password</span>
+                    <input type="password" name="password" placeholder="At least 6 characters" autocomplete="new-password" required />
+                </label>
+                <button type="submit" class="primary-btn">Create account</button>
+                <p class="auth-switch" data-auth-switch data-target="login">Already here? Login</p>
+                <p class="auth-error" data-auth-error></p>
+            </form>
+        </div>
     </div>
 
     <script src="assets/js/script.js" defer></script>

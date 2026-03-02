@@ -2,7 +2,7 @@ const qs = (selector, scope = document) => scope.querySelector(selector);
 
 document.addEventListener("DOMContentLoaded", () => {
     const channelButtons = Array.from(document.querySelectorAll("[data-channel]"));
-    const serverButtons = Array.from(document.querySelectorAll("[data-server]") );
+    const serverButtons = Array.from(document.querySelectorAll("[data-server]"));
     const dmButton = qs("[data-dm]");
     const dmBadge = qs("[data-dm-badge]");
     const dmList = qs("[data-dm-list]");
@@ -17,16 +17,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const composerInput = composer?.querySelector("input[name='message']");
     const dmComposer = qs("[data-dm-composer]");
     const dmInput = dmComposer?.querySelector("input[name='dm-message']");
-    const tabs = Array.from(document.querySelectorAll(".tab"));
-    const addFriendForm = qs("[data-add-friend]");
+    const addFriendNav = qs("[data-open-friend-page]");
+    const backToDmBtn = qs("[data-back-to-dm]");
+    const friendForm = qs("[data-friend-form]");
+    const friendInput = friendForm?.querySelector("input[name='friend-handle']");
+    const friendError = qs("[data-friend-error]");
+    const friendSuccess = qs("[data-friend-success]");
     const pendingList = qs("[data-pending-list]");
+    const appContainer = qs("[data-app]");
+    const authLayer = qs("[data-auth-layer]");
+    const authForms = Array.from(document.querySelectorAll("[data-auth-form]"));
+    const authSwitches = Array.from(document.querySelectorAll("[data-auth-switch]"));
+    const loginForm = authForms.find((f) => f.dataset.authForm === "login");
+    const registerForm = authForms.find((f) => f.dataset.authForm === "register");
+    const authHeading = qs("#auth-title");
 
     const supabaseUrl = document.querySelector("meta[name='supabase-url']")?.content;
     const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
     let supabaseClient = null;
+    let friendshipChannel = null;
 
     const state = {
-        mode: "server",
+        mode: "dm",
         activeChannel: "quantum-lab",
         activeServer: "core",
         activeDm: "nora",
@@ -36,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: 1,
                 user: "Nora",
                 handle: "nora.ai",
-                content: "Deploy preview läuft. Bitte Neon-Glow auf mobile prüfen und Latency im Realtime feed loggen.",
+                content: "Deploy preview is live. Check neon glow on mobile and log latency in the realtime feed.",
                 time: "09:12",
                 self: false,
             },
@@ -44,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: 2,
                 user: "Sven",
                 handle: "sv3n",
-                content: "Wir haben ein neues Motion-Preset für die Chat-Bubbles: blur-in + slide-up. Sieht crisp aus.",
+                content: "New motion preset for chat bubbles: blur-in + slide-up. Looks crisp.",
                 time: "09:14",
                 self: false,
             },
@@ -52,21 +64,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: 3,
                 user: "Aury",
                 handle: "auri.ops",
-                content: "Pinned: Realtime schema + policies. Bitte bis 11:00h reviewn, dann merge.",
+                content: "Pinned: Realtime schema + policies. Review by 11:00 then merge.",
                 time: "09:18",
                 self: true,
             },
         ],
         dmMessages: {
             nora: [
-                { id: 11, user: "Nora", handle: "nora.ai", content: "Kannst du das neon border preset pushen?", time: "09:20", self: false },
-                { id: 12, user: "Aury", handle: "auri.ops", content: "Ja, shippe in 5. Check DM thread.", time: "09:21", self: true },
+                { id: 11, user: "Nora", handle: "nora.ai", content: "Can you push the neon border preset?", time: "09:20", self: false },
+                { id: 12, user: "Aury", handle: "auri.ops", content: "Yep, shipping in 5. Check the DM thread.", time: "09:21", self: true },
             ],
             sven: [
-                { id: 21, user: "Sven", handle: "sv3n", content: "Hab den blur-in Effekt poliert.", time: "08:44", self: false },
+                { id: 21, user: "Sven", handle: "sv3n", content: "Polished the blur-in effect.", time: "08:44", self: false },
             ],
             june: [
-                { id: 31, user: "June", handle: "june.qa", content: "Latency logs sehen gut aus.", time: "07:55", self: false },
+                { id: 31, user: "June", handle: "june.qa", content: "Latency logs look good.", time: "07:55", self: false },
             ],
         },
         friends: [
@@ -90,23 +102,76 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    const toggleAuth = (isAuthenticated) => {
+        if (!appContainer || !authLayer) return;
+        if (isAuthenticated) {
+            authLayer.classList.add("is-hidden");
+            appContainer.classList.remove("is-locked");
+            appContainer.classList.add("is-live");
+        } else {
+            authLayer.classList.remove("is-hidden");
+            appContainer.classList.add("is-locked");
+            appContainer.classList.remove("is-live");
+        }
+    };
+
+    const setAuthError = (form, message) => {
+        const el = form?.querySelector("[data-auth-error]");
+        if (el) el.textContent = message || "";
+    };
+
+    const clearAuthErrors = () => {
+        authForms.forEach((form) => setAuthError(form, ""));
+    };
+
+    const validateAuthFields = (emailValue, passwordValue) => {
+        if (!emailValue || !passwordValue) return "Please fill email and password.";
+        if (passwordValue.length < 6) return "Password must be at least 6 characters.";
+        return null;
+    };
+
+    const showAuthForm = (target) => {
+        authForms.forEach((form) => {
+            const isTarget = form.dataset.authForm === target;
+            form.classList.toggle("is-hidden", !isTarget);
+        });
+        if (authHeading) authHeading.textContent = target === "register" ? "Register" : "Login";
+    };
+
+    const handleSession = async (session) => {
+        state.currentUser = session?.user ?? null;
+        if (!state.currentUser) {
+            state.friends = [];
+            state.pending = [];
+            renderDmList();
+            renderPending();
+            toggleAuth(false);
+            return;
+        }
+        toggleAuth(true);
+        state.friends = [];
+        state.pending = [];
+        renderDmList();
+        renderPending();
+        await Promise.all([loadFriends(), loadPending()]);
+        await subscribeFriendships();
+        updateBadge();
+        renderDmList();
+        renderPending();
+    };
+
     const initSupabase = async () => {
         supabaseClient = createSupabaseClient();
         if (!supabaseClient) return;
+        supabaseClient.auth.onAuthStateChange((_event, session) => {
+            void handleSession(session);
+        });
         const { data: sessionData, error } = await supabaseClient.auth.getSession();
         if (error) {
             console.error("Supabase auth session error", error);
             return;
         }
-        state.currentUser = sessionData.session?.user ?? null;
-        if (!state.currentUser) {
-            console.warn("No Supabase session; friendship features idle.");
-            return;
-        }
-        await Promise.all([loadFriends(), loadPending(), subscribeFriendships()]);
-        updateBadge();
-        renderDmList();
-        renderPending();
+        await handleSession(sessionData.session);
     };
 
     const animateMessage = (element) => {
@@ -188,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const accepted = state.friends.filter((f) => f.status === "accepted");
         if (accepted.length === 0) {
             const empty = document.createElement("li");
-            empty.textContent = "Keine Freunde · sende eine Anfrage";
+            empty.textContent = "No friends yet · send a request";
             empty.className = "dm-empty";
             dmList.appendChild(empty);
             return;
@@ -237,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pendingList.innerHTML = "";
         if (state.pending.length === 0) {
             const li = document.createElement("li");
-            li.textContent = "Keine ausstehenden Anfragen";
+            li.textContent = "No pending requests";
             li.className = "pending-empty";
             pendingList.appendChild(li);
             return;
@@ -249,20 +314,20 @@ document.addEventListener("DOMContentLoaded", () => {
             meta.className = "pending-meta";
             const name = document.createElement("p");
             name.className = "pending-name";
-            name.textContent = req.username || req.user_id || "Unbekannt";
+            name.textContent = req.username || req.user_id || "Unknown";
             const sub = document.createElement("p");
             sub.className = "pending-sub";
-            sub.textContent = "Freundschaftsanfrage";
+            sub.textContent = "Friend request";
             meta.append(name, sub);
 
             const accept = document.createElement("button");
             accept.className = "btn-accept";
-            accept.textContent = "Annehmen";
+            accept.textContent = "Accept";
             accept.addEventListener("click", () => handleRequest(req, "accepted"));
 
             const decline = document.createElement("button");
             decline.className = "btn-decline";
-            decline.textContent = "Ablehnen";
+            decline.textContent = "Decline";
             decline.addEventListener("click", () => handleRequest(req, "blocked"));
 
             li.append(meta, accept, decline);
@@ -367,7 +432,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const sendFriendRequest = async (targetUsername) => {
-        if (!supabaseClient || !state.currentUser) return;
+        if (!supabaseClient || !state.currentUser) return { error: "Not authenticated." };
         const me = state.currentUser.id;
         const { data: profiles, error: findError } = await supabaseClient
             .from("profiles")
@@ -376,26 +441,28 @@ document.addEventListener("DOMContentLoaded", () => {
             .maybeSingle();
         if (findError || !profiles) {
             console.error("User not found", findError);
-            return;
+            return { error: "User not found." };
         }
         if (profiles.id === me) {
-            console.warn("Cannot friend yourself");
-            return;
+            return { error: "You cannot add yourself." };
         }
         const { error } = await supabaseClient
             .from("friendships")
             .insert({ sender_id: me, receiver_id: profiles.id, status: "pending" });
         if (error) {
             console.error("Send request failed", error);
-            return;
+            return { error: error.message };
         }
-        addFriendForm?.classList.add("sent");
-        setTimeout(() => addFriendForm?.classList.remove("sent"), 800);
+        return { success: true };
     };
 
     const subscribeFriendships = async () => {
         if (!supabaseClient || !state.currentUser) return;
         const userId = state.currentUser.id;
+        if (friendshipChannel) {
+            await supabaseClient.removeChannel(friendshipChannel);
+            friendshipChannel = null;
+        }
         const channel = supabaseClient.channel("friendships-feed");
 
         const onChange = (payload) => {
@@ -417,9 +484,10 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         channel
-                .on("postgres_changes", { event: "INSERT", schema: "public", table: "friendships", filter: `receiver_id=eq.${userId}` }, onChange)
-                .on("postgres_changes", { event: "UPDATE", schema: "public", table: "friendships", filter: `sender_id=eq.${userId},receiver_id=eq.${userId}` }, onChange)
+            .on("postgres_changes", { event: "INSERT", schema: "public", table: "friendships", filter: `receiver_id=eq.${userId}` }, onChange)
+            .on("postgres_changes", { event: "UPDATE", schema: "public", table: "friendships", filter: `sender_id=eq.${userId},receiver_id=eq.${userId}` }, onChange)
             .subscribe();
+        friendshipChannel = channel;
     };
 
     const addMessage = (content, self = true) => {
@@ -480,9 +548,6 @@ document.addEventListener("DOMContentLoaded", () => {
         sidebar?.setAttribute("data-mode", mode);
         channelBar?.setAttribute("data-mode", mode);
         dmButton?.classList.toggle("is-dm-active", mode === "dm");
-        if (mode === "dm") {
-            serverButtons.forEach((b) => b.classList.remove("active"));
-        }
     };
 
     const bindChannels = () => {
@@ -495,7 +560,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     activeChannelLabel.textContent = `# ${state.activeChannel}`;
                 }
                 if (composerInput) {
-                    composerInput.placeholder = `Impulse to #${state.activeChannel}`;
+                    composerInput.placeholder = `Send to #${state.activeChannel}`;
                 }
             });
         });
@@ -532,30 +597,107 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    const bindTabs = () => {
-        tabs.forEach((tab) => {
-            tab.addEventListener("click", () => {
-                tabs.forEach((t) => {
-                    t.classList.toggle("is-active", t === tab);
-                    t.setAttribute("aria-selected", t === tab ? "true" : "false");
-                });
-            });
+    const setFriendFeedback = ({ error, success }) => {
+        if (friendError) friendError.textContent = error || "";
+        if (friendSuccess) friendSuccess.textContent = success || "";
+    };
+
+    const bindFriendNavigation = () => {
+        addFriendNav?.addEventListener("click", () => {
+            setFriendFeedback({ error: "", success: "" });
+            setMode("friend-add");
+        });
+        backToDmBtn?.addEventListener("click", () => {
+            setFriendFeedback({ error: "", success: "" });
+            setMode("dm");
         });
     };
 
-    const bindAddFriend = () => {
-        addFriendForm?.addEventListener("submit", (event) => {
+    const bindFriendForm = () => {
+        friendForm?.addEventListener("submit", async (event) => {
             event.preventDefault();
-            const input = addFriendForm.querySelector("input[name='friend-username']");
-            const value = input?.value.trim();
-            if (!value) return;
-            if (supabaseClient && state.currentUser) {
-                void sendFriendRequest(value);
-            } else {
-                // Demo fallback: add as accepted instantly
-                addFriendLocal(value.toLowerCase(), value);
+            const value = friendInput?.value.trim();
+            if (!value) {
+                setFriendFeedback({ error: "Enter a username.", success: "" });
+                return;
             }
-            input.value = "";
+            setFriendFeedback({ error: "", success: "" });
+            if (supabaseClient && state.currentUser) {
+                const result = await sendFriendRequest(value);
+                if (result?.error) {
+                    setFriendFeedback({ error: result.error, success: "" });
+                } else {
+                    setFriendFeedback({ error: "", success: "Request sent." });
+                    if (friendInput) friendInput.value = "";
+                }
+            } else {
+                addFriendLocal(value.toLowerCase(), value);
+                setFriendFeedback({ error: "", success: "Added locally." });
+                if (friendInput) friendInput.value = "";
+                setMode("dm");
+            }
+        });
+    };
+
+    const bindAuthForms = () => {
+        if (authSwitches.length > 0) {
+            authSwitches.forEach((toggle) => {
+                toggle.addEventListener("click", () => {
+                    clearAuthErrors();
+                    const target = toggle.dataset.target === "register" ? "register" : "login";
+                    showAuthForm(target);
+                });
+            });
+        }
+
+        loginForm?.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            clearAuthErrors();
+            const emailValue = loginForm.querySelector("input[name='email']")?.value.trim();
+            const passwordValue = loginForm.querySelector("input[name='password']")?.value.trim();
+            const validationError = validateAuthFields(emailValue, passwordValue);
+            if (validationError) {
+                setAuthError(loginForm, validationError);
+                return;
+            }
+            if (!supabaseClient) {
+                setAuthError(loginForm, "Supabase not configured.");
+                return;
+            }
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email: emailValue, password: passwordValue });
+            if (error) {
+                setAuthError(loginForm, error.message);
+                return;
+            }
+            if (data?.session) {
+                await handleSession(data.session);
+            }
+        });
+
+        registerForm?.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            clearAuthErrors();
+            const emailValue = registerForm.querySelector("input[name='email']")?.value.trim();
+            const passwordValue = registerForm.querySelector("input[name='password']")?.value.trim();
+            const validationError = validateAuthFields(emailValue, passwordValue);
+            if (validationError) {
+                setAuthError(registerForm, validationError);
+                return;
+            }
+            if (!supabaseClient) {
+                setAuthError(registerForm, "Supabase not configured.");
+                return;
+            }
+            const { data, error } = await supabaseClient.auth.signUp({ email: emailValue, password: passwordValue });
+            if (error) {
+                setAuthError(registerForm, error.message);
+                return;
+            }
+            if (data?.session) {
+                await handleSession(data.session);
+            } else {
+                setAuthError(registerForm, "Check your inbox to confirm.");
+            }
         });
     };
 
@@ -592,9 +734,10 @@ document.addEventListener("DOMContentLoaded", () => {
     bindServers();
     bindDmButton();
     bindDmList();
-    bindTabs();
-    bindAddFriend();
+    bindFriendNavigation();
+    bindFriendForm();
     bindComposer();
     bindDmComposer();
+    bindAuthForms();
     void initSupabase();
 });
