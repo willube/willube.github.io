@@ -3,208 +3,198 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Discord-ähnliche Chat-Oberfläche als modulares Frontend-Grundgerüst." />
-    <title>Discord Clone · Frontend</title>
+    <meta name="description" content="Screen · Futuristisches Realtime Chat UI" />
+    <title>Screen · Futuristic Chat</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+    <meta name="supabase-url" content="https://gknoagucgiiieovujwxy.supabase.co" />
+    <meta name="supabase-key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdrbm9hZ3VjZ2lpaWVvdnVqd3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzOTMxMjIsImV4cCI6MjA4Nzk2OTEyMn0.qJYS6cVIi6BJP02O_EPmVQb27IHMRJrxpvXrRfxejj8" />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="background-bleed"></div>
-    <div id="app-shell" class="app-shell">
-        <nav class="server-rail" aria-label="Server">
-            <button class="server" aria-label="Home">
-                <span>∞</span>
-            </button>
-            <button class="server" aria-label="Auri Labs">
-                <span>AL</span>
-            </button>
-            <button class="server" aria-label="Community">
-                <span>CM</span>
-            </button>
-            <button class="server muted" aria-label="Add Server">
-                <span>+</span>
-            </button>
-        </nav>
-
-        <aside class="channel-panel" aria-label="Channel Liste">
-            <header class="panel-header">
-                <div>
-                    <p class="workspace">Auri Crew</p>
-                    <p class="presence">online · produktiv</p>
-                </div>
-                <div class="panel-actions">
-                    <button class="icon-btn" type="button" aria-label="Suche">
-                        <span class="icon">⌕</span>
-                    </button>
-                    <button class="icon-btn" type="button" data-open-settings aria-label="Einstellungen öffnen">
-                        <span class="icon">⚙</span>
-                    </button>
-                </div>
-            </header>
-
-            <section class="channel-section" aria-label="Textkanäle">
-                <p class="section-label">Text Channels</p>
-                <ul class="channel-list">
-                    <li><button class="channel active" data-channel data-channel-name="general"># general</button></li>
-                    <li><button class="channel" data-channel data-channel-name="launch"># launch</button></li>
-                    <li><button class="channel" data-channel data-channel-name="design"># design</button></li>
-                    <li><button class="channel" data-channel data-channel-name="roadmap"># roadmap</button></li>
-                </ul>
-            </section>
-
-            <section class="channel-section" aria-label="Voicekanäle">
-                <p class="section-label">Voice</p>
-                <ul class="channel-list">
-                    <li><button class="channel" data-channel data-channel-name="lounge">🔊 lounge</button></li>
-                    <li><button class="channel" data-channel data-channel-name="session">🔊 session</button></li>
-                </ul>
-            </section>
+    <div class="bg-noise"></div>
+    <div class="bg-glow"></div>
+    <div class="app">
+        <aside class="sidebar" aria-label="Server und DMs">
+            <div class="sidebar-top">
+                <button class="icon-stack" data-dm aria-label="Direct Messages">
+                    <span class="neon-ring"></span>
+                    <span class="dm-badge" data-dm-badge aria-hidden="true"></span>
+                    <span class="icon">∞</span>
+                </button>
+                <div class="sidebar-sep"></div>
+                <button class="icon-stack active" data-server="core" aria-label="Core">
+                    <span class="neon-ring"></span>
+                    <span class="icon">SC</span>
+                </button>
+                <button class="icon-stack" data-server="labs" aria-label="Labs">
+                    <span class="neon-ring"></span>
+                    <span class="icon">LX</span>
+                </button>
+                <button class="icon-stack muted" data-server="add" aria-label="Server hinzufügen">
+                    <span class="icon">+</span>
+                </button>
+            </div>
+            <div class="sidebar-bottom">
+                <button class="profile-chip" aria-label="Profil">
+                    <div class="avatar-sm">AU</div>
+                    <div class="status-dot online"></div>
+                </button>
+            </div>
         </aside>
 
-        <main class="chat" aria-label="Chatbereich">
-            <header class="chat-header">
-                <div class="channel-meta">
-                    <h1 class="channel-name" data-active-channel># general</h1>
-                    <p class="channel-topic">Releaseplanung, QA und schnelle Drops.</p>
-                </div>
-                <div class="chat-actions">
-                    <button class="pill" type="button" data-open-settings>Open Settings</button>
-                    <button class="icon-btn" type="button" aria-label="Benachrichtigungen">
-                        <span class="icon">🔔</span>
-                    </button>
-                    <button class="icon-btn" type="button" aria-label="Mehr">
-                        <span class="icon">⋯</span>
-                    </button>
-                </div>
-            </header>
+        <aside class="channel-bar" aria-label="Channel Leiste">
+            <div class="view" data-view="server">
+                <header class="channel-header">
+                    <div>
+                        <p class="eyebrow">Workspace</p>
+                        <h2>Screen</h2>
+                    </div>
+                    <button class="ghost-btn" aria-label="Suche">⌕</button>
+                </header>
 
-            <section class="message-list" aria-label="Nachrichten">
-                <article class="message">
-                    <div class="avatar">A</div>
-                    <div class="message-body">
-                        <div class="meta">
-                            <span class="author">Auri</span>
-                            <time datetime="2026-03-01T09:00">Heute, 09:00</time>
-                        </div>
-                        <p>Roadmap-Board aktualisiert. Bitte die neuen QA-Checklisten im Launch-Channel pinnen.</p>
-                    </div>
-                </article>
-                <article class="message">
-                    <div class="avatar accent">S</div>
-                    <div class="message-body">
-                        <div class="meta">
-                            <span class="author">Sven</span>
-                            <time datetime="2026-03-01T09:07">Heute, 09:07</time>
-                        </div>
-                        <p>Mockups für den neuen Invite-Flow sind fertig. Feedback welcome → <a href="#">Figma</a>.</p>
-                    </div>
-                </article>
-                <article class="message">
-                    <div class="avatar">N</div>
-                    <div class="message-body">
-                        <div class="meta">
-                            <span class="author">Nora</span>
-                            <time datetime="2026-03-01T09:12">Heute, 09:12</time>
-                        </div>
-                        <p>Deploy-Preview läuft, wir testen den neuen Message-Poller. Bitte auf Latenzen achten.</p>
-                    </div>
-                </article>
-            </section>
+                <section class="channel-group" aria-label="Text Channels">
+                    <p class="label">Text</p>
+                    <ul class="channel-list">
+                        <li><button class="channel is-active" data-channel="quantum-lab"># quantum-lab</button></li>
+                        <li><button class="channel" data-channel="shiproom"># shiproom</button></li>
+                        <li><button class="channel" data-channel="neon-ui"># neon-ui</button></li>
+                        <li><button class="channel" data-channel="ml-sync"># ml-sync</button></li>
+                    </ul>
+                </section>
 
-            <form class="composer" aria-label="Nachricht schreiben">
-                <div class="composer-inner">
-                    <input type="text" name="message" placeholder="Nachricht an #general" aria-label="Nachricht" />
-                    <div class="composer-actions">
-                        <button class="icon-btn" type="button" aria-label="Emoji">😊</button>
-                        <button class="icon-btn" type="button" aria-label="Upload">📎</button>
-                        <button class="pill" type="submit">Senden</button>
+                <section class="channel-group" aria-label="Voice">
+                    <p class="label">Voice</p>
+                    <ul class="channel-list">
+                        <li><button class="channel" data-channel="control-room">🔊 control-room</button></li>
+                        <li><button class="channel" data-channel="focus-pod">🔊 focus-pod</button></li>
+                    </ul>
+                </section>
+            </div>
+
+            <div class="view is-hidden" data-view="dm">
+                <header class="channel-header">
+                    <div>
+                        <p class="eyebrow">Direct</p>
+                        <h2>Friends</h2>
                     </div>
-                </div>
-            </form>
+                    <button class="ghost-btn" aria-label="Friend Search">⌕</button>
+                </header>
+
+                <section class="channel-group" aria-label="Direct Messages">
+                    <p class="label">Messages</p>
+                    <ul class="dm-list" data-dm-list></ul>
+                </section>
+            </div>
+        </aside>
+
+        <main class="main" aria-label="Chat Bereich">
+            <div class="view" data-view="server">
+                <header class="main-header">
+                    <div class="title-stack">
+                        <p class="eyebrow">Channel</p>
+                        <div class="title-row">
+                            <h1 data-active-channel># quantum-lab</h1>
+                            <div class="live-pill">
+                                <span class="dot"></span>sync
+                            </div>
+                        </div>
+                        <p class="subline">Realtime Connection</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="ghost-btn" aria-label="Pin">📌</button>
+                        <button class="ghost-btn" aria-label="Share">↗</button>
+                        <button class="primary-btn" aria-label="Launch Panel">Launch</button>
+                    </div>
+                </header>
+
+                <section class="message-zone" aria-live="polite">
+                    <div class="message-list" data-message-list></div>
+                </section>
+
+                <form class="composer" data-composer aria-label="Nachricht verfassen">
+                    <div class="composer-shell">
+                        <input type="text" name="message" autocomplete="off" placeholder="Impulse to #quantum-lab" />
+                        <div class="composer-actions">
+                            <button type="button" class="ghost-btn" aria-label="Emoji">😊</button>
+                            <button type="button" class="ghost-btn" aria-label="Upload">📎</button>
+                            <button type="submit" class="primary-btn">Senden</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="view is-hidden" data-view="dm">
+                <header class="main-header">
+                    <div class="title-stack">
+                        <p class="eyebrow">Friends</p>
+                        <div class="title-row">
+                            <h1 data-active-dm>Direct · Nora</h1>
+                            <div class="live-pill">
+                                <span class="dot"></span>connected
+                            </div>
+                        </div>
+                        <p class="subline">Futuristic DM dashboard</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="primary-btn" type="button">Freund hinzufügen</button>
+                    </div>
+                </header>
+
+                <section class="friends-tabs" role="tablist" aria-label="Friends Tabs">
+                    <button class="tab is-active" data-tab="online" aria-selected="true">Online</button>
+                    <button class="tab" data-tab="all" aria-selected="false">Alle</button>
+                    <button class="tab" data-tab="pending" aria-selected="false">Ausstehend</button>
+                </section>
+
+                <section class="add-friend" aria-label="Freund hinzufügen">
+                    <form class="add-friend-form" data-add-friend>
+                        <input type="text" name="friend-username" placeholder="Username oder Handle" autocomplete="off" />
+                        <button type="submit" class="primary-btn">Anfrage senden</button>
+                    </form>
+                    <p class="add-friend-hint">Public usernames only · keine E-Mail nötig.</p>
+                </section>
+
+                <section class="friends-grid" data-friends-grid>
+                    <div class="friend-card">
+                        <div class="friend-avatar">NO <span class="status-dot online"></span></div>
+                        <div class="friend-meta">
+                            <p class="friend-name">Nora</p>
+                            <p class="friend-sub">design ops</p>
+                        </div>
+                    </div>
+                    <div class="friend-card">
+                        <div class="friend-avatar">SV <span class="status-dot online"></span></div>
+                        <div class="friend-meta">
+                            <p class="friend-name">Sven</p>
+                            <p class="friend-sub">neon ui</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="pending" aria-label="Ausstehende Anfragen">
+                    <h3>Ausstehend</h3>
+                    <ul class="pending-list" data-pending-list></ul>
+                </section>
+
+                <section class="message-zone dm-zone" aria-live="polite">
+                    <div class="message-list" data-dm-thread></div>
+                </section>
+
+                <form class="composer" data-dm-composer aria-label="DM verfassen">
+                    <div class="composer-shell">
+                        <input type="text" name="dm-message" autocomplete="off" placeholder="Schreibe eine Direktnachricht" />
+                        <div class="composer-actions">
+                            <button type="button" class="ghost-btn" aria-label="Emoji">😊</button>
+                            <button type="button" class="ghost-btn" aria-label="Upload">📎</button>
+                            <button type="submit" class="primary-btn">Senden</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </main>
-    </div>
-
-    <div class="settings-modal" data-modal aria-hidden="true">
-        <div class="modal-overlay" data-close-settings aria-hidden="true"></div>
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
-            <header class="modal-header">
-                <h2 id="settings-title">Settings</h2>
-                <button class="icon-btn" type="button" data-close-settings aria-label="Schließen">✕</button>
-            </header>
-            <div class="modal-body">
-                <p>Schalte Channels um, ändere Theme-Intensität oder setze Statusmeldungen. Diese Modal-Logik ist modular und leicht erweiterbar.</p>
-                <div class="setting-grid">
-                    <label class="switch">
-                        <input type="checkbox" checked />
-                        <span>Desktop Notifications</span>
-                    </label>
-                    <label class="switch">
-                        <input type="checkbox" />
-                        <span>Do Not Disturb</span>
-                    </label>
-                    <label class="switch">
-                        <input type="checkbox" checked />
-                        <span>Show Typing Indicator</span>
-                    </label>
-                </div>
-            </div>
-            <footer class="modal-footer">
-                <button class="pill ghost" type="button" data-close-settings>Schließen</button>
-                <button class="pill" type="button">Speichern</button>
-            </footer>
-        </div>
-    </div>
-
-    <div class="auth-modal is-visible" data-auth-modal aria-hidden="false">
-        <div class="auth-overlay"></div>
-        <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
-            <header class="auth-header">
-                <div>
-                    <p class="eyebrow">Willkommen bei</p>
-                    <h2 id="auth-title">Sync</h2>
-                    <p class="auth-sub">Bleib verbunden. Organisiere dich. Chatte in Echtzeit.</p>
-                </div>
-            </header>
-            <div class="auth-tabs" role="tablist" aria-label="Auth Tabs">
-                <button class="auth-tab active" data-auth-tab="login" aria-selected="true">Login</button>
-                <button class="auth-tab" data-auth-tab="register" aria-selected="false">Registrieren</button>
-            </div>
-            <div class="auth-body">
-                <form class="auth-form" data-auth-panel="login">
-                    <label>
-                        <span>E-Mail</span>
-                        <input type="email" name="email" required autocomplete="email" />
-                    </label>
-                    <label>
-                        <span>Passwort</span>
-                        <input type="password" name="password" required autocomplete="current-password" />
-                    </label>
-                    <button class="pill" type="submit">Login</button>
-                    <p class="auth-hint">Noch keinen Account? Wechsel auf Registrieren.</p>
-                    <p class="auth-error" data-auth-error></p>
-                </form>
-                <form class="auth-form hidden" data-auth-panel="register">
-                    <label>
-                        <span>Username</span>
-                        <input type="text" name="username" required autocomplete="nickname" />
-                    </label>
-                    <label>
-                        <span>E-Mail</span>
-                        <input type="email" name="email" required autocomplete="email" />
-                    </label>
-                    <label>
-                        <span>Passwort</span>
-                        <input type="password" name="password" required autocomplete="new-password" />
-                    </label>
-                    <button class="pill" type="submit">Account erstellen</button>
-                    <p class="auth-hint">Du hast schon einen Account? Wechsel auf Login.</p>
-                    <p class="auth-error" data-auth-error></p>
-                </form>
-            </div>
-        </div>
     </div>
 
     <script src="assets/js/script.js" defer></script>
