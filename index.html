@@ -27,8 +27,11 @@
             </div>
             <div class="sidebar-bottom">
                 <button class="profile-chip" aria-label="Profile">
-                    <div class="avatar-sm">AU</div>
-                    <div class="status-dot online"></div>
+                    <div class="profile-avatar">
+                        <div class="avatar-sm" data-profile-avatar>AU</div>
+                        <div class="status-dot online"></div>
+                    </div>
+                    <span class="profile-username" data-current-username>Guest</span>
                 </button>
             </div>
         </aside>
@@ -140,6 +143,10 @@
                 <label>
                     <span>Email</span>
                     <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+                </label>
+                <label>
+                    <span>Username</span>
+                    <input type="text" name="username" placeholder="Pick a username" autocomplete="nickname" />
                 </label>
                 <label>
                     <span>Password</span>

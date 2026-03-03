@@ -31,11 +31,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginForm = authForms.find((f) => f.dataset.authForm === "login");
     const registerForm = authForms.find((f) => f.dataset.authForm === "register");
     const authHeading = qs("#auth-title");
+    const profileChip = qs(".profile-chip");
+    const profileAvatar = profileChip?.querySelector("[data-profile-avatar]");
+    const profileUsername = qs("[data-current-username]");
 
     const supabaseUrl = document.querySelector("meta[name='supabase-url']")?.content;
     const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
     let supabaseClient = null;
     let friendshipChannel = null;
+    let profileFetchDelayMs = 0;
 
     const state = {
         mode: "dm",
@@ -87,9 +91,78 @@ document.addEventListener("DOMContentLoaded", () => {
             { id: "june", username: "June", status: "accepted" },
         ],
         pending: [],
+        profile: null,
     };
 
     const initials = (text) => (text || "?").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const sanitizeUsername = (value) => {
+        if (!value) return "";
+        return value
+            .toString()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^a-zA-Z0-9_-]/g, "")
+            .slice(0, 24);
+    };
+
+    const buildUsername = (preferred, emailValue) => {
+        const fromPreferred = sanitizeUsername(preferred);
+        if (fromPreferred) return fromPreferred;
+        const emailHandle = sanitizeUsername(emailValue?.split("@")[0] || "");
+        const base = emailHandle || "user";
+        const suffix = Math.random().toString(36).slice(2, 6);
+        return `${base}-${suffix}`;
+    };
+
+    const updateProfileUi = (username) => {
+        const label = username || "Guest";
+        if (profileUsername) profileUsername.textContent = label;
+        if (profileAvatar) profileAvatar.textContent = initials(label);
+        if (profileChip) profileChip.setAttribute("aria-label", `Profile · ${label}`);
+    };
+
+    const fetchOwnProfile = async () => {
+        if (!supabaseClient || !state.currentUser) return null;
+        const { data, error } = await supabaseClient.from("profiles").select("id, username").eq("id", state.currentUser.id).maybeSingle();
+        if (error) {
+            console.error("Fetch profile failed", error);
+            return null;
+        }
+        return data;
+    };
+
+    const upsertDefaultUsername = async (username) => {
+        if (!supabaseClient || !state.currentUser) return null;
+        const { data, error } = await supabaseClient
+            .from("profiles")
+            .upsert({ id: state.currentUser.id, username }, { onConflict: "id" })
+            .select("id, username")
+            .maybeSingle();
+        if (error) {
+            console.error("Set default username failed", error);
+            return null;
+        }
+        return data;
+    };
+
+    const ensureProfileUsername = async (delayMs = 0) => {
+        if (!supabaseClient || !state.currentUser) return null;
+        if (delayMs > 0) await sleep(delayMs);
+        const profile = await fetchOwnProfile();
+        if (profile?.username) {
+            state.profile = profile;
+            updateProfileUi(profile.username);
+            return profile;
+        }
+        const generated = buildUsername(state.currentUser.user_metadata?.username, state.currentUser.email);
+        const saved = (await upsertDefaultUsername(generated)) || profile || { id: state.currentUser.id, username: generated };
+        state.profile = saved;
+        updateProfileUi(saved.username);
+        return saved;
+    };
 
     const createSupabaseClient = () => {
         if (!window.supabase || !supabaseUrl || !supabaseKey || supabaseUrl.startsWith("YOUR_")) {
@@ -138,21 +211,32 @@ document.addEventListener("DOMContentLoaded", () => {
         if (authHeading) authHeading.textContent = target === "register" ? "Register" : "Login";
     };
 
-    const handleSession = async (session) => {
+    const handleSession = async (session, { profileDelay } = {}) => {
         state.currentUser = session?.user ?? null;
+        const delay = profileDelay ?? profileFetchDelayMs;
+        profileFetchDelayMs = 0;
+
         if (!state.currentUser) {
             state.friends = [];
             state.pending = [];
+            state.profile = null;
+            updateProfileUi("Guest");
             renderDmList();
             renderPending();
             toggleAuth(false);
             return;
         }
+
         toggleAuth(true);
         state.friends = [];
         state.pending = [];
         renderDmList();
         renderPending();
+
+        const metadataName = sanitizeUsername(state.currentUser.user_metadata?.username) || sanitizeUsername(state.currentUser.email?.split("@")[0]);
+        updateProfileUi(metadataName || "User");
+
+        await ensureProfileUsername(delay);
         await Promise.all([loadFriends(), loadPending()]);
         await subscribeFriendships();
         updateBadge();
@@ -669,9 +753,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 setAuthError(loginForm, error.message);
                 return;
             }
-            if (data?.session) {
-                await handleSession(data.session);
-            }
         });
 
         registerForm?.addEventListener("submit", async (event) => {
@@ -679,6 +760,7 @@ document.addEventListener("DOMContentLoaded", () => {
             clearAuthErrors();
             const emailValue = registerForm.querySelector("input[name='email']")?.value.trim();
             const passwordValue = registerForm.querySelector("input[name='password']")?.value.trim();
+            const usernameValue = registerForm.querySelector("input[name='username']")?.value;
             const validationError = validateAuthFields(emailValue, passwordValue);
             if (validationError) {
                 setAuthError(registerForm, validationError);
@@ -688,14 +770,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 setAuthError(registerForm, "Supabase not configured.");
                 return;
             }
-            const { data, error } = await supabaseClient.auth.signUp({ email: emailValue, password: passwordValue });
+            const desiredUsername = buildUsername(usernameValue, emailValue);
+            profileFetchDelayMs = 500;
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: emailValue,
+                password: passwordValue,
+                options: { data: { username: desiredUsername } },
+            });
             if (error) {
+                profileFetchDelayMs = 0;
                 setAuthError(registerForm, error.message);
                 return;
             }
-            if (data?.session) {
-                await handleSession(data.session);
-            } else {
+            if (!data?.session) {
                 setAuthError(registerForm, "Check your inbox to confirm.");
             }
         });
