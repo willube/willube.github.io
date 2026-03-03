@@ -574,11 +574,23 @@ a:hover {
 }
 
 .message {
-    display: grid;
-    grid-template-columns: auto 1fr;
+    display: flex;
     gap: 12px;
-    align-items: start;
+    align-items: flex-start;
     position: relative;
+    width: 100%;
+}
+
+.message.self {
+    justify-content: flex-end;
+}
+
+.message.self .avatar {
+    order: 2;
+}
+
+.message.self .bubble {
+    order: 1;
 }
 
 .message .avatar {
@@ -617,13 +629,19 @@ a:hover {
 }
 
 .bubble.dm {
-    border: 1px solid rgba(117, 164, 255, 0.45);
-    box-shadow: 0 0 6px rgba(117, 164, 255, 0.45), 0 0 10px rgba(192, 88, 255, 0.35);
-    background: linear-gradient(130deg, rgba(192, 88, 255, 0.14), rgba(117, 164, 255, 0.16));
+    border: 1px solid rgba(117, 164, 255, 0.28);
+    box-shadow: 0 0 6px rgba(117, 164, 255, 0.25), 0 0 10px rgba(192, 88, 255, 0.2);
+    background: linear-gradient(130deg, rgba(192, 88, 255, 0.1), rgba(117, 164, 255, 0.12));
 }
 
 .bubble.dm.self {
     border-image: linear-gradient(120deg, #c058ff, #6dd3ff) 1;
+}
+
+.bubble.dm:not(.self) {
+    border-color: rgba(200, 200, 220, 0.35);
+    box-shadow: 0 0 6px rgba(140, 140, 160, 0.25), 0 0 10px rgba(192, 88, 255, 0.15);
+    background: linear-gradient(130deg, rgba(255, 255, 255, 0.06), rgba(255, 170, 220, 0.08));
 }
 
 .meta-row {

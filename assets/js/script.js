@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
     let supabaseClient = null;
     let friendshipChannel = null;
+    let messageChannel = null;
     let profileFetchDelayMs = 0;
 
     const state = {
@@ -239,9 +240,13 @@ document.addEventListener("DOMContentLoaded", () => {
         await ensureProfileUsername(delay);
         await Promise.all([loadFriends(), loadPending()]);
         await subscribeFriendships();
+        await subscribeMessages();
         updateBadge();
         renderDmList();
         renderPending();
+        if (state.activeDm) {
+            await loadMessagesForFriend(state.activeDm);
+        }
     };
 
     const initSupabase = async () => {
@@ -271,6 +276,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const buildMessage = (message, { isDm = false } = {}) => {
         const wrapper = document.createElement("article");
         wrapper.className = "message";
+        if (message.self) {
+            wrapper.classList.add("self");
+        }
 
         const avatar = document.createElement("div");
         avatar.className = "avatar";
@@ -497,6 +505,41 @@ document.addEventListener("DOMContentLoaded", () => {
         return data?.username || userId;
     };
 
+    const mapMessageRow = (row, friend) => {
+        const myId = state.currentUser?.id;
+        const isSelf = row.sender_id === myId;
+        const authorName = isSelf ? state.profile?.username || "You" : friend?.username || row.sender_id;
+        const handle = isSelf ? "you" : friend?.username || "friend";
+        const time = row.created_at ? new Date(row.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+        return {
+            id: row.id,
+            user: authorName,
+            handle,
+            content: row.content,
+            time,
+            self: isSelf,
+        };
+    };
+
+    const loadMessagesForFriend = async (friendId) => {
+        if (!supabaseClient || !state.currentUser || !friendId) return;
+        const myId = state.currentUser.id;
+        const friend = state.friends.find((f) => f.id === friendId);
+        const { data, error } = await supabaseClient
+            .from("messages")
+            .select("id,sender_id,receiver_id,content,created_at")
+            .or(`and(sender_id.eq.${myId},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${myId})`)
+            .order("created_at", { ascending: true });
+        if (error) {
+            console.error("Load messages failed", error);
+            return;
+        }
+        state.dmMessages[friendId] = (data || []).map((row) => mapMessageRow(row, friend));
+        if (state.activeDm === friendId) {
+            renderDmThread();
+        }
+    };
+
     const handleRequest = async (request, newStatus) => {
         if (!supabaseClient || !state.currentUser) return;
         const { error } = await supabaseClient
@@ -574,6 +617,35 @@ document.addEventListener("DOMContentLoaded", () => {
         friendshipChannel = channel;
     };
 
+    const subscribeMessages = async () => {
+        if (!supabaseClient || !state.currentUser) return;
+        const userId = state.currentUser.id;
+        if (messageChannel) {
+            await supabaseClient.removeChannel(messageChannel);
+            messageChannel = null;
+        }
+        const channel = supabaseClient.channel("messages-feed");
+        const handler = (payload) => {
+            const row = payload.new;
+            if (!row) return;
+            const isMine = row.sender_id === userId;
+            const involvesMe = isMine || row.receiver_id === userId;
+            if (!involvesMe) return;
+            const activeFriend = state.activeDm;
+            const friendId = row.sender_id === userId ? row.receiver_id : row.sender_id;
+            if (activeFriend && friendId !== activeFriend) return;
+            const friend = state.friends.find((f) => f.id === friendId);
+            const mapped = mapMessageRow(row, friend);
+            addDmMessage(mapped, friendId);
+        };
+
+        channel
+            .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `receiver_id=eq.${userId}` }, handler)
+            .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `sender_id=eq.${userId}` }, handler)
+            .subscribe();
+        messageChannel = channel;
+    };
+
     const addMessage = (content, self = true) => {
         if (!content.trim()) return;
         const now = new Date();
@@ -592,23 +664,44 @@ document.addEventListener("DOMContentLoaded", () => {
         messageList?.scrollTo({ top: messageList.scrollHeight, behavior: "smooth" });
     };
 
-    const addDmMessage = (content, self = true) => {
-        if (!content.trim()) return;
-        const now = new Date();
-        const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        const msg = {
-            id: Date.now(),
-            user: self ? "Aury" : state.activeDm,
-            handle: self ? "auri.ops" : `${state.activeDm}.dm`,
-            content,
-            time,
-            self,
-        };
-        if (!state.dmMessages[state.activeDm]) state.dmMessages[state.activeDm] = [];
-        state.dmMessages[state.activeDm].push(msg);
-        const node = buildMessage(msg, { isDm: true });
+    const addDmMessage = (message, friendId = state.activeDm) => {
+        if (!message || !message.content?.trim() || !friendId) return;
+        if (!state.dmMessages[friendId]) state.dmMessages[friendId] = [];
+        state.dmMessages[friendId].push(message);
+        if (friendId !== state.activeDm) return;
+        const node = buildMessage(message, { isDm: true });
         dmThread?.appendChild(node);
-        dmThread?.scrollTo({ top: dmThread.scrollHeight, behavior: "smooth" });
+        if (dmThread) dmThread.scrollTop = dmThread.scrollHeight;
+    };
+
+    const sendDmMessage = async (content) => {
+        if (!content.trim()) return;
+        if (!supabaseClient || !state.currentUser) {
+            addDmMessage({
+                id: Date.now(),
+                user: "You",
+                handle: "you",
+                content,
+                time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                self: true,
+            });
+            return;
+        }
+        const myId = state.currentUser.id;
+        const friendId = state.activeDm;
+        if (!friendId) return;
+        const { data, error } = await supabaseClient
+            .from("messages")
+            .insert({ sender_id: myId, receiver_id: friendId, content })
+            .select("id,sender_id,receiver_id,content,created_at")
+            .maybeSingle();
+        if (error) {
+            console.error("Send message failed", error);
+            return;
+        }
+        const friend = state.friends.find((f) => f.id === friendId);
+        const mapped = mapMessageRow(data, friend);
+        addDmMessage(mapped, friendId);
     };
 
     const simulateReply = () => {
@@ -663,12 +756,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const bindDmList = () => {
         dmList?.querySelectorAll("[data-dm-id]").forEach((btn) => {
-            btn.addEventListener("click", () => {
+            btn.addEventListener("click", async () => {
                 dmList.querySelectorAll(".dm").forEach((b) => b.classList.remove("is-active"));
                 btn.classList.add("is-active");
                 state.activeDm = btn.dataset.dmId || "dm";
                 if (activeDmLabel) {
                     activeDmLabel.textContent = `Direct · ${btn.querySelector(".dm-name")?.textContent || state.activeDm}`;
+                }
+                if (supabaseClient && state.currentUser) {
+                    await loadMessagesForFriend(state.activeDm);
                 }
                 renderDmThread();
             });
@@ -800,7 +896,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!dmInput) return;
             const content = dmInput.value.trim();
             if (!content) return;
-            addDmMessage(content, true);
+            void sendDmMessage(content);
             dmInput.value = "";
         });
     };
