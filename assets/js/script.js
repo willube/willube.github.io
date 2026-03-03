@@ -60,33 +60,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const supabaseUrl = document.querySelector("meta[name='supabase-url']")?.content;
     const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
+        // If we have a pending incoming PeerJS call (e.g., we are the caller and callee dialed us back)
+        if (callState.pendingCall) {
+            const stream = await createLocalStream();
+            if (!stream) return;
+            callState.acceptOnArrival = false;
+            callState.pendingCall.answer(stream);
+            bindActiveCall(callState.pendingCall, { incoming: true });
+            if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "answered");
+            return;
+        }
+
+        // If we only have signaling data (remotePeerId) we initiate the call to that specific peer
+        if (callState.remotePeerId) {
+            const stream = await createLocalStream();
+            if (!stream) return;
+            const peer = ensurePeer(state.currentUser.id);
+            try {
+                await waitForPeerOpen(peer);
+            } catch (err) {
+                console.error("Peer not ready on accept", err);
+                setCallOverlayState({ visible: true, status: "Peer nicht bereit", sub: "", showAccept: true });
+                return;
+            }
+            const outbound = callState.peer.call(callState.remotePeerId, stream);
+            bindActiveCall(outbound, { incoming: true });
+            if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "answered");
+            return;
+        }
+
+        // No signaling yet: mark auto-accept and prewarm mic
+        callState.acceptOnArrival = true;
+        setCallOverlayState({ visible: true, status: "Verbinde…", sub: "Warte auf Call", showAccept: false });
+        void createLocalStream();
     let supabaseClient = null;
     let friendshipChannel = null;
     let messageChannel = null;
+    let presenceChannel = null;
     let profileFetchDelayMs = 0;
-    const callState = {
-        peer: null,
-        channel: null,
-        activeCall: null,
-        pendingCall: null,
-        localStream: null,
-        remoteStream: null,
-        remoteId: null,
-        remotePeerId: null,
-        levelMonitors: {},
-        micDeviceId: "",
-        acceptOnArrival: false,
-        connectTimeoutId: null,
-        myPeerId: null,
-        currentCallId: null,
-        callsChannel: null,
-    };
 
     const state = {
         mode: "dm",
         activeChannel: "quantum-lab",
         activeServer: "core",
-        activeDm: null,
+        activeDm: "nora",
         currentUser: null,
         messages: [
             {
@@ -114,8 +131,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 self: true,
             },
         ],
-        dmMessages: {},
-        friends: [],
+        dmMessages: {
+            nora: [
+                { id: 11, user: "Nora", handle: "nora.ai", content: "Can you push the neon border preset?", time: "09:20", self: false },
+                { id: 12, user: "Aury", handle: "auri.ops", content: "Yep, shipping in 5. Check the DM thread.", time: "09:21", self: true },
+            ],
+            sven: [
+                { id: 21, user: "Sven", handle: "sv3n", content: "Polished the blur-in effect.", time: "08:44", self: false },
+            ],
+            june: [
+                { id: 31, user: "June", handle: "june.qa", content: "Latency logs look good.", time: "07:55", self: false },
+            ],
+        },
+        friends: [
+            { id: "nora", username: "Nora", status: "accepted" },
+            { id: "sven", username: "Sven", status: "accepted" },
+            { id: "june", username: "June", status: "accepted" },
+        ],
+        onlineById: {
+            nora: true,
+            sven: false,
+            june: true,
+        },
         pending: [],
         profile: null,
     };
@@ -660,9 +697,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!state.currentUser) {
             await teardownCallEngine();
+            if (presenceChannel && supabaseClient) {
+                await supabaseClient.removeChannel(presenceChannel);
+                presenceChannel = null;
+            }
             state.friends = [];
             state.pending = [];
             state.profile = null;
+            state.onlineById = {};
             updateProfileUi("Guest");
             renderDmList();
             renderPending();
@@ -684,6 +726,7 @@ document.addEventListener("DOMContentLoaded", () => {
         await Promise.all([loadFriends(), loadPending()]);
         await subscribeFriendships();
         await subscribeMessages();
+        await subscribePresence();
         updateBadge();
         renderDmList();
         renderPending();
@@ -821,11 +864,12 @@ document.addEventListener("DOMContentLoaded", () => {
             name.textContent = friend.username;
             const sub = document.createElement("span");
             sub.className = "dm-sub";
-            sub.textContent = "connected";
+            const isOnline = Boolean(state.onlineById?.[friend.id]);
+            sub.textContent = isOnline ? "online" : "offline";
             meta.append(name, sub);
 
             const status = document.createElement("span");
-            status.className = "dm-status glow";
+            status.className = `dm-status ${isOnline ? "online" : "offline"} glow`;
 
             btn.append(avatar, meta, status);
             li.appendChild(btn);
@@ -906,6 +950,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const profile = profiles.find((p) => p.id === otherId);
             return { id: otherId, username: profile?.username || otherId, status: row.status };
         });
+
+        const knownIds = new Set(state.friends.map((friend) => friend.id));
+        state.onlineById = Object.fromEntries(
+            Object.entries(state.onlineById || {}).filter(([id]) => knownIds.has(id)),
+        );
     };
 
     const loadPending = async () => {
@@ -1090,6 +1139,36 @@ document.addEventListener("DOMContentLoaded", () => {
             .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `sender_id=eq.${userId}` }, handler)
             .subscribe();
         messageChannel = channel;
+    };
+
+    const subscribePresence = async () => {
+        if (!supabaseClient || !state.currentUser) return;
+        if (presenceChannel) {
+            await supabaseClient.removeChannel(presenceChannel);
+            presenceChannel = null;
+        }
+
+        const channel = supabaseClient.channel("friends-online", {
+            config: { presence: { key: state.currentUser.id } },
+        });
+
+        channel.on("presence", { event: "sync" }, () => {
+            const presenceState = channel.presenceState();
+            const next = {};
+            Object.keys(presenceState || {}).forEach((userId) => {
+                next[userId] = true;
+            });
+            state.onlineById = next;
+            renderDmList();
+        });
+
+        await channel.subscribe(async (status) => {
+            if (status === "SUBSCRIBED") {
+                await channel.track({ onlineAt: new Date().toISOString() });
+            }
+        });
+
+        presenceChannel = channel;
     };
 
     const addMessage = (content, self = true) => {
