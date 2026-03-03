@@ -616,28 +616,35 @@ a:hover {
 .bubble {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(192, 88, 255, 0.28);
-    border-radius: var(--radius-md);
+    border-radius: 16px;
     padding: 8px 10px;
     box-shadow: 0 0 5px #bf40bf, 0 18px 36px rgba(0, 0, 0, 0.28);
     backdrop-filter: blur(4px);
+    overflow: hidden;
+    background-clip: padding-box;
 }
 
 .bubble.self {
     background: linear-gradient(135deg, rgba(192, 88, 255, 0.35), rgba(255, 125, 220, 0.25));
-    border-color: rgba(255, 125, 220, 0.5);
+    border: 1px solid rgba(255, 125, 220, 0.6);
     box-shadow: 0 0 12px rgba(255, 125, 220, 0.35), 0 18px 40px rgba(0, 0, 0, 0.35);
-    border-radius: var(--radius-md);
+    border-radius: 16px;
+    background-clip: padding-box;
 }
 
 .bubble.dm {
     border: 1px solid rgba(117, 164, 255, 0.28);
     box-shadow: 0 0 6px rgba(117, 164, 255, 0.25), 0 0 10px rgba(192, 88, 255, 0.2);
     background: linear-gradient(130deg, rgba(192, 88, 255, 0.1), rgba(117, 164, 255, 0.12));
+    border-radius: 16px;
+    background-clip: padding-box;
 }
 
 .bubble.dm.self {
-    border-image: linear-gradient(120deg, #c058ff, #6dd3ff) 1;
-    border-radius: var(--radius-md);
+    border: 1px solid #c058ff;
+    box-shadow: 0 0 8px rgba(192, 88, 255, 0.35), 0 0 12px rgba(109, 211, 255, 0.25);
+    border-radius: 16px;
+    background-clip: padding-box;
 }
 
 .bubble.dm:not(.self) {
