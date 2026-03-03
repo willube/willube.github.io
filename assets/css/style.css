@@ -626,6 +626,7 @@ a:hover {
     background: linear-gradient(135deg, rgba(192, 88, 255, 0.35), rgba(255, 125, 220, 0.25));
     border-color: rgba(255, 125, 220, 0.5);
     box-shadow: 0 0 12px rgba(255, 125, 220, 0.35), 0 18px 40px rgba(0, 0, 0, 0.35);
+    border-radius: var(--radius-md);
 }
 
 .bubble.dm {
@@ -636,6 +637,7 @@ a:hover {
 
 .bubble.dm.self {
     border-image: linear-gradient(120deg, #c058ff, #6dd3ff) 1;
+    border-radius: var(--radius-md);
 }
 
 .bubble.dm:not(.self) {
