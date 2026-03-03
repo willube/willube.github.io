@@ -26,13 +26,14 @@
                 </button>
             </div>
             <div class="sidebar-bottom">
-                <button class="profile-chip" aria-label="Profile">
+                <div class="profile-chip" aria-label="Profile" role="button" tabindex="0">
                     <div class="profile-avatar">
                         <div class="avatar-sm" data-profile-avatar>AU</div>
                         <div class="status-dot online"></div>
                     </div>
                     <span class="profile-username" data-current-username>Guest</span>
-                </button>
+                    <button class="settings-gear" type="button" aria-label="Open settings" data-settings-toggle>⚙</button>
+                </div>
             </div>
         </aside>
 
@@ -117,6 +118,54 @@
                 </section>
             </div>
         </main>
+    </div>
+
+    <div class="settings-overlay is-hidden" data-settings-overlay>
+        <div class="settings-modal" data-settings-modal>
+            <button class="settings-close" aria-label="Close settings" data-settings-close>×</button>
+            <div class="settings-grid">
+                <aside class="settings-nav">
+                    <button class="settings-tab is-active" data-settings-tab="profile">Profile</button>
+                    <button class="settings-tab" data-settings-tab="design">Design</button>
+                    <button class="settings-tab" data-settings-tab="security">Sicherheit</button>
+                    <button class="settings-tab" data-settings-tab="audio">Audio</button>
+                </aside>
+                <section class="settings-content">
+                    <div class="settings-panel is-active" data-settings-panel="profile">
+                        <h3>Profil</h3>
+                        <p class="settings-label">Dein Username</p>
+                        <p class="settings-value" data-settings-username>Guest</p>
+                        <p class="settings-note">Username ist fest vergeben.</p>
+                    </div>
+                    <div class="settings-panel" data-settings-panel="design">
+                        <h3>Design</h3>
+                        <div class="setting-row">
+                            <span>Neon-Glow Intensität</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-neon-toggle />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-panel" data-settings-panel="security">
+                        <h3>Sicherheit</h3>
+                        <button class="danger-btn" type="button" data-logout>Abmelden</button>
+                        <div class="setting-row stack">
+                            <label for="settings-password">Passwort ändern</label>
+                            <div class="password-row">
+                                <input id="settings-password" type="password" placeholder="Neues Passwort" data-password-input />
+                                <button type="button" class="primary-btn" data-password-save>Speichern</button>
+                            </div>
+                            <p class="settings-note" data-password-msg></p>
+                        </div>
+                    </div>
+                    <div class="settings-panel" data-settings-panel="audio">
+                        <h3>Audio</h3>
+                        <p class="settings-note">Benachrichtigungstöne – Coming soon (Platzhalter).</p>
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
 
     <div class="auth-layer is-hidden" data-auth-layer>

@@ -36,6 +36,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileChip = qs(".profile-chip");
     const profileAvatar = profileChip?.querySelector("[data-profile-avatar]");
     const profileUsername = qs("[data-current-username]");
+    const settingsToggle = qs("[data-settings-toggle]");
+    const settingsOverlay = qs("[data-settings-overlay]");
+    const settingsModal = qs("[data-settings-modal]");
+    const settingsClose = qs("[data-settings-close]");
+    const settingsTabs = Array.from(document.querySelectorAll("[data-settings-tab]"));
+    const settingsPanels = Array.from(document.querySelectorAll("[data-settings-panel]"));
+    const settingsUsername = qs("[data-settings-username]");
+    const neonToggle = qs("[data-neon-toggle]");
+    const logoutBtn = qs("[data-logout]");
+    const passwordInput = qs("[data-password-input]");
+    const passwordSave = qs("[data-password-save]");
+    const passwordMsg = qs("[data-password-msg]");
 
     const supabaseUrl = document.querySelector("meta[name='supabase-url']")?.content;
     const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
@@ -125,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (profileUsername) profileUsername.textContent = label;
         if (profileAvatar) profileAvatar.textContent = initials(label);
         if (profileChip) profileChip.setAttribute("aria-label", `Profile · ${label}`);
+        if (settingsUsername) settingsUsername.textContent = label;
     };
 
     const fetchOwnProfile = async () => {
@@ -204,6 +217,34 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!emailValue || !passwordValue) return "Please fill email and password.";
         if (passwordValue.length < 6) return "Password must be at least 6 characters.";
         return null;
+    };
+
+    const setSettingsVisible = (show) => {
+        if (!settingsOverlay || !settingsModal) return;
+        if (show) {
+            settingsOverlay.classList.remove("is-hidden");
+            requestAnimationFrame(() => settingsOverlay.classList.add("is-visible"));
+        } else {
+            settingsOverlay.classList.remove("is-visible");
+            setTimeout(() => settingsOverlay.classList.add("is-hidden"), 220);
+        }
+    };
+
+    const setSettingsTab = (tabId) => {
+        settingsTabs.forEach((tab) => tab.classList.toggle("is-active", tab.dataset.settingsTab === tabId));
+        settingsPanels.forEach((panel) => panel.classList.toggle("is-active", panel.dataset.settingsPanel === tabId));
+    };
+
+    const applyNeonState = (isHigh) => {
+        document.body.classList.toggle("neon-soft", !isHigh);
+        if (neonToggle) neonToggle.checked = isHigh;
+        localStorage.setItem("neonGlow", isHigh ? "high" : "low");
+    };
+
+    const loadNeonState = () => {
+        const stored = localStorage.getItem("neonGlow");
+        const isHigh = stored ? stored === "high" : true;
+        applyNeonState(isHigh);
     };
 
     const updateRegisterButtonState = () => {
@@ -803,6 +844,52 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    const bindSettings = () => {
+        settingsToggle?.addEventListener("click", () => setSettingsVisible(true));
+        settingsClose?.addEventListener("click", () => setSettingsVisible(false));
+        settingsOverlay?.addEventListener("click", (event) => {
+            if (event.target === settingsOverlay) setSettingsVisible(false);
+        });
+
+        settingsTabs.forEach((tab) => {
+            tab.addEventListener("click", () => setSettingsTab(tab.dataset.settingsTab));
+        });
+
+        neonToggle?.addEventListener("change", (event) => {
+            applyNeonState(event.target.checked);
+        });
+
+        logoutBtn?.addEventListener("click", async () => {
+            if (!supabaseClient) return;
+            await supabaseClient.auth.signOut();
+            setSettingsVisible(false);
+            await handleSession(null);
+        });
+
+        passwordSave?.addEventListener("click", async () => {
+            if (!passwordInput) return;
+            const newPassword = passwordInput.value.trim();
+            if (newPassword.length < 6) {
+                if (passwordMsg) passwordMsg.textContent = "Passwort zu kurz (min. 6).";
+                return;
+            }
+            if (!supabaseClient || !state.currentUser) {
+                if (passwordMsg) passwordMsg.textContent = "Bitte zuerst anmelden.";
+                return;
+            }
+            const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+            if (error) {
+                if (passwordMsg) passwordMsg.textContent = error.message;
+                return;
+            }
+            if (passwordMsg) passwordMsg.textContent = "Passwort aktualisiert.";
+            passwordInput.value = "";
+        });
+
+        setSettingsTab("profile");
+        loadNeonState();
+    };
+
     const bindFriendForm = () => {
         friendForm?.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -946,5 +1033,6 @@ document.addEventListener("DOMContentLoaded", () => {
     bindComposer();
     bindDmComposer();
     bindAuthForms();
+    bindSettings();
     void initSupabase();
 });
