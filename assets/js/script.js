@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const authSwitches = Array.from(document.querySelectorAll("[data-auth-switch]"));
     const loginForm = authForms.find((f) => f.dataset.authForm === "login");
     const registerForm = authForms.find((f) => f.dataset.authForm === "register");
+    const registerUsernameInput = registerForm?.querySelector("input[name='username']");
+    const registerSubmitButton = registerForm?.querySelector("button[type='submit']");
     const authHeading = qs("#auth-title");
     const profileChip = qs(".profile-chip");
     const profileAvatar = profileChip?.querySelector("[data-profile-avatar]");
@@ -204,6 +206,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return null;
     };
 
+    const updateRegisterButtonState = () => {
+        if (!registerSubmitButton || !registerForm) return;
+        const emailValue = registerForm.querySelector("input[name='email']")?.value.trim();
+        const passwordValue = registerForm.querySelector("input[name='password']")?.value.trim();
+        const usernameValue = registerUsernameInput?.value.trim();
+        const allFilled = Boolean(emailValue && passwordValue && usernameValue);
+        registerSubmitButton.disabled = !allFilled;
+    };
+
     const showAuthForm = (target) => {
         authForms.forEach((form) => {
             const isTarget = form.dataset.authForm === target;
@@ -298,7 +309,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const author = document.createElement("span");
         author.className = "author";
-        author.textContent = `${message.user} · ${message.handle}`;
+        const primaryName = message.user || message.handle || "User";
+        const secondary = message.handle && message.handle !== primaryName ? ` · ${message.handle}` : "";
+        author.textContent = `${primaryName}${secondary}`;
 
         const time = document.createElement("span");
         time.className = "time";
@@ -823,6 +836,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     clearAuthErrors();
                     const target = toggle.dataset.target === "register" ? "register" : "login";
                     showAuthForm(target);
+                    updateRegisterButtonState();
                 });
             });
         }
@@ -853,7 +867,12 @@ document.addEventListener("DOMContentLoaded", () => {
             clearAuthErrors();
             const emailValue = registerForm.querySelector("input[name='email']")?.value.trim();
             const passwordValue = registerForm.querySelector("input[name='password']")?.value.trim();
-            const usernameValue = registerForm.querySelector("input[name='username']")?.value;
+            const usernameRaw = registerUsernameInput?.value.trim();
+            const usernameValue = sanitizeUsername(usernameRaw);
+            if (!usernameValue) {
+                setAuthError(registerForm, "Please choose a username.");
+                return;
+            }
             const validationError = validateAuthFields(emailValue, passwordValue);
             if (validationError) {
                 setAuthError(registerForm, validationError);
@@ -863,22 +882,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 setAuthError(registerForm, "Supabase not configured.");
                 return;
             }
-            const desiredUsername = buildUsername(usernameValue, emailValue);
             profileFetchDelayMs = 500;
             const { data, error } = await supabaseClient.auth.signUp({
                 email: emailValue,
                 password: passwordValue,
-                options: { data: { username: desiredUsername } },
+                options: { data: { username: usernameValue } },
             });
             if (error) {
                 profileFetchDelayMs = 0;
-                setAuthError(registerForm, error.message);
+                const lower = error.message?.toLowerCase?.() || "";
+                if (lower.includes("duplicate") || lower.includes("unique")) {
+                    setAuthError(registerForm, "Username bereits vergeben!");
+                } else {
+                    setAuthError(registerForm, error.message);
+                }
                 return;
             }
             if (!data?.session) {
                 setAuthError(registerForm, "Check your inbox to confirm.");
             }
         });
+
+        registerForm?.querySelectorAll("input").forEach((input) => {
+            input.addEventListener("input", updateRegisterButtonState);
+        });
+        updateRegisterButtonState();
     };
 
     const bindComposer = () => {
