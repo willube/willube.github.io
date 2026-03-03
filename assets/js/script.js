@@ -617,12 +617,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 900);
     };
 
-    const simulateDmReply = () => {
-        setTimeout(() => {
-            addDmMessage("Got it. Pink glow is live.", false);
-        }, 900);
-    };
-
     const setMode = (mode) => {
         state.mode = mode;
         views.forEach((view) => {
@@ -808,7 +802,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!content) return;
             addDmMessage(content, true);
             dmInput.value = "";
-            simulateDmReply();
         });
     };
 
