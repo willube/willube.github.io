@@ -563,9 +563,9 @@ a:hover {
 .message-list {
     height: calc(100vh - 220px);
     overflow-y: auto;
-    padding: 22px 24px 32px;
+    padding: 14px 16px 18px;
     display: grid;
-    gap: 1px;
+    gap: 0;
     scroll-behavior: smooth;
 }
 
@@ -575,7 +575,7 @@ a:hover {
 
 .message {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     align-items: flex-start;
     position: relative;
     width: 100%;
@@ -594,9 +594,9 @@ a:hover {
 }
 
 .message .avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     display: grid;
     place-items: center;
     background: linear-gradient(150deg, #121423, #0c0f19);
@@ -617,7 +617,7 @@ a:hover {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(192, 88, 255, 0.28);
     border-radius: var(--radius-md);
-    padding: 12px 14px;
+    padding: 8px 10px;
     box-shadow: 0 0 5px #bf40bf, 0 18px 36px rgba(0, 0, 0, 0.28);
     backdrop-filter: blur(4px);
 }
@@ -649,8 +649,8 @@ a:hover {
     align-items: baseline;
     gap: 10px;
     color: var(--muted);
-    font-size: 0.92rem;
-    margin: 0 0 4px;
+    font-size: 0.85rem;
+    margin: 0 0 2px;
 }
 
 .meta-row .author {
