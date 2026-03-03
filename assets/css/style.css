@@ -565,7 +565,7 @@ a:hover {
     overflow-y: auto;
     padding: 22px 24px 32px;
     display: grid;
-    gap: 12px;
+    gap: 1px;
     scroll-behavior: smooth;
 }
 
