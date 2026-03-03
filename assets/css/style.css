@@ -342,6 +342,7 @@ a:hover {
     box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6), 0 0 22px rgba(192, 88, 255, 0.35);
     position: relative;
     padding: 18px 20px 20px;
+    padding-right: 64px;
     transform: scale(0.96);
     opacity: 0.92;
     transition: transform 200ms ease, opacity 200ms ease;
@@ -356,18 +357,19 @@ a:hover {
 
 .settings-close {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 16px;
+    right: 16px;
     width: 36px;
     height: 36px;
     border-radius: 12px;
     border: 1px solid rgba(192, 88, 255, 0.5);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(12, 14, 26, 0.92);
     color: #fff;
     font-size: 18px;
     display: grid;
     place-items: center;
     cursor: pointer;
+    z-index: 2;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
