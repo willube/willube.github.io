@@ -631,6 +631,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const isMine = row.sender_id === userId;
             const involvesMe = isMine || row.receiver_id === userId;
             if (!involvesMe) return;
+            if (isMine) return; // skip self inserts; already added after send
             const activeFriend = state.activeDm;
             const friendId = row.sender_id === userId ? row.receiver_id : row.sender_id;
             if (activeFriend && friendId !== activeFriend) return;
@@ -667,6 +668,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const addDmMessage = (message, friendId = state.activeDm) => {
         if (!message || !message.content?.trim() || !friendId) return;
         if (!state.dmMessages[friendId]) state.dmMessages[friendId] = [];
+        const exists = state.dmMessages[friendId].some((m) => m.id === message.id && message.id !== undefined);
+        if (exists) return;
         state.dmMessages[friendId].push(message);
         if (friendId !== state.activeDm) return;
         const node = buildMessage(message, { isDm: true });
