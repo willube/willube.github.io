@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mode: "dm",
         activeChannel: "quantum-lab",
         activeServer: "core",
-        activeDm: "nora",
+        activeDm: null,
         currentUser: null,
         messages: [
             {
@@ -114,23 +114,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 self: true,
             },
         ],
-        dmMessages: {
-            nora: [
-                { id: 11, user: "Nora", handle: "nora.ai", content: "Can you push the neon border preset?", time: "09:20", self: false },
-                { id: 12, user: "Aury", handle: "auri.ops", content: "Yep, shipping in 5. Check the DM thread.", time: "09:21", self: true },
-            ],
-            sven: [
-                { id: 21, user: "Sven", handle: "sv3n", content: "Polished the blur-in effect.", time: "08:44", self: false },
-            ],
-            june: [
-                { id: 31, user: "June", handle: "june.qa", content: "Latency logs look good.", time: "07:55", self: false },
-            ],
-        },
-        friends: [
-            { id: "nora", username: "Nora", status: "accepted" },
-            { id: "sven", username: "Sven", status: "accepted" },
-            { id: "june", username: "June", status: "accepted" },
-        ],
+        dmMessages: {},
+        friends: [],
         pending: [],
         profile: null,
     };
