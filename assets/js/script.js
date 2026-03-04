@@ -450,6 +450,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return peer;
     };
 
+    const waitForPeerOpen = async (peer, timeoutMs = 8000) => {
+        if (!peer) return null;
+        if (peer.open) return peer.id;
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => reject(new Error("Peer timeout")), timeoutMs);
+            peer.once("open", (id) => {
+                clearTimeout(timer);
+                resolve(id);
+            });
+            peer.once("error", (err) => {
+                clearTimeout(timer);
+                reject(err);
+            });
+        });
+    };
+
     const ensureCallChannel = () => {
         if (!supabaseClient || !state.currentUser) return null;
         if (callState.channel) return callState.channel;
@@ -483,8 +499,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const startCall = async (receiverId) => {
         if (!receiverId || !state.currentUser) return;
-        ensurePeer(state.currentUser.id);
+        const peer = ensurePeer(state.currentUser.id);
         ensureCallChannel();
+        try {
+            await waitForPeerOpen(peer);
+        } catch (err) {
+            console.error("Peer not ready", err);
+            setCallOverlayState({ visible: true, status: "Verbindung fehlgeschlagen", sub: "Peer nicht bereit", showAccept: false });
+            return;
+        }
         const friendName = getFriendDisplayName(receiverId);
         setCallAvatarLabel(friendName);
         setCallOverlayState({ visible: true, status: `Calling ${friendName}…`, sub: "Verbindet…", showAccept: false });
