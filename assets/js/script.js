@@ -48,6 +48,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = qs("[data-password-input]");
     const passwordSave = qs("[data-password-save]");
     const passwordMsg = qs("[data-password-msg]");
+    const callButton = qs("[data-call-button]");
+    const callOverlay = qs("[data-call-overlay]");
+    const callStatus = qs("[data-call-status]");
+    const callSub = qs("[data-call-sub]");
+    const callAvatar = qs("[data-call-avatar]");
+    const callAcceptBtn = qs("[data-call-accept]");
+    const callEndBtn = qs("[data-call-end]");
+    const remoteAudioEl = qs("[data-remote-audio]");
+    const audioInputSelect = qs("[data-audio-input-select]");
 
     const supabaseUrl = document.querySelector("meta[name='supabase-url']")?.content;
     const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
@@ -55,6 +64,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let friendshipChannel = null;
     let messageChannel = null;
     let profileFetchDelayMs = 0;
+    const callState = {
+        peer: null,
+        channel: null,
+        activeCall: null,
+        pendingCall: null,
+        localStream: null,
+        remoteStream: null,
+        remoteId: null,
+        levelMonitors: {},
+        micDeviceId: "",
+    };
 
     const state = {
         mode: "dm",
@@ -138,6 +158,65 @@ document.addEventListener("DOMContentLoaded", () => {
         if (profileAvatar) profileAvatar.textContent = initials(label);
         if (profileChip) profileChip.setAttribute("aria-label", `Profile · ${label}`);
         if (settingsUsername) settingsUsername.textContent = label;
+    };
+
+    const getFriendDisplayName = (id) => {
+        if (!id) return "Friend";
+        if (state.profile?.id === id) return state.profile?.username || "You";
+        const friend = state.friends.find((f) => f.id === id);
+        return friend?.username || id;
+    };
+
+    const setCallAvatarLabel = (name) => {
+        if (callAvatar) callAvatar.textContent = initials(name || "--");
+    };
+
+    const setCallOverlayState = ({ visible, status, sub, showAccept }) => {
+        if (!callOverlay) return;
+        callOverlay.classList.toggle("is-hidden", !visible);
+        if (callStatus && status) callStatus.textContent = status;
+        if (callSub && sub !== undefined) callSub.textContent = sub;
+        if (callAcceptBtn) callAcceptBtn.style.display = showAccept ? "inline-flex" : "none";
+    };
+
+    const stopStream = (stream) => {
+        if (!stream) return;
+        stream.getTracks().forEach((track) => track.stop());
+    };
+
+    const stopLevelMonitor = (key) => {
+        const monitor = callState.levelMonitors[key];
+        if (!monitor) return;
+        if (monitor.rafId) cancelAnimationFrame(monitor.rafId);
+        monitor.ctx?.close?.();
+        monitor.target?.classList.remove("is-speaking");
+        delete callState.levelMonitors[key];
+    };
+
+    const startLevelMonitor = (key, stream, target) => {
+        stopLevelMonitor(key);
+        if (!stream || !target) return;
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        const ctx = new Ctx();
+        const source = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        const monitor = { ctx, target, rafId: 0 };
+        const tick = () => {
+            analyser.getByteTimeDomainData(data);
+            const deviation = data.reduce((max, value) => Math.max(max, Math.abs(value - 128)), 0);
+            target.classList.toggle("is-speaking", deviation > 16);
+            monitor.rafId = requestAnimationFrame(tick);
+        };
+        tick();
+        callState.levelMonitors[key] = monitor;
+    };
+
+    const stopAllLevelMonitors = () => {
+        Object.keys(callState.levelMonitors).forEach((key) => stopLevelMonitor(key));
     };
 
     const fetchOwnProfile = async () => {
@@ -247,6 +326,197 @@ document.addEventListener("DOMContentLoaded", () => {
         applyNeonState(isHigh);
     };
 
+    const refreshAudioInputs = async () => {
+        if (!audioInputSelect || !navigator.mediaDevices?.enumerateDevices) return;
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const audioInputs = devices.filter((d) => d.kind === "audioinput");
+            audioInputSelect.innerHTML = "";
+            const defaultOpt = document.createElement("option");
+            defaultOpt.value = "";
+            defaultOpt.textContent = "Standard Mikrofon";
+            audioInputSelect.appendChild(defaultOpt);
+            audioInputs.forEach((device, idx) => {
+                const opt = document.createElement("option");
+                opt.value = device.deviceId;
+                opt.textContent = device.label || `Mic ${idx + 1}`;
+                audioInputSelect.appendChild(opt);
+            });
+            const hasMatch = audioInputs.some((d) => d.deviceId === callState.micDeviceId);
+            audioInputSelect.value = hasMatch ? callState.micDeviceId : "";
+            callState.micDeviceId = audioInputSelect.value;
+        } catch (error) {
+            console.error("Could not list audio devices", error);
+        }
+    };
+
+    const stopLocalStream = () => {
+        if (callState.localStream) stopStream(callState.localStream);
+        callState.localStream = null;
+        stopLevelMonitor("local");
+    };
+
+    const stopRemoteStream = () => {
+        if (callState.remoteStream) stopStream(callState.remoteStream);
+        callState.remoteStream = null;
+        stopLevelMonitor("remote");
+        if (remoteAudioEl) remoteAudioEl.srcObject = null;
+    };
+
+    const createLocalStream = async () => {
+        const constraints = {
+            audio: {
+                deviceId: callState.micDeviceId ? { exact: callState.micDeviceId } : undefined,
+            },
+        };
+        try {
+            const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+            stopLocalStream();
+            callState.localStream = newStream;
+            startLevelMonitor("local", newStream, profileAvatar);
+            return newStream;
+        } catch (error) {
+            console.error("Mic access failed", error);
+            setCallOverlayState({ visible: true, status: "Mikrofon blockiert", sub: error.message || "", showAccept: false });
+            return null;
+        }
+    };
+
+    const attachRemoteStream = (stream) => {
+        if (!stream) return;
+        callState.remoteStream = stream;
+        if (remoteAudioEl) remoteAudioEl.srcObject = stream;
+        startLevelMonitor("remote", stream, callAvatar || null);
+    };
+
+    const endCall = (reason = "ended", notifyPeer = true) => {
+        const remoteId = callState.remoteId;
+        if (notifyPeer && remoteId) {
+            void sendCallSignal("hangup", remoteId);
+        }
+        callState.activeCall?.close?.();
+        callState.pendingCall?.close?.();
+        callState.activeCall = null;
+        callState.pendingCall = null;
+        stopRemoteStream();
+        stopLocalStream();
+        callState.remoteId = null;
+        setCallOverlayState({ visible: false, status: reason ? `Call · ${reason}` : "", sub: "", showAccept: false });
+    };
+
+    const bindActiveCall = (call, { incoming } = {}) => {
+        if (!call) return;
+        callState.activeCall = call;
+        callState.pendingCall = null;
+        callState.remoteId = call.peer;
+        const name = getFriendDisplayName(call.peer);
+        setCallAvatarLabel(name);
+        setCallOverlayState({ visible: true, status: incoming ? `Verbunden mit ${name}` : `Rufe ${name} an`, sub: incoming ? "Verbunden" : "Verbindet…", showAccept: false });
+        call.on("stream", (remoteStream) => attachRemoteStream(remoteStream));
+        call.on("close", () => endCall("beendet", false));
+        call.on("error", (err) => {
+            console.error("Call error", err);
+            endCall("Fehler", false);
+        });
+    };
+
+    const handleIncomingPeerCall = (incomingCall) => {
+        callState.pendingCall = incomingCall;
+        callState.remoteId = incomingCall.peer;
+        const name = getFriendDisplayName(incomingCall.peer);
+        setCallAvatarLabel(name);
+        setCallOverlayState({ visible: true, status: `${name} ruft an`, sub: "Eingehender Call", showAccept: true });
+    };
+
+    const ensurePeer = (userId) => {
+        if (!window.Peer) {
+            console.warn("PeerJS not loaded");
+            return null;
+        }
+        if (callState.peer && callState.peer.id === userId) return callState.peer;
+        if (callState.peer) {
+            callState.peer.destroy();
+        }
+        const peer = new Peer(userId);
+        peer.on("call", handleIncomingPeerCall);
+        peer.on("error", (err) => console.error("Peer error", err));
+        callState.peer = peer;
+        return peer;
+    };
+
+    const ensureCallChannel = () => {
+        if (!supabaseClient || !state.currentUser) return null;
+        if (callState.channel) return callState.channel;
+        const channel = supabaseClient.channel("voice-calls");
+        channel.on("broadcast", { event: "call" }, (payload) => {
+            const data = payload?.payload;
+            if (!data || data.to !== state.currentUser?.id) return;
+            const name = getFriendDisplayName(data.from);
+            setCallAvatarLabel(name);
+            if (data.action === "offer") {
+                callState.remoteId = data.from;
+                setCallOverlayState({ visible: true, status: `${name} ruft an`, sub: "Eingehender Call", showAccept: true });
+            }
+            if (data.action === "hangup") {
+                endCall("Aufgelegt", false);
+            }
+        });
+        channel.subscribe((status) => {
+            if (status === "CHANNEL_ERROR") console.error("Call channel error");
+        });
+        callState.channel = channel;
+        return channel;
+    };
+
+    const sendCallSignal = async (action, receiverId) => {
+        if (!supabaseClient || !state.currentUser || !receiverId) return;
+        const channel = ensureCallChannel();
+        if (!channel) return;
+        await channel.send({ type: "broadcast", event: "call", payload: { action, to: receiverId, from: state.currentUser.id } });
+    };
+
+    const startCall = async (receiverId) => {
+        if (!receiverId || !state.currentUser) return;
+        ensurePeer(state.currentUser.id);
+        ensureCallChannel();
+        const friendName = getFriendDisplayName(receiverId);
+        setCallAvatarLabel(friendName);
+        setCallOverlayState({ visible: true, status: `Calling ${friendName}…`, sub: "Verbindet…", showAccept: false });
+        await sendCallSignal("offer", receiverId);
+        const stream = await createLocalStream();
+        if (!stream || !callState.peer) return;
+        const call = callState.peer.call(receiverId, stream);
+        bindActiveCall(call, { incoming: false });
+    };
+
+    const acceptIncomingCall = async () => {
+        if (!callState.pendingCall) return;
+        const stream = await createLocalStream();
+        if (!stream) return;
+        callState.pendingCall.answer(stream);
+        bindActiveCall(callState.pendingCall, { incoming: true });
+    };
+
+    const teardownCallEngine = async () => {
+        endCall("", false);
+        if (callState.peer) {
+            callState.peer.destroy();
+            callState.peer = null;
+        }
+        if (callState.channel && supabaseClient) {
+            await supabaseClient.removeChannel(callState.channel);
+        }
+        callState.channel = null;
+        stopAllLevelMonitors();
+        stopRemoteStream();
+    };
+
+    const setupCallEngine = async (userId) => {
+        ensurePeer(userId);
+        ensureCallChannel();
+        await refreshAudioInputs();
+    };
+
     const updateRegisterButtonState = () => {
         if (!registerSubmitButton || !registerForm) return;
         const emailValue = registerForm.querySelector("input[name='email']")?.value.trim();
@@ -270,6 +540,7 @@ document.addEventListener("DOMContentLoaded", () => {
         profileFetchDelayMs = 0;
 
         if (!state.currentUser) {
+            await teardownCallEngine();
             state.friends = [];
             state.pending = [];
             state.profile = null;
@@ -290,6 +561,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateProfileUi(metadataName || "User");
 
         await ensureProfileUsername(delay);
+        await setupCallEngine(state.currentUser.id);
         await Promise.all([loadFriends(), loadPending()]);
         await subscribeFriendships();
         await subscribeMessages();
@@ -844,8 +1116,34 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    const bindCallUi = () => {
+        callButton?.addEventListener("click", () => {
+            if (!state.activeDm) return;
+            void startCall(state.activeDm);
+        });
+        callAcceptBtn?.addEventListener("click", () => {
+            void acceptIncomingCall();
+        });
+        callEndBtn?.addEventListener("click", () => endCall("Aufgelegt"));
+    };
+
+    const bindAudioSelect = () => {
+        audioInputSelect?.addEventListener("change", async (event) => {
+            callState.micDeviceId = event.target.value || "";
+            if (callState.activeCall) {
+                const newStream = await createLocalStream();
+                const newTrack = newStream?.getAudioTracks?.()[0];
+                const sender = callState.activeCall.peerConnection?.getSenders?.().find((s) => s.track?.kind === "audio");
+                if (sender && newTrack) sender.replaceTrack(newTrack);
+            }
+        });
+    };
+
     const bindSettings = () => {
-        settingsToggle?.addEventListener("click", () => setSettingsVisible(true));
+        settingsToggle?.addEventListener("click", async () => {
+            await refreshAudioInputs();
+            setSettingsVisible(true);
+        });
         settingsClose?.addEventListener("click", () => setSettingsVisible(false));
         settingsOverlay?.addEventListener("click", (event) => {
             if (event.target === settingsOverlay) setSettingsVisible(false);
@@ -1034,5 +1332,8 @@ document.addEventListener("DOMContentLoaded", () => {
     bindDmComposer();
     bindAuthForms();
     bindSettings();
+    bindCallUi();
+    bindAudioSelect();
+    window.startCall = startCall;
     void initSupabase();
 });

@@ -12,6 +12,7 @@
     <meta name="supabase-key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdrbm9hZ3VjZ2lpaWVvdnVqd3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzOTMxMjIsImV4cCI6MjA4Nzk2OTEyMn0.qJYS6cVIi6BJP02O_EPmVQb27IHMRJrxpvXrRfxejj8" />
     <link rel="stylesheet" href="assets/css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="bg-noise"></div>
@@ -61,6 +62,7 @@
                         <p class="eyebrow">Friends</p>
                         <div class="title-row">
                             <h1 data-active-dm>Direct · Nora</h1>
+                            <button class="call-icon-btn" type="button" aria-label="Start voice call" title="Call" data-call-button>📞</button>
                             <div class="live-pill">
                                 <span class="dot"></span>connected
                             </div>
@@ -161,12 +163,38 @@
                     </div>
                     <div class="settings-panel" data-settings-panel="audio">
                         <h3>Audio</h3>
+                        <div class="setting-row stack">
+                            <label for="audio-input-select">Eingabegerät</label>
+                            <select id="audio-input-select" data-audio-input-select>
+                                <option value="">Standard Mikrofon</option>
+                            </select>
+                            <p class="settings-note">Wähle dein Interface (z.B. ESI U22XT).</p>
+                        </div>
                         <p class="settings-note">Benachrichtigungstöne – Coming soon (Platzhalter).</p>
                     </div>
                 </section>
             </div>
         </div>
     </div>
+
+    <div class="call-overlay is-hidden" data-call-overlay>
+        <div class="call-card">
+            <p class="eyebrow">Voice Call</p>
+            <div class="call-identity">
+                <div class="call-avatar" data-call-avatar>--</div>
+                <div class="call-meta">
+                    <p class="call-status" data-call-status>Calling …</p>
+                    <p class="call-sub" data-call-sub>Verbinde</p>
+                </div>
+            </div>
+            <div class="call-actions">
+                <button class="call-btn-accept" type="button" data-call-accept>Annehmen</button>
+                <button class="call-btn-end" type="button" data-call-end>Auflegen</button>
+            </div>
+        </div>
+    </div>
+
+    <audio data-remote-audio autoplay playsinline></audio>
 
     <div class="auth-layer is-hidden" data-auth-layer>
         <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">

@@ -424,6 +424,22 @@ a:hover {
     height: 100%;
 }
 
+.settings-panel select {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--stroke);
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    padding: 10px 12px;
+    font-size: 1rem;
+}
+
+.settings-panel select:focus {
+    outline: none;
+    border-color: rgba(192, 88, 255, 0.6);
+    box-shadow: 0 0 16px rgba(192, 88, 255, 0.35);
+}
+
 .settings-panel.is-active {
     display: flex;
 }
@@ -831,6 +847,27 @@ body.neon-soft .settings-modal {
     align-items: center;
 }
 
+.call-icon-btn {
+    border: 1px solid rgba(192, 88, 255, 0.35);
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    border-radius: 12px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 8px 22px rgba(192, 88, 255, 0.28);
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.call-icon-btn:hover,
+.call-icon-btn:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(192, 88, 255, 0.7);
+    box-shadow: 0 0 18px rgba(192, 88, 255, 0.5);
+}
+
 .primary-btn {
     border: none;
     border-radius: 999px;
@@ -1158,6 +1195,128 @@ body.neon-soft .settings-modal {
     gap: 10px;
 }
 
+.call-overlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(4, 5, 10, 0.72);
+    backdrop-filter: blur(16px);
+    z-index: 40;
+    opacity: 1;
+    transition: opacity 200ms ease;
+}
+
+.call-overlay.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.call-card {
+    width: min(420px, 92vw);
+    background: rgba(12, 14, 26, 0.92);
+    border: 1px solid rgba(192, 88, 255, 0.55);
+    border-radius: 18px;
+    padding: 18px 18px 16px;
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.55), 0 0 18px rgba(192, 88, 255, 0.35);
+    display: grid;
+    gap: 14px;
+}
+
+.call-identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.call-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    border: 1px solid var(--stroke);
+    background: linear-gradient(140deg, #151727, #0f1220);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    position: relative;
+    color: #fff;
+}
+
+.call-avatar::after,
+.profile-avatar::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    border: 1px solid rgba(109, 211, 255, 0.25);
+    box-shadow: 0 0 12px rgba(109, 211, 255, 0.15);
+    opacity: 0.6;
+    transition: box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.call-avatar.is-speaking::after,
+.profile-avatar.is-speaking::after {
+    box-shadow: 0 0 20px rgba(109, 211, 255, 0.65), 0 0 34px rgba(192, 88, 255, 0.55);
+    opacity: 1;
+    animation: talkPulse 1s ease-in-out infinite;
+}
+
+.call-status {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.call-sub {
+    margin: 4px 0 0;
+    color: var(--muted);
+}
+
+.call-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.call-btn-accept,
+.call-btn-end {
+    flex: 1;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #0a0b12;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+}
+
+.call-btn-accept {
+    background: linear-gradient(120deg, #34d399, #6ee7b7);
+    box-shadow: 0 0 18px rgba(52, 211, 153, 0.6);
+}
+
+.call-btn-accept:hover,
+.call-btn-accept:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 0 24px rgba(52, 211, 153, 0.75);
+}
+
+.call-btn-end {
+    background: linear-gradient(120deg, #f87171, #fb7185);
+    box-shadow: 0 0 18px rgba(248, 113, 113, 0.55);
+}
+
+.call-btn-end:hover,
+.call-btn-end:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 0 24px rgba(248, 113, 113, 0.7);
+}
+
+audio[data-remote-audio] {
+    display: none;
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
@@ -1344,6 +1503,21 @@ body.neon-soft .settings-modal {
     }
     50% {
         box-shadow: 0 24px 64px rgba(192, 88, 255, 0.44);
+    }
+}
+
+@keyframes talkPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 12px rgba(109, 211, 255, 0.4), 0 0 20px rgba(192, 88, 255, 0.35);
+    }
+    50% {
+        transform: scale(1.04);
+        box-shadow: 0 0 22px rgba(109, 211, 255, 0.7), 0 0 32px rgba(192, 88, 255, 0.55);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 12px rgba(109, 211, 255, 0.4), 0 0 20px rgba(192, 88, 255, 0.35);
     }
 }
 
