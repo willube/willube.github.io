@@ -342,6 +342,7 @@ a:hover {
     box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6), 0 0 22px rgba(192, 88, 255, 0.35);
     position: relative;
     padding: 18px 20px 20px;
+    padding-right: 64px;
     transform: scale(0.96);
     opacity: 0.92;
     transition: transform 200ms ease, opacity 200ms ease;
@@ -356,18 +357,19 @@ a:hover {
 
 .settings-close {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 16px;
+    right: 16px;
     width: 36px;
     height: 36px;
     border-radius: 12px;
     border: 1px solid rgba(192, 88, 255, 0.5);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(12, 14, 26, 0.92);
     color: #fff;
     font-size: 18px;
     display: grid;
     place-items: center;
     cursor: pointer;
+    z-index: 2;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
@@ -725,14 +727,28 @@ body.neon-soft .settings-modal {
     width: 12px;
     height: 12px;
     border-radius: 999px;
-    background: radial-gradient(circle at 30% 30%, #ffd2ff, #ff74d9 60%, #6a104a 100%);
-    box-shadow: 0 0 14px rgba(255, 125, 220, 0.8);
+    background: radial-gradient(circle at 30% 30%, #b7ffc8, #4ade80 60%, #1f7f3d 100%);
+    box-shadow: 0 0 14px rgba(74, 222, 128, 0.8);
     opacity: 0.8;
     transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.dm-status.glow {
-    animation: pulsePink 1.8s ease-in-out infinite;
+.dm-status.online {
+    background: radial-gradient(circle at 30% 30%, #b7ffc8, #4ade80 60%, #1f7f3d 100%);
+    box-shadow: 0 0 14px rgba(74, 222, 128, 0.8);
+}
+
+.dm-status.offline {
+    background: radial-gradient(circle at 30% 30%, #ffb7b7, #f87171 60%, #7f1f1f 100%);
+    box-shadow: 0 0 14px rgba(248, 113, 113, 0.75);
+}
+
+.dm-status.online.glow {
+    animation: pulse 1.8s ease-in-out infinite;
+}
+
+.dm-status.offline.glow {
+    animation: pulseOffline 1.8s ease-in-out infinite;
 }
 
 .dm.is-active .dm-status {
@@ -1340,6 +1356,16 @@ audio[data-remote-audio] {
     }
     50% {
         box-shadow: 0 0 16px rgba(255, 125, 220, 1), 0 0 30px rgba(255, 125, 220, 0.65);
+    }
+}
+
+@keyframes pulseOffline {
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(248, 113, 113, 0.75), 0 0 22px rgba(248, 113, 113, 0.35);
+    }
+    50% {
+        box-shadow: 0 0 16px rgba(248, 113, 113, 0.95), 0 0 28px rgba(248, 113, 113, 0.5);
     }
 }
 
