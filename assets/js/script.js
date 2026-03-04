@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         levelMonitors: {},
         micDeviceId: "",
         acceptOnArrival: false,
+        connectTimeoutId: null,
     };
 
     const state = {
@@ -386,7 +387,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const attachRemoteStream = (stream) => {
         if (!stream) return;
         callState.remoteStream = stream;
-        if (remoteAudioEl) remoteAudioEl.srcObject = stream;
+        if (remoteAudioEl) {
+            remoteAudioEl.srcObject = stream;
+            remoteAudioEl.autoplay = true;
+            remoteAudioEl.play?.().catch((err) => console.warn("remote audio play blocked", err));
+        }
         startLevelMonitor("remote", stream, callAvatar || null);
     };
 
@@ -395,6 +400,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (notifyPeer && remoteId) {
             void sendCallSignal("hangup", remoteId);
         }
+        if (callState.connectTimeoutId) clearTimeout(callState.connectTimeoutId);
+        callState.connectTimeoutId = null;
         callState.activeCall?.close?.();
         callState.pendingCall?.close?.();
         callState.activeCall = null;
@@ -414,7 +421,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = getFriendDisplayName(call.peer);
         setCallAvatarLabel(name);
         setCallOverlayState({ visible: true, status: incoming ? `Verbunden mit ${name}` : `Rufe ${name} an`, sub: incoming ? "Verbunden" : "Verbindet…", showAccept: false });
-        call.on("stream", (remoteStream) => attachRemoteStream(remoteStream));
+        const timeoutId = setTimeout(() => {
+            console.warn("Call connection timeout");
+            endCall("Timeout");
+            setCallOverlayState({ visible: true, status: "Verbindung fehlgeschlagen - Firewall-Problem?", sub: "Timeout", showAccept: false });
+        }, 10000);
+        callState.connectTimeoutId = timeoutId;
+        call.on("stream", (remoteStream) => {
+            console.log("call.on(stream)", { from: call.peer });
+            clearTimeout(timeoutId);
+            attachRemoteStream(remoteStream);
+        });
         call.on("close", () => endCall("beendet", false));
         call.on("error", (err) => {
             console.error("Call error", err);
@@ -443,9 +460,20 @@ document.addEventListener("DOMContentLoaded", () => {
         if (callState.peer) {
             callState.peer.destroy();
         }
-        const peer = new Peer(userId);
-        peer.on("call", handleIncomingPeerCall);
+        const peer = new Peer(userId, {
+            config: {
+                iceServers: [
+                    { urls: "stun:stun.l.google.com:19302" },
+                    { urls: "stun:stun1.l.google.com:19302" },
+                ],
+            },
+        });
+        peer.on("call", (call) => {
+            console.log("peer.on(call)", { from: call.peer });
+            handleIncomingPeerCall(call);
+        });
         peer.on("error", (err) => console.error("Peer error", err));
+        peer.on("open", (id) => console.log("peer open", id));
         callState.peer = peer;
         return peer;
     };
