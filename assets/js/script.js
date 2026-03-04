@@ -770,10 +770,6 @@ document.addEventListener("DOMContentLoaded", () => {
         avatar.className = "avatar";
         avatar.textContent = initials(message.user);
 
-        const status = document.createElement("div");
-        status.className = "status-dot online";
-        avatar.appendChild(status);
-
         const bubble = document.createElement("div");
         bubble.className = "bubble";
         if (message.self) bubble.classList.add("self");
@@ -1152,19 +1148,35 @@ document.addEventListener("DOMContentLoaded", () => {
             config: { presence: { key: state.currentUser.id } },
         });
 
-        channel.on("presence", { event: "sync" }, () => {
-            const presenceState = channel.presenceState();
+        const syncOnlineState = () => {
+            const presenceState = channel.presenceState() || {};
             const next = {};
-            Object.keys(presenceState || {}).forEach((userId) => {
-                next[userId] = true;
+
+            Object.entries(presenceState).forEach(([presenceKey, metas]) => {
+                if (!Array.isArray(metas) || metas.length === 0) return;
+
+                next[presenceKey] = true;
+                metas.forEach((meta) => {
+                    const explicitUserId = meta?.user_id || meta?.userId;
+                    if (explicitUserId) next[explicitUserId] = true;
+                });
             });
+
             state.onlineById = next;
             renderDmList();
-        });
+        };
+
+        channel.on("presence", { event: "sync" }, syncOnlineState);
+        channel.on("presence", { event: "join" }, syncOnlineState);
+        channel.on("presence", { event: "leave" }, syncOnlineState);
 
         await channel.subscribe(async (status) => {
             if (status === "SUBSCRIBED") {
-                await channel.track({ onlineAt: new Date().toISOString() });
+                await channel.track({
+                    onlineAt: new Date().toISOString(),
+                    user_id: state.currentUser.id,
+                });
+                syncOnlineState();
             }
         });
 
