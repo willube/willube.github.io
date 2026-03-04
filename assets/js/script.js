@@ -74,6 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
         remoteId: null,
         levelMonitors: {},
         micDeviceId: "",
+        acceptOnArrival: false,
     };
 
     const state = {
@@ -398,6 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
         callState.pendingCall?.close?.();
         callState.activeCall = null;
         callState.pendingCall = null;
+        callState.acceptOnArrival = false;
         stopRemoteStream();
         stopLocalStream();
         callState.remoteId = null;
@@ -426,6 +428,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = getFriendDisplayName(incomingCall.peer);
         setCallAvatarLabel(name);
         setCallOverlayState({ visible: true, status: `${name} ruft an`, sub: "Eingehender Call", showAccept: true });
+        if (callState.acceptOnArrival) {
+            callState.acceptOnArrival = false;
+            void acceptIncomingCall();
+        }
     };
 
     const ensurePeer = (userId) => {
@@ -490,9 +496,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const acceptIncomingCall = async () => {
-        if (!callState.pendingCall) return;
+        if (!callState.pendingCall) {
+            // PeerJS call not arrived yet; mark to auto-accept when it does.
+            callState.acceptOnArrival = true;
+            setCallOverlayState({ visible: true, status: "Verbinde…", sub: "Warte auf Call", showAccept: false });
+            // Pre-warm mic permission to speed up answer when it arrives.
+            void createLocalStream();
+            return;
+        }
         const stream = await createLocalStream();
         if (!stream) return;
+        callState.acceptOnArrival = false;
         callState.pendingCall.answer(stream);
         bindActiveCall(callState.pendingCall, { incoming: true });
     };
