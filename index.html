@@ -61,7 +61,7 @@
                     <div class="title-stack">
                         <p class="eyebrow">Friends</p>
                         <div class="title-row">
-                            <h1 data-active-dm>Direct · Nora</h1>
+                            <h1 data-active-dm>Direct · —</h1>
                             <button class="call-icon-btn" type="button" aria-label="Start voice call" title="Call" data-call-button>📞</button>
                             <div class="live-pill">
                                 <span class="dot"></span>connected
@@ -178,18 +178,33 @@
     </div>
 
     <div class="call-overlay is-hidden" data-call-overlay>
-        <div class="call-card">
-            <p class="eyebrow">Voice Call</p>
-            <div class="call-identity">
-                <div class="call-avatar" data-call-avatar>--</div>
-                <div class="call-meta">
-                    <p class="call-status" data-call-status>Calling …</p>
-                    <p class="call-sub" data-call-sub>Verbinde</p>
+        <div class="call-panel">
+            <div class="call-top">
+                <p class="eyebrow">Voice</p>
+                <div class="call-info">
+                    <p class="call-status" data-call-status>Verbinde…</p>
+                    <p class="call-sub" data-call-sub></p>
+                </div>
+                <div class="call-actions-inline">
+                    <button class="call-btn-accept" type="button" data-call-accept>Annehmen</button>
+                    <button class="call-btn-end" type="button" data-call-end>Auflegen</button>
                 </div>
             </div>
-            <div class="call-actions">
-                <button class="call-btn-accept" type="button" data-call-accept>Annehmen</button>
-                <button class="call-btn-end" type="button" data-call-end>Auflegen</button>
+            <div class="call-avatars">
+                <div class="call-avatar-block">
+                    <div class="call-avatar" data-call-avatar-local>--</div>
+                    <div class="wave-bars" data-call-bars-local>
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                    <p class="call-name" data-call-name-local>You</p>
+                </div>
+                <div class="call-avatar-block">
+                    <div class="call-avatar" data-call-avatar-remote>--</div>
+                    <div class="wave-bars" data-call-bars-remote>
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                    <p class="call-name" data-call-name-remote>Friend</p>
+                </div>
             </div>
         </div>
     </div>

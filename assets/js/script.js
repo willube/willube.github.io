@@ -52,7 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const callOverlay = qs("[data-call-overlay]");
     const callStatus = qs("[data-call-status]");
     const callSub = qs("[data-call-sub]");
-    const callAvatar = qs("[data-call-avatar]");
+    const callAvatarLocal = qs("[data-call-avatar-local]");
+    const callAvatarRemote = qs("[data-call-avatar-remote]");
+    const callNameLocal = qs("[data-call-name-local]");
+    const callNameRemote = qs("[data-call-name-remote]");
+    const callBarsLocal = qs("[data-call-bars-local]");
+    const callBarsRemote = qs("[data-call-bars-remote]");
     const callAcceptBtn = qs("[data-call-accept]");
     const callEndBtn = qs("[data-call-end]");
     const remoteAudioEl = qs("[data-remote-audio]");
@@ -60,90 +65,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const supabaseUrl = document.querySelector("meta[name='supabase-url']")?.content;
     const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
-    let supabaseClient = null;
-    let friendshipChannel = null;
-    let messageChannel = null;
-    let profileFetchDelayMs = 0;
-    const callState = {
-        peer: null,
-        channel: null,
-        activeCall: null,
-        pendingCall: null,
-        localStream: null,
-        remoteStream: null,
-        remoteId: null,
-        remotePeerId: null,
-        levelMonitors: {},
-        micDeviceId: "",
-        acceptOnArrival: false,
-        connectTimeoutId: null,
-        myPeerId: null,
-        currentCallId: null,
-        callsChannel: null,
-    };
+        // If we have a pending incoming PeerJS call (e.g., we are the caller and callee dialed us back)
+        if (callState.pendingCall) {
+            const stream = await createLocalStream();
+            if (!stream) return;
+            callState.acceptOnArrival = false;
+            callState.pendingCall.answer(stream);
+            bindActiveCall(callState.pendingCall, { incoming: true });
+            if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "answered");
+            return;
+        }
 
-    const state = {
-        mode: "dm",
-        activeChannel: "quantum-lab",
-        activeServer: "core",
-        activeDm: "nora",
-        currentUser: null,
-        messages: [
-            {
-                id: 1,
-                user: "Nora",
-                handle: "nora.ai",
-                content: "Deploy preview is live. Check neon glow on mobile and log latency in the realtime feed.",
-                time: "09:12",
-                self: false,
-            },
-            {
-                id: 2,
-                user: "Sven",
-                handle: "sv3n",
-                content: "New motion preset for chat bubbles: blur-in + slide-up. Looks crisp.",
-                time: "09:14",
-                self: false,
-            },
-            {
-                id: 3,
-                user: "Aury",
-                handle: "auri.ops",
-                content: "Pinned: Realtime schema + policies. Review by 11:00 then merge.",
-                time: "09:18",
-                self: true,
-            },
-        ],
-        dmMessages: {
-            nora: [
-                { id: 11, user: "Nora", handle: "nora.ai", content: "Can you push the neon border preset?", time: "09:20", self: false },
-                { id: 12, user: "Aury", handle: "auri.ops", content: "Yep, shipping in 5. Check the DM thread.", time: "09:21", self: true },
-            ],
-            sven: [
-                { id: 21, user: "Sven", handle: "sv3n", content: "Polished the blur-in effect.", time: "08:44", self: false },
-            ],
-            june: [
-                { id: 31, user: "June", handle: "june.qa", content: "Latency logs look good.", time: "07:55", self: false },
-            ],
-        },
-        friends: [
-            { id: "nora", username: "Nora", status: "accepted" },
-            { id: "sven", username: "Sven", status: "accepted" },
-            { id: "june", username: "June", status: "accepted" },
-        ],
-        pending: [],
-        profile: null,
-    };
+        // If we only have signaling data (remotePeerId) we initiate the call to that specific peer
+        if (callState.remotePeerId) {
+            const stream = await createLocalStream();
+            if (!stream) return;
+            const peer = ensurePeer(state.currentUser.id);
+            try {
+                await waitForPeerOpen(peer);
+            } catch (err) {
+                console.error("Peer not ready on accept", err);
+                setCallOverlayState({ visible: true, status: "Peer nicht bereit", sub: "", showAccept: true });
+                return;
+            }
+            const outbound = callState.peer.call(callState.remotePeerId, stream);
+            bindActiveCall(outbound, { incoming: true });
+            if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "answered");
+            return;
+        }
 
-    const initials = (text) => (text || "?").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
-
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-    const sanitizeUsername = (value) => {
-        if (!value) return "";
-        return value
-            .toString()
-            .trim()
+        // No signaling yet: mark auto-accept and prewarm mic
+        callState.acceptOnArrival = true;
+        setCallOverlayState({ visible: true, status: "Verbinde…", sub: "Warte auf Call", showAccept: false });
+        void createLocalStream();
             .replace(/\s+/g, "-")
             .replace(/[^a-zA-Z0-9_-]/g, "")
             .slice(0, 24);
@@ -173,8 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return friend?.username || id;
     };
 
-    const setCallAvatarLabel = (name) => {
-        if (callAvatar) callAvatar.textContent = initials(name || "--");
+    const setCallAvatarLabel = (localName, remoteName) => {
+        if (callAvatarLocal) callAvatarLocal.textContent = initials(localName || "--");
+        if (callAvatarRemote) callAvatarRemote.textContent = initials(remoteName || "--");
+        if (callNameLocal) callNameLocal.textContent = localName || "You";
+        if (callNameRemote) callNameRemote.textContent = remoteName || "Friend";
     };
 
     const setCallOverlayState = ({ visible, status, sub, showAccept }) => {
@@ -196,10 +153,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (monitor.rafId) cancelAnimationFrame(monitor.rafId);
         monitor.ctx?.close?.();
         monitor.target?.classList.remove("is-speaking");
+        if (monitor.bars) {
+            monitor.bars.classList.remove("is-active");
+            Array.from(monitor.bars.children).forEach((bar) => (bar.style.height = "6px"));
+        }
         delete callState.levelMonitors[key];
     };
 
-    const startLevelMonitor = (key, stream, target) => {
+    const startLevelMonitor = (key, stream, target, bars) => {
         stopLevelMonitor(key);
         if (!stream || !target) return;
         const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -210,11 +171,22 @@ document.addEventListener("DOMContentLoaded", () => {
         analyser.fftSize = 256;
         source.connect(analyser);
         const data = new Uint8Array(analyser.frequencyBinCount);
-        const monitor = { ctx, target, rafId: 0 };
+        const monitor = { ctx, target, bars, rafId: 0 };
         const tick = () => {
             analyser.getByteTimeDomainData(data);
             const deviation = data.reduce((max, value) => Math.max(max, Math.abs(value - 128)), 0);
-            target.classList.toggle("is-speaking", deviation > 16);
+            const speaking = deviation > 12;
+            target.classList.toggle("is-speaking", speaking);
+            if (bars) {
+                const active = speaking;
+                bars.classList.toggle("is-active", active);
+                const children = Array.from(bars.children);
+                children.forEach((bar, idx) => {
+                    const base = 6;
+                    const extra = Math.min(18, deviation * (0.25 + idx * 0.05));
+                    bar.style.height = `${base + extra}px`;
+                });
+            }
             monitor.rafId = requestAnimationFrame(tick);
         };
         tick();
@@ -379,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const newStream = await navigator.mediaDevices.getUserMedia(constraints);
             stopLocalStream();
             callState.localStream = newStream;
-            startLevelMonitor("local", newStream, profileAvatar);
+            startLevelMonitor("local", newStream, callAvatarLocal || profileAvatar, callBarsLocal || null);
             return newStream;
         } catch (error) {
             console.error("Mic access failed", error);
@@ -394,9 +366,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (remoteAudioEl) {
             remoteAudioEl.srcObject = stream;
             remoteAudioEl.autoplay = true;
+            remoteAudioEl.muted = false;
             remoteAudioEl.play?.().catch((err) => console.warn("remote audio play blocked", err));
         }
-        startLevelMonitor("remote", stream, callAvatar || null);
+        startLevelMonitor("remote", stream, callAvatarRemote || null, callBarsRemote || null);
     };
 
     const endCall = (reason = "ended", notifyPeer = true) => {
@@ -425,9 +398,10 @@ document.addEventListener("DOMContentLoaded", () => {
         callState.activeCall = call;
         callState.pendingCall = null;
         callState.remoteId = call.peer;
-        const name = getFriendDisplayName(call.peer);
-        setCallAvatarLabel(name);
-        setCallOverlayState({ visible: true, status: incoming ? `Verbunden mit ${name}` : `Rufe ${name} an`, sub: incoming ? "Verbunden" : "Verbindet…", showAccept: false });
+        const remoteName = getFriendDisplayName(callState.remoteId) || getFriendDisplayName(call.peer);
+        const localName = state.profile?.username || "You";
+        setCallAvatarLabel(localName, remoteName);
+        setCallOverlayState({ visible: true, status: incoming ? `Verbunden mit ${remoteName}` : `Rufe ${remoteName} an`, sub: incoming ? "Verbunden" : "Verbindet…", showAccept: false });
         const timeoutId = setTimeout(() => {
             console.warn("Call connection timeout");
             endCall("Timeout");
