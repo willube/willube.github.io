@@ -1,13 +1,15 @@
-# Auri · Animated Bio Page
+# Screen · Futuristic Realtime Chat
 
-A modern, animation-rich biography page for Auri—a 16-year-old music producer & developer from Weimar—built with semantic HTML, expressive CSS, and lightweight JavaScript interactions.
+A futuristic, neon-styled realtime chat application hosted as a GitHub Pages site. Built with vanilla HTML, CSS, and JavaScript, backed by [Supabase](https://supabase.com) for authentication and realtime messaging.
 
 ## ✨ Highlights
 
-- Fluid gradients, glassmorphism-inspired cards, and floating ambient blobs for a cinematic backdrop.
-- Intersection Observer powered reveal animations that respect `prefers-reduced-motion` settings.
-- Responsive navigation with a touch-friendly toggle and smooth section reveals.
-- Modular structure with dedicated folders for styles and scripts.
+- Realtime direct messaging between users via Supabase Realtime.
+- Email/password authentication with registration (username selection) and login.
+- Friend requests: send and accept friend requests by username.
+- Futuristic dark UI with neon-glow effects, glassmorphism cards, and a cinematic noise/glow backdrop.
+- Settings panel with profile info, neon-glow intensity toggle, password change, and logout.
+- No build step — pure static files.
 
 ## 📂 Project Structure
 
@@ -17,28 +19,24 @@ assets/
   css/
     style.css
   js/
-    main.js
+    script.js
 ```
 
 ## 🚀 Getting Started
 
-Open `index.html` in your preferred browser. No build step is required.
-
-For local development with live reload, you can use any static server. Example (PowerShell):
+Open `index.html` in your preferred browser or serve it with any static file server. No build step is required.
 
 ```powershell
 npx serve .
 ```
 
+Register an account (email + username + password), then log in to start chatting with friends in realtime.
+
 ## 🛠 Customization Tips
 
-- Update the biography copy, timeline entries, and project spotlights directly in `index.html`.
-- Swap the portrait background image inside the `.portrait` class in `assets/css/style.css`.
-- Adjust animation timings and delays via the CSS custom properties and `data-delay` attributes on elements with the `reveal` class.
-
-## ♿ Accessibility & Motion
-
-Animations pause and elements remain visible when visitors prefer reduced motion, honoring operating-system accessibility preferences.
+- Supabase project URL and anon key are set via `<meta>` tags in `index.html`.
+- Update UI copy and color variables in `assets/css/style.css`.
+- All application logic (auth, messaging, friend system) lives in `assets/js/script.js`.
 
 ---
-Crafted with curiosity and ready for your personal touch.
+Built with curiosity. Ready to chat.
