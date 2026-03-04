@@ -72,10 +72,14 @@ document.addEventListener("DOMContentLoaded", () => {
         localStream: null,
         remoteStream: null,
         remoteId: null,
+        remotePeerId: null,
         levelMonitors: {},
         micDeviceId: "",
         acceptOnArrival: false,
         connectTimeoutId: null,
+        myPeerId: null,
+        currentCallId: null,
+        callsChannel: null,
     };
 
     const state = {
@@ -407,9 +411,12 @@ document.addEventListener("DOMContentLoaded", () => {
         callState.activeCall = null;
         callState.pendingCall = null;
         callState.acceptOnArrival = false;
+        if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "ended");
         stopRemoteStream();
         stopLocalStream();
         callState.remoteId = null;
+        callState.remotePeerId = null;
+        callState.currentCallId = null;
         setCallOverlayState({ visible: false, status: reason ? `Call · ${reason}` : "", sub: "", showAccept: false });
     };
 
@@ -441,8 +448,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const handleIncomingPeerCall = (incomingCall) => {
         callState.pendingCall = incomingCall;
-        callState.remoteId = incomingCall.peer;
-        const name = getFriendDisplayName(incomingCall.peer);
+        const name = getFriendDisplayName(callState.remoteId || incomingCall.peer);
         setCallAvatarLabel(name);
         setCallOverlayState({ visible: true, status: `${name} ruft an`, sub: "Eingehender Call", showAccept: true });
         if (callState.acceptOnArrival) {
@@ -456,11 +462,14 @@ document.addEventListener("DOMContentLoaded", () => {
             console.warn("PeerJS not loaded");
             return null;
         }
-        if (callState.peer && callState.peer.id === userId) return callState.peer;
+        if (!callState.myPeerId) {
+            callState.myPeerId = `${userId}_${Math.floor(Math.random() * 1000)}`;
+        }
+        if (callState.peer && callState.peer.id === callState.myPeerId) return callState.peer;
         if (callState.peer) {
             callState.peer.destroy();
         }
-        const peer = new Peer(userId, {
+        const peer = new Peer(callState.myPeerId, {
             config: {
                 iceServers: [
                     { urls: "stun:stun.l.google.com:19302" },
@@ -494,41 +503,73 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    const ensureCallChannel = () => {
+    const createCallRow = async (receiverId) => {
         if (!supabaseClient || !state.currentUser) return null;
-        if (callState.channel) return callState.channel;
-        const channel = supabaseClient.channel("voice-calls");
-        channel.on("broadcast", { event: "call" }, (payload) => {
-            const data = payload?.payload;
-            if (!data || data.to !== state.currentUser?.id) return;
-            const name = getFriendDisplayName(data.from);
-            setCallAvatarLabel(name);
-            if (data.action === "offer") {
-                callState.remoteId = data.from;
-                setCallOverlayState({ visible: true, status: `${name} ruft an`, sub: "Eingehender Call", showAccept: true });
-            }
-            if (data.action === "hangup") {
-                endCall("Aufgelegt", false);
-            }
-        });
-        channel.subscribe((status) => {
-            if (status === "CHANNEL_ERROR") console.error("Call channel error");
-        });
-        callState.channel = channel;
-        return channel;
+        const payload = {
+            caller_id: state.currentUser.id,
+            receiver_id: receiverId,
+            status: "ringing",
+            peer_id: callState.myPeerId,
+        };
+        const { data, error } = await supabaseClient
+            .from("calls")
+            .insert(payload)
+            .select("id, caller_id, receiver_id, status, peer_id")
+            .maybeSingle();
+        if (error) {
+            console.error("Create call row failed", error);
+            return null;
+        }
+        return data;
     };
 
-    const sendCallSignal = async (action, receiverId) => {
-        if (!supabaseClient || !state.currentUser || !receiverId) return;
-        const channel = ensureCallChannel();
-        if (!channel) return;
-        await channel.send({ type: "broadcast", event: "call", payload: { action, to: receiverId, from: state.currentUser.id } });
+    const updateCallStatus = async (callId, status) => {
+        if (!callId || !supabaseClient) return;
+        const { error } = await supabaseClient.from("calls").update({ status }).eq("id", callId);
+        if (error) console.error("Update call status failed", error);
+    };
+
+    const subscribeCalls = async () => {
+        if (!supabaseClient || !state.currentUser) return;
+        if (callState.callsChannel) {
+            await supabaseClient.removeChannel(callState.callsChannel);
+            callState.callsChannel = null;
+        }
+        const channel = supabaseClient.channel("calls-feed");
+        const handleInsert = (payload) => {
+            const row = payload?.new;
+            if (!row || row.receiver_id !== state.currentUser?.id) return;
+            if (row.status !== "ringing") return;
+            callState.currentCallId = row.id;
+            callState.remotePeerId = row.peer_id;
+            callState.remoteId = row.caller_id;
+            const name = getFriendDisplayName(row.caller_id);
+            setCallAvatarLabel(name);
+            setCallOverlayState({ visible: true, status: `${name} ruft an`, sub: "Eingehender Call", showAccept: true });
+        };
+        const handleUpdate = (payload) => {
+            const row = payload?.new;
+            if (!row) return;
+            const isMine = row.caller_id === state.currentUser?.id || row.receiver_id === state.currentUser?.id;
+            if (!isMine) return;
+            if (callState.currentCallId && row.id !== callState.currentCallId) return;
+            if (row.status === "ended") {
+                endCall("beendet", false);
+            }
+        };
+        channel
+            .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, handleInsert)
+            .on("postgres_changes", { event: "UPDATE", schema: "public", table: "calls" }, handleUpdate)
+            .subscribe((status) => {
+                if (status === "CHANNEL_ERROR") console.error("Call channel error");
+            });
+        callState.callsChannel = channel;
     };
 
     const startCall = async (receiverId) => {
         if (!receiverId || !state.currentUser) return;
         const peer = ensurePeer(state.currentUser.id);
-        ensureCallChannel();
+        await subscribeCalls();
         try {
             await waitForPeerOpen(peer);
         } catch (err) {
@@ -539,27 +580,51 @@ document.addEventListener("DOMContentLoaded", () => {
         const friendName = getFriendDisplayName(receiverId);
         setCallAvatarLabel(friendName);
         setCallOverlayState({ visible: true, status: `Calling ${friendName}…`, sub: "Verbindet…", showAccept: false });
-        await sendCallSignal("offer", receiverId);
-        const stream = await createLocalStream();
-        if (!stream || !callState.peer) return;
-        const call = callState.peer.call(receiverId, stream);
-        bindActiveCall(call, { incoming: false });
+        const row = await createCallRow(receiverId);
+        if (!row) {
+            setCallOverlayState({ visible: true, status: "Signal fehlgeschlagen", sub: "Konnte Call nicht anlegen", showAccept: false });
+            return;
+        }
+        callState.currentCallId = row.id;
+        callState.remoteId = receiverId;
+        callState.remotePeerId = null;
+        callState.acceptOnArrival = true;
     };
 
     const acceptIncomingCall = async () => {
-        if (!callState.pendingCall) {
-            // PeerJS call not arrived yet; mark to auto-accept when it does.
-            callState.acceptOnArrival = true;
-            setCallOverlayState({ visible: true, status: "Verbinde…", sub: "Warte auf Call", showAccept: false });
-            // Pre-warm mic permission to speed up answer when it arrives.
-            void createLocalStream();
+        // If we have a pending incoming PeerJS call (e.g., we are the caller and callee dialed us back)
+        if (callState.pendingCall) {
+            const stream = await createLocalStream();
+            if (!stream) return;
+            callState.acceptOnArrival = false;
+            callState.pendingCall.answer(stream);
+            bindActiveCall(callState.pendingCall, { incoming: true });
+            if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "answered");
             return;
         }
-        const stream = await createLocalStream();
-        if (!stream) return;
-        callState.acceptOnArrival = false;
-        callState.pendingCall.answer(stream);
-        bindActiveCall(callState.pendingCall, { incoming: true });
+
+        // If we only have signaling data (remotePeerId) we initiate the call to that specific peer
+        if (callState.remotePeerId) {
+            const stream = await createLocalStream();
+            if (!stream) return;
+            const peer = ensurePeer(state.currentUser.id);
+            try {
+                await waitForPeerOpen(peer);
+            } catch (err) {
+                console.error("Peer not ready on accept", err);
+                setCallOverlayState({ visible: true, status: "Peer nicht bereit", sub: "", showAccept: true });
+                return;
+            }
+            const outbound = callState.peer.call(callState.remotePeerId, stream);
+            bindActiveCall(outbound, { incoming: true });
+            if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "answered");
+            return;
+        }
+
+        // No signaling yet: mark auto-accept and prewarm mic
+        callState.acceptOnArrival = true;
+        setCallOverlayState({ visible: true, status: "Verbinde…", sub: "Warte auf Call", showAccept: false });
+        void createLocalStream();
     };
 
     const teardownCallEngine = async () => {
@@ -571,14 +636,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (callState.channel && supabaseClient) {
             await supabaseClient.removeChannel(callState.channel);
         }
+        if (callState.callsChannel && supabaseClient) {
+            await supabaseClient.removeChannel(callState.callsChannel);
+        }
         callState.channel = null;
+        callState.callsChannel = null;
         stopAllLevelMonitors();
         stopRemoteStream();
     };
 
     const setupCallEngine = async (userId) => {
         ensurePeer(userId);
-        ensureCallChannel();
+        await subscribeCalls();
         await refreshAudioInputs();
     };
 
@@ -1400,5 +1469,8 @@ document.addEventListener("DOMContentLoaded", () => {
     bindCallUi();
     bindAudioSelect();
     window.startCall = startCall;
+    window.addEventListener("beforeunload", () => {
+        if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "ended");
+    });
     void initSupabase();
 });
