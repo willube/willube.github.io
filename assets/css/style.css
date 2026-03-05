@@ -1,18 +1,19 @@
 :root {
-    --bg: #07080d;
-    --bg-2: #0c0f19;
-    --panel: rgba(20, 22, 32, 0.8);
-    --glass: rgba(27, 30, 46, 0.65);
-    --stroke: rgba(255, 255, 255, 0.08);
-    --accent: #c058ff;
-    --accent-2: #6dd3ff;
-    --text: #edf1ff;
-    --muted: #8b92aa;
-    --shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
+    --bg: #050607;
+    --bg-2: #0a0c10;
+    --panel: rgba(12, 14, 20, 0.82);
+    --glass: rgba(18, 20, 26, 0.7);
+    --stroke: rgba(255, 255, 255, 0.06);
+    --accent: #6bc1b6;
+    --accent-2: #9eddd3;
+    --text: #e8ecf5;
+    --muted: #98a2b3;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     --radius-lg: 22px;
     --radius-md: 14px;
     --radius-sm: 10px;
     --transition: 180ms ease;
+    --frost: blur(12px);
 }
 
 * {
@@ -22,9 +23,9 @@
 body {
     margin: 0;
     font-family: "Space Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
-    background: radial-gradient(circle at 10% 20%, rgba(192, 88, 255, 0.14), transparent 22%),
-        radial-gradient(circle at 85% 0%, rgba(109, 211, 255, 0.12), transparent 30%),
-        linear-gradient(135deg, #05060a, #0b0d13 55%, #0d0f17);
+    background: radial-gradient(circle at 12% 20%, rgba(110, 130, 160, 0.04), transparent 26%),
+        radial-gradient(circle at 82% 12%, rgba(90, 120, 150, 0.035), transparent 28%),
+        linear-gradient(140deg, #050607, #0a0c10 55%, #0b0d12);
     color: var(--text);
     min-height: 100vh;
     overflow: hidden;
@@ -42,9 +43,9 @@ a:hover {
     pointer-events: none;
     position: fixed;
     inset: 0;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
-    background-size: 3px 3px;
-    opacity: 0.45;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 0);
+    background-size: 4px 4px;
+    opacity: 0.2;
     z-index: 0;
 }
 
@@ -52,11 +53,106 @@ a:hover {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(circle at 20% 80%, rgba(192, 88, 255, 0.16), transparent 35%),
-        radial-gradient(circle at 80% 30%, rgba(109, 211, 255, 0.14), transparent 30%),
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03), transparent 45%);
-    filter: blur(18px);
+    background: radial-gradient(circle at 30% 70%, rgba(110, 150, 180, 0.08), transparent 30%),
+        radial-gradient(circle at 75% 25%, rgba(130, 170, 200, 0.06), transparent 32%);
+    filter: blur(12px);
+    opacity: 0.35;
     z-index: 0;
+}
+
+body.theme-minimalist .settings-modal,
+body.theme-minimalist .composer-shell,
+body.theme-minimalist .channel-header,
+body.theme-minimalist .setting-row,
+body.theme-minimalist .theme-card,
+body.theme-minimalist .accent-chip,
+body.theme-minimalist .friend-add-form {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(8px);
+}
+
+body.theme-stealth .settings-modal,
+body.theme-stealth .composer-shell,
+body.theme-stealth .channel-header,
+body.theme-stealth .setting-row,
+body.theme-stealth .theme-card,
+body.theme-stealth .accent-chip,
+body.theme-stealth .friend-add-form {
+    box-shadow: none;
+    backdrop-filter: blur(4px);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+body.theme-neon .settings-modal,
+body.theme-neon .composer-shell,
+body.theme-neon .channel-header,
+body.theme-neon .setting-row,
+body.theme-neon .theme-card,
+body.theme-neon .accent-chip,
+body.theme-neon .friend-add-form {
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.3);
+}
+
+body.theme-minimalist {
+    --bg: #060709;
+    --bg-2: #0b0d11;
+    --panel: rgba(10, 12, 18, 0.85);
+    --glass: rgba(16, 18, 24, 0.75);
+    --stroke: rgba(255, 255, 255, 0.05);
+    --text: #e9edf5;
+    --muted: #9da7b8;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(135deg, #050607, #0b0d11 60%, #0f1116);
+}
+
+body.theme-stealth {
+    --bg: #040506;
+    --bg-2: #07090c;
+    --panel: rgba(7, 9, 12, 0.9);
+    --glass: rgba(10, 12, 16, 0.75);
+    --stroke: rgba(255, 255, 255, 0.04);
+    --text: #e2e7ee;
+    --muted: #8a95a8;
+    --shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    background: radial-gradient(circle at 18% 22%, rgba(60, 120, 110, 0.06), transparent 28%),
+        radial-gradient(circle at 80% 12%, rgba(80, 120, 140, 0.05), transparent 32%),
+        linear-gradient(150deg, #040506, #080a0d 60%, #090b10);
+}
+
+body.theme-neon {
+    --bg: #060710;
+    --bg-2: #0b0e18;
+    --panel: rgba(14, 16, 26, 0.86);
+    --glass: rgba(20, 22, 34, 0.72);
+    --stroke: rgba(255, 255, 255, 0.08);
+    --text: #eef2ff;
+    --muted: #97a0bd;
+    --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    background: radial-gradient(circle at 22% 18%, rgba(192, 88, 255, 0.06), transparent 30%),
+        radial-gradient(circle at 78% 24%, rgba(109, 211, 255, 0.06), transparent 32%),
+        linear-gradient(140deg, #05060a, #0a0c14 55%, #0d1018);
+}
+
+body.theme-minimalist .bg-glow {
+    background: radial-gradient(circle at 20% 70%, rgba(130, 140, 200, 0.06), transparent 28%),
+        radial-gradient(circle at 68% 18%, rgba(180, 200, 220, 0.05), transparent 30%);
+    filter: blur(10px);
+    opacity: 0.4;
+}
+
+body.theme-stealth .bg-glow {
+    background: radial-gradient(circle at 26% 66%, rgba(90, 150, 140, 0.05), transparent 26%),
+        radial-gradient(circle at 72% 24%, rgba(110, 140, 170, 0.04), transparent 28%);
+    filter: blur(10px);
+    opacity: 0.3;
+}
+
+body.theme-neon .bg-glow {
+    background: radial-gradient(circle at 24% 72%, rgba(192, 88, 255, 0.08), transparent 32%),
+        radial-gradient(circle at 74% 26%, rgba(109, 211, 255, 0.08), transparent 30%);
+    filter: blur(14px);
+    opacity: 0.42;
 }
 
 .app {
@@ -93,7 +189,7 @@ a:hover {
 }
 
 .sidebar {
-    background: linear-gradient(180deg, rgba(8, 9, 14, 0.9), rgba(7, 8, 12, 0.9));
+    background: linear-gradient(180deg, rgba(6, 7, 10, 0.9), rgba(6, 7, 9, 0.94));
     border-right: 1px solid var(--stroke);
     display: flex;
     flex-direction: column;
@@ -104,8 +200,8 @@ a:hover {
 }
 
 .sidebar[data-mode="dm"] .icon-stack[data-dm] {
-    box-shadow: 0 0 24px rgba(192, 88, 255, 0.55), 0 0 8px rgba(192, 88, 255, 0.4);
-    border-color: rgba(192, 88, 255, 0.6);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 .sidebar-top {
@@ -120,7 +216,7 @@ a:hover {
     height: 52px;
     border-radius: 16px;
     border: 1px solid var(--stroke);
-    background: #0f111a;
+    background: #0b0d13;
     color: var(--text);
     display: grid;
     place-items: center;
@@ -138,13 +234,10 @@ a:hover {
     position: absolute;
     inset: -2px;
     border-radius: 18px;
-    background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--accent), #ff7ddc, var(--accent));
-    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    mask-composite: exclude;
+    border: 1px solid rgba(255, 255, 255, 0.06);
     padding: 2px;
     opacity: 0;
-    animation: spin 6s linear infinite;
-    transition: opacity 180ms ease;
+    transition: opacity 160ms ease, border-color 160ms ease;
 }
 
 .dm-badge {
@@ -154,8 +247,8 @@ a:hover {
     width: 12px;
     height: 12px;
     border-radius: 999px;
-    background: radial-gradient(circle at 30% 30%, #ffd2ff, #ff7ddc 60%, #6a104a 100%);
-    box-shadow: 0 0 12px rgba(255, 125, 220, 0.85);
+    background: radial-gradient(circle at 30% 30%, var(--accent-2), var(--accent) 80%);
+    box-shadow: none;
     opacity: 0;
     transform: scale(0.7);
     transition: opacity 180ms ease, transform 180ms ease;
@@ -168,8 +261,7 @@ a:hover {
 
 .icon-stack[data-dm].is-dm-active .neon-ring {
     opacity: 1;
-    animation-duration: 4s;
-    box-shadow: 0 0 18px rgba(192, 88, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.12);
 }
 
 .icon-stack.active .neon-ring,
@@ -179,9 +271,9 @@ a:hover {
 
 .icon-stack:hover,
 .icon-stack:focus-visible {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 12px 32px rgba(192, 88, 255, 0.25);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
 }
 
 .icon-stack.muted {
@@ -192,9 +284,9 @@ a:hover {
 .sidebar-sep {
     width: 20px;
     height: 3px;
-    background: linear-gradient(90deg, transparent, rgba(192, 88, 255, 0.65), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
     border-radius: 999px;
-    box-shadow: 0 0 12px rgba(192, 88, 255, 0.8);
+    box-shadow: none;
 }
 
 .sidebar-bottom {
@@ -211,20 +303,20 @@ a:hover {
     padding: 10px 14px;
     border-radius: 16px;
     border: 1px solid var(--stroke);
-    background: linear-gradient(140deg, #131524, #0e1019);
+    background: linear-gradient(140deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
     color: var(--text);
     display: flex;
     align-items: center;
     gap: 12px;
     cursor: pointer;
     z-index: 5;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
 .settings-gear {
     margin-left: auto;
     background: none;
-    border: 1px solid rgba(192, 88, 255, 0.4);
+    border: 1px solid var(--stroke);
     color: var(--text);
     width: 30px;
     height: 30px;
@@ -237,9 +329,9 @@ a:hover {
 
 .settings-gear:hover,
 .settings-gear:focus-visible {
-    color: #e6d8ff;
-    border-color: rgba(192, 88, 255, 0.7);
-    box-shadow: 0 0 14px rgba(192, 88, 255, 0.6);
+    color: var(--accent-2);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
     transform: translateY(-1px);
 }
 
@@ -273,7 +365,7 @@ a:hover {
 .settings-gear {
     margin-left: auto;
     background: none;
-    border: 1px solid rgba(192, 88, 255, 0.4);
+    border: 1px solid var(--stroke);
     color: var(--text);
     width: 30px;
     height: 30px;
@@ -286,9 +378,9 @@ a:hover {
 
 .settings-gear:hover,
 .settings-gear:focus-visible {
-    color: #e6d8ff;
-    border-color: rgba(192, 88, 255, 0.7);
-    box-shadow: 0 0 14px rgba(192, 88, 255, 0.6);
+    color: var(--accent-2);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
     transform: translateY(-1px);
 }
 
@@ -299,13 +391,13 @@ a:hover {
     width: 12px;
     height: 12px;
     border-radius: 999px;
-    background: #4ade80;
-    box-shadow: 0 0 12px rgba(74, 222, 128, 0.8), 0 0 22px rgba(74, 222, 128, 0.35);
-    animation: pulse 2.2s ease-in-out infinite;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: none;
+    animation: pulse 3s ease-in-out infinite;
 }
 
 .status-dot.online {
-    background: radial-gradient(circle at 35% 35%, #b7ffc8, #4ade80 60%, #1f7f3d 100%);
+    background: radial-gradient(circle at 35% 35%, var(--accent-2), var(--accent) 60%, #0c3f36 100%);
 }
 
 .profile-avatar .status-dot {
@@ -320,8 +412,8 @@ a:hover {
     align-items: center;
     justify-content: center;
     padding: 5vh 6vw;
-    background: rgba(6, 6, 14, 0.6);
-    backdrop-filter: blur(14px);
+    background: rgba(4, 5, 7, 0.6);
+    backdrop-filter: blur(10px);
     opacity: 0;
     pointer-events: none;
     transition: opacity 180ms ease;
@@ -336,10 +428,10 @@ a:hover {
 .settings-modal {
     width: min(1200px, 75vw);
     height: 75vh;
-    background: rgba(12, 14, 26, 0.9);
-    border: 1px solid rgba(192, 88, 255, 0.55);
+    background: rgba(12, 14, 20, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 20px;
-    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6), 0 0 22px rgba(192, 88, 255, 0.35);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
     position: relative;
     padding: 18px 20px 20px;
     transform: scale(0.96);
@@ -361,7 +453,7 @@ a:hover {
     width: 36px;
     height: 36px;
     border-radius: 12px;
-    border: 1px solid rgba(192, 88, 255, 0.5);
+    border: 1px solid var(--stroke);
     background: rgba(255, 255, 255, 0.02);
     color: #fff;
     font-size: 18px;
@@ -373,7 +465,7 @@ a:hover {
 
 .settings-close:hover,
 .settings-close:focus-visible {
-    box-shadow: 0 0 16px rgba(192, 88, 255, 0.7);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.25);
     transform: translateY(-1px);
 }
 
@@ -404,9 +496,9 @@ a:hover {
 }
 
 .settings-tab.is-active {
-    border-color: rgba(192, 88, 255, 0.8);
-    box-shadow: 0 0 12px rgba(192, 88, 255, 0.45);
-    background: linear-gradient(135deg, rgba(192, 88, 255, 0.14), rgba(117, 164, 255, 0.08));
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .settings-content {
@@ -436,8 +528,8 @@ a:hover {
 
 .settings-panel select:focus {
     outline: none;
-    border-color: rgba(192, 88, 255, 0.6);
-    box-shadow: 0 0 16px rgba(192, 88, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
 }
 
 .settings-panel.is-active {
@@ -448,7 +540,114 @@ a:hover {
     margin: 0 0 4px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #e6d8ff;
+    color: var(--text);
+}
+
+.setting-row-head {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accent-chip-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    width: 100%;
+}
+
+.accent-chip {
+    border: 1px solid var(--stroke);
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.accent-chip.is-active {
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+}
+
+.accent-chip:hover,
+.accent-chip:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+.color-picker-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-picker-row input[type="color"] {
+    width: 48px;
+    height: 32px;
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.theme-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.theme-card {
+    position: relative;
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius-md);
+    background: linear-gradient(140deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    padding: 10px;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    display: grid;
+}
+
+.theme-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.theme-card-body {
+    display: grid;
+    gap: 4px;
+}
+
+.theme-title {
+    margin: 0;
+    font-weight: 700;
+}
+
+.theme-sub {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.theme-card:hover,
+.theme-card:focus-within {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.theme-card.is-active {
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3);
 }
 
 .settings-label {
@@ -520,19 +719,19 @@ a:hover {
     bottom: 2px;
     background: #fff;
     border-radius: 50%;
-    box-shadow: 0 0 10px rgba(192, 88, 255, 0.6);
+    box-shadow: none;
     transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .toggle input:checked + .toggle-slider {
-    background: linear-gradient(135deg, rgba(192, 88, 255, 0.4), rgba(109, 211, 255, 0.35));
-    border-color: rgba(192, 88, 255, 0.6);
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-color: rgba(255, 255, 255, 0.12);
 }
 
 .toggle input:checked + .toggle-slider::before {
     transform: translateX(20px);
-    background: #e6d8ff;
-    box-shadow: 0 0 12px rgba(192, 88, 255, 0.9);
+    background: #0a0c10;
+    box-shadow: none;
 }
 
 .danger-btn {
@@ -571,11 +770,11 @@ a:hover {
 }
 
 body.neon-soft .bubble {
-    box-shadow: 0 0 3px rgba(192, 88, 255, 0.35), 0 12px 28px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
 }
 
 body.neon-soft .settings-modal {
-    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55), 0 0 12px rgba(192, 88, 255, 0.25);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
 }
 
 .channel-bar {
@@ -682,15 +881,15 @@ body.neon-soft .settings-modal {
 
 .dm:hover,
 .dm:focus-visible {
-    border-color: rgba(255, 125, 220, 0.45);
-    box-shadow: 0 0 18px rgba(255, 125, 220, 0.25);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
     transform: translateX(2px);
 }
 
 .dm.is-active {
-    border-color: rgba(255, 125, 220, 0.65);
-    background: linear-gradient(120deg, rgba(192, 88, 255, 0.18), rgba(109, 211, 255, 0.08));
-    box-shadow: 0 0 28px rgba(255, 125, 220, 0.35);
+    border-color: rgba(255, 255, 255, 0.18);
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
 }
 
 .dm-avatar {
@@ -725,8 +924,8 @@ body.neon-soft .settings-modal {
     width: 12px;
     height: 12px;
     border-radius: 999px;
-    background: radial-gradient(circle at 30% 30%, #ffd2ff, #ff74d9 60%, #6a104a 100%);
-    box-shadow: 0 0 14px rgba(255, 125, 220, 0.8);
+    background: radial-gradient(circle at 30% 30%, var(--accent-2), var(--accent) 60%, #0c3f36 100%);
+    box-shadow: none;
     opacity: 0.8;
     transition: transform var(--transition), box-shadow var(--transition);
 }
@@ -737,7 +936,7 @@ body.neon-soft .settings-modal {
 
 .dm.is-active .dm-status {
     transform: scale(1.08);
-    box-shadow: 0 0 18px rgba(255, 125, 220, 1);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
 }
 
 .channel {
@@ -755,25 +954,25 @@ body.neon-soft .settings-modal {
 .channel:hover,
 .channel:focus-visible {
     color: var(--text);
-    border-color: rgba(192, 88, 255, 0.35);
-    box-shadow: 0 0 22px rgba(192, 88, 255, 0.25);
-    text-shadow: 0 0 12px rgba(192, 88, 255, 0.45);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.22);
+    text-shadow: none;
     transform: translateX(2px);
 }
 
 .channel.is-active {
     color: #fff;
-    border-color: rgba(192, 88, 255, 0.6);
-    background: linear-gradient(120deg, rgba(192, 88, 255, 0.12), rgba(109, 211, 255, 0.08));
-    box-shadow: 0 0 32px rgba(192, 88, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.16);
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.24);
 }
 
 .main {
     position: relative;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    background: linear-gradient(120deg, rgba(192, 88, 255, 0.04), transparent 25%),
-        radial-gradient(circle at 90% 20%, rgba(109, 211, 255, 0.06), transparent 30%),
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.02), transparent 25%),
+        radial-gradient(circle at 90% 20%, rgba(120, 140, 170, 0.05), transparent 30%),
         #06070e;
 }
 
@@ -781,8 +980,8 @@ body.neon-soft .settings-modal {
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 0% 0%, rgba(192, 88, 255, 0.12), transparent 30%),
-        radial-gradient(circle at 100% 100%, rgba(109, 211, 255, 0.1), transparent 28%);
+    background: radial-gradient(circle at 0% 0%, rgba(110, 140, 180, 0.08), transparent 30%),
+        radial-gradient(circle at 100% 100%, rgba(90, 120, 150, 0.08), transparent 28%);
     filter: blur(32px);
     z-index: 0;
 }
@@ -825,9 +1024,9 @@ body.neon-soft .settings-modal {
     gap: 6px;
     padding: 6px 10px;
     border-radius: 999px;
-    background: rgba(192, 88, 255, 0.14);
-    border: 1px solid rgba(192, 88, 255, 0.45);
-    box-shadow: 0 0 18px rgba(192, 88, 255, 0.38);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: none;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-size: 0.75rem;
@@ -837,8 +1036,8 @@ body.neon-soft .settings-modal {
     width: 8px;
     height: 8px;
     border-radius: 999px;
-    background: #ff7ddc;
-    box-shadow: 0 0 10px rgba(255, 125, 220, 0.9);
+    background: var(--accent);
+    box-shadow: none;
 }
 
 .header-actions {
@@ -848,15 +1047,15 @@ body.neon-soft .settings-modal {
 }
 
 .call-icon-btn {
-    border: 1px solid rgba(192, 88, 255, 0.35);
-    background: rgba(255, 255, 255, 0.04);
-    color: #fff;
+    border: 1px solid var(--stroke);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text);
     border-radius: 12px;
     width: 38px;
     height: 38px;
     display: grid;
     place-items: center;
-    box-shadow: 0 8px 22px rgba(192, 88, 255, 0.28);
+    box-shadow: none;
     cursor: pointer;
     transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
@@ -864,26 +1063,27 @@ body.neon-soft .settings-modal {
 .call-icon-btn:hover,
 .call-icon-btn:focus-visible {
     transform: translateY(-1px);
-    border-color: rgba(192, 88, 255, 0.7);
-    box-shadow: 0 0 18px rgba(192, 88, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
 }
 
 .primary-btn {
-    border: none;
-    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
     padding: 10px 16px;
-    background: linear-gradient(120deg, var(--accent), #ff7ddc);
-    color: #0a0b12;
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    color: #0a0c10;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 14px 34px rgba(192, 88, 255, 0.4);
-    transition: transform var(--transition), box-shadow var(--transition);
+    box-shadow: none;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 
 .primary-btn:hover,
 .primary-btn:focus-visible {
     transform: translateY(-1px);
-    box-shadow: 0 18px 46px rgba(192, 88, 255, 0.52);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.25);
 }
 
 .message-zone {
@@ -895,9 +1095,9 @@ body.neon-soft .settings-modal {
 .message-list {
     height: calc(100vh - 220px);
     overflow-y: auto;
-    padding: 14px 16px 18px;
+    padding: 22px 22px 26px;
     display: grid;
-    gap: 0;
+    gap: 14px;
     scroll-behavior: smooth;
 }
 
@@ -907,7 +1107,7 @@ body.neon-soft .settings-modal {
 
 .message {
     display: flex;
-    gap: 8px;
+    gap: 12px;
     align-items: flex-start;
     position: relative;
     width: 100%;
@@ -931,7 +1131,7 @@ body.neon-soft .settings-modal {
     border-radius: 10px;
     display: grid;
     place-items: center;
-    background: linear-gradient(150deg, #121423, #0c0f19);
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--stroke);
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -946,36 +1146,34 @@ body.neon-soft .settings-modal {
 }
 
 .bubble {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(192, 88, 255, 0.28);
-    border-radius: 16px;
-    padding: 8px 10px;
-    box-shadow: 0 0 5px #bf40bf, 0 18px 36px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 10px 12px;
+    box-shadow: none;
+    backdrop-filter: blur(2px);
     overflow: hidden;
     background-clip: padding-box;
 }
 
 .bubble.self {
-    background: linear-gradient(135deg, rgba(192, 88, 255, 0.35), rgba(255, 125, 220, 0.25));
-    border: 1px solid rgba(255, 125, 220, 0.6);
-    box-shadow: 0 0 12px rgba(255, 125, 220, 0.35), 0 18px 40px rgba(0, 0, 0, 0.35);
-    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
     background-clip: padding-box;
 }
 
 .bubble.dm {
-    border: 1px solid rgba(117, 164, 255, 0.28);
-    box-shadow: 0 0 6px rgba(117, 164, 255, 0.25), 0 0 10px rgba(192, 88, 255, 0.2);
-    background: linear-gradient(130deg, rgba(192, 88, 255, 0.1), rgba(117, 164, 255, 0.12));
-    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.025);
+    border-radius: 14px;
     background-clip: padding-box;
 }
 
 .bubble.dm.self {
-    border: 1px solid #c058ff;
-    box-shadow: 0 0 8px rgba(192, 88, 255, 0.35), 0 0 12px rgba(109, 211, 255, 0.25);
-    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
     background-clip: padding-box;
 }
 

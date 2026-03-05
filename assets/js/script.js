@@ -44,6 +44,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const settingsPanels = Array.from(document.querySelectorAll("[data-settings-panel]"));
     const settingsUsername = qs("[data-settings-username]");
     const neonToggle = qs("[data-neon-toggle]");
+    const accentChips = Array.from(document.querySelectorAll("[data-accent-chip]"));
+    const accentPicker = qs("[data-accent-picker]");
+    const themeCards = Array.from(document.querySelectorAll("[data-theme-choice]"));
     const logoutBtn = qs("[data-logout]");
     const passwordInput = qs("[data-password-input]");
     const passwordSave = qs("[data-password-save]");
@@ -315,6 +318,89 @@ document.addEventListener("DOMContentLoaded", () => {
         const stored = localStorage.getItem("neonGlow");
         const isHigh = stored ? stored === "high" : true;
         applyNeonState(isHigh);
+    };
+
+    const designDefaults = {
+        accent: "#6bc1b6",
+        accent2: "#9eddd3",
+        theme: "stealth",
+        customAccent: false,
+    };
+
+    const themeAccentDefaults = {
+        minimalist: "#7e8cff",
+        stealth: "#6bc1b6",
+        neon: "#c058ff",
+    };
+
+    const parseDesignPrefs = () => {
+        try {
+            const raw = localStorage.getItem("designPrefs");
+            const parsed = raw ? JSON.parse(raw) : { ...designDefaults };
+            return { ...designDefaults, ...parsed, customAccent: parsed?.customAccent ?? false };
+        } catch (e) {
+            return { ...designDefaults };
+        }
+    };
+
+    const saveDesignPrefs = (prefs) => {
+        localStorage.setItem("designPrefs", JSON.stringify(prefs));
+    };
+
+    const hexToRgb = (hex) => {
+        const cleaned = hex.replace("#", "");
+        if (cleaned.length !== 6) return { r: 192, g: 88, b: 255 };
+        const num = parseInt(cleaned, 16);
+        return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+    };
+
+    const lighten = (hex, amount = 0.25) => {
+        const { r, g, b } = hexToRgb(hex);
+        const mix = (c) => Math.min(255, Math.round(c + (255 - c) * amount));
+        const toHex = (c) => c.toString(16).padStart(2, "0");
+        return `#${toHex(mix(r))}${toHex(mix(g))}${toHex(mix(b))}`;
+    };
+
+    const applyAccent = (accentHex, { markCustom = true } = {}) => {
+        const accent = accentHex || designDefaults.accent;
+        const accent2 = lighten(accent, 0.32);
+        document.documentElement.style.setProperty("--accent", accent);
+        document.documentElement.style.setProperty("--accent-2", accent2);
+        if (accentPicker) accentPicker.value = accent;
+        accentChips.forEach((chip) => {
+            const target = chip.dataset.accentChip?.split(",")[0];
+            chip.classList.toggle("is-active", target?.toLowerCase() === accent.toLowerCase());
+        });
+        const prefs = parseDesignPrefs();
+        const customAccent = markCustom ? true : prefs.customAccent;
+        saveDesignPrefs({ ...prefs, accent, accent2, customAccent });
+    };
+
+    const applyThemePreset = (theme, { applyThemeAccent = true } = {}) => {
+        const themes = ["minimalist", "stealth", "neon"];
+        themes.forEach((t) => document.body.classList.toggle(`theme-${t}`, t === theme));
+        themeCards.forEach((card) => {
+            card.classList.toggle("is-active", card.dataset.themeChoice === theme);
+            const input = card.querySelector("input[type='radio']");
+            if (input) input.checked = card.dataset.themeChoice === theme;
+        });
+        const prefs = parseDesignPrefs();
+        saveDesignPrefs({ ...prefs, theme });
+
+        const themeAccent = themeAccentDefaults[theme] || designDefaults.accent;
+        const shouldApplyThemeAccent = applyThemeAccent && (!prefs.customAccent || prefs.theme !== theme);
+        if (shouldApplyThemeAccent) {
+            applyAccent(themeAccent, { markCustom: false });
+        }
+    };
+
+    const loadDesignPrefs = () => {
+        const prefs = parseDesignPrefs();
+        const theme = prefs.theme || "stealth";
+        applyThemePreset(theme, { applyThemeAccent: false });
+        const themeAccent = themeAccentDefaults[theme] || designDefaults.accent;
+        const accent = prefs.customAccent ? prefs.accent || themeAccent : themeAccent;
+        applyAccent(accent, { markCustom: prefs.customAccent });
     };
 
     const refreshAudioInputs = async () => {
@@ -1272,6 +1358,26 @@ document.addEventListener("DOMContentLoaded", () => {
             tab.addEventListener("click", () => setSettingsTab(tab.dataset.settingsTab));
         });
 
+        accentChips.forEach((chip) => {
+            chip.addEventListener("click", () => {
+                const [accent] = chip.dataset.accentChip?.split(",") || [];
+                if (!accent) return;
+                applyAccent(accent.trim());
+            });
+        });
+
+        accentPicker?.addEventListener("input", (event) => {
+            const value = event.target.value;
+            applyAccent(value);
+        });
+
+        themeCards.forEach((card) => {
+            card.addEventListener("click", () => {
+                const theme = card.dataset.themeChoice;
+                applyThemePreset(theme);
+            });
+        });
+
         neonToggle?.addEventListener("change", (event) => {
             applyNeonState(event.target.checked);
         });
@@ -1305,6 +1411,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setSettingsTab("profile");
         loadNeonState();
+        loadDesignPrefs();
     };
 
     const bindFriendForm = () => {
@@ -1451,6 +1558,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bindDmComposer();
     bindAuthForms();
     bindSettings();
+    loadDesignPrefs();
     bindCallUi();
     bindAudioSelect();
     window.startCall = startCall;

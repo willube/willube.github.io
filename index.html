@@ -102,7 +102,7 @@
                         <div class="title-row">
                             <h1>Invite a friend</h1>
                         </div>
-                        <p class="subline">Minimal, zen, neon.</p>
+                        <p class="subline">Invite someone to join your conversation.</p>
                     </div>
                     <div class="header-actions">
                         <button class="ghost-btn" type="button" data-back-to-dm aria-label="Back to DMs">← Back</button>
@@ -114,7 +114,7 @@
                         <input type="text" name="friend-handle" placeholder="Enter username" autocomplete="off" />
                         <button type="submit" class="primary-btn">Send request</button>
                     </form>
-                    <p class="friend-add-hint" data-friend-hint>Use the public username. Supabase sender/receiver will handle routing.</p>
+                    <p class="friend-add-hint" data-friend-hint>Use the public username.</p>
                     <p class="friend-add-error" data-friend-error></p>
                     <p class="friend-add-success" data-friend-success></p>
                 </section>
@@ -141,6 +141,53 @@
                     </div>
                     <div class="settings-panel" data-settings-panel="design">
                         <h3>Design</h3>
+                        <div class="setting-row stack">
+                            <div class="setting-row-head">
+                                <span>Akzentfarben</span>
+                                <span class="settings-note">Subtile Highlights</span>
+                            </div>
+                            <div class="accent-chip-row" data-accent-chip-row>
+                                <button class="accent-chip" type="button" data-accent-chip="#7e8cff,#a8b3ff">Indigo Mist</button>
+                                <button class="accent-chip" type="button" data-accent-chip="#5ad7c4,#8fe7d7">Soft Teal</button>
+                                <button class="accent-chip" type="button" data-accent-chip="#ffb870,#ffd9a0">Warm Amber</button>
+                                <button class="accent-chip" type="button" data-accent-chip="#9aa6b8,#c4ccd8">Muted Steel</button>
+                            </div>
+                            <label class="color-picker-row">
+                                <span>Custom</span>
+                                <input type="color" value="#7e8cff" data-accent-picker />
+                            </label>
+                        </div>
+
+                        <div class="setting-row stack">
+                            <div class="setting-row-head">
+                                <span>Theme Presets</span>
+                                <span class="settings-note">Minimalist · Stealth · Classic Neon</span>
+                            </div>
+                            <div class="theme-grid" data-theme-grid>
+                                <label class="theme-card" data-theme-choice="minimalist">
+                                    <input type="radio" name="theme" value="minimalist" />
+                                    <div class="theme-card-body">
+                                        <p class="theme-title">Minimalist</p>
+                                        <p class="theme-sub">Aufgeräumt, dezente Linien</p>
+                                    </div>
+                                </label>
+                                <label class="theme-card" data-theme-choice="stealth">
+                                    <input type="radio" name="theme" value="stealth" />
+                                    <div class="theme-card-body">
+                                        <p class="theme-title">Stealth</p>
+                                        <p class="theme-sub">Dark-Mode, subtile Akzente</p>
+                                    </div>
+                                </label>
+                                <label class="theme-card" data-theme-choice="neon">
+                                    <input type="radio" name="theme" value="neon" />
+                                    <div class="theme-card-body">
+                                        <p class="theme-title">Classic Neon</p>
+                                        <p class="theme-sub">Etwas Glow, futuristisch</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="setting-row">
                             <span>Neon-Glow Intensität</span>
                             <label class="toggle">
