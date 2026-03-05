@@ -217,6 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
         state.profile = { ...state.profile, ...profile };
         updateProfileUi(state.profile);
         fillProfileForm(state.profile);
+        attachProfileClick(profileAvatar, state.currentUser.id);
     };
 
     const saveProfile = async () => {
@@ -266,7 +267,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (profileViewUsername) profileViewUsername.textContent = "";
         if (profileViewBio) profileViewBio.textContent = "";
         setAvatarVisual(profileViewAvatar, "", "--");
-        const profile = userId === state.currentUser?.id ? state.profile : await fetchProfile(userId);
+        const isSelf = userId === state.currentUser?.id;
+        const friendFallback = state.friends.find((f) => f.id === userId);
+        const profile = isSelf ? state.profile : (await fetchProfile(userId)) || friendFallback;
         const display = profile?.display_name || profile?.username || "User";
         const username = profile?.username || "";
         if (profileViewDisplay) profileViewDisplay.textContent = display;
@@ -280,7 +283,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function attachProfileClick(node, userId) {
         if (!node || !userId) return;
         node.classList.add("profile-trigger");
-        node.addEventListener("click", () => openProfileCard(userId));
+        node.addEventListener("click", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            void openProfileCard(userId);
+        });
     }
 
     const getFriendDisplayName = (id) => {
@@ -983,6 +990,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const primaryName = message.user || message.handle || "User";
         const secondary = message.handle && message.handle !== primaryName ? ` · ${message.handle}` : "";
         author.textContent = `${primaryName}${secondary}`;
+        if (message.userId) {
+            author.dataset.profileId = message.userId;
+            attachProfileClick(author, message.userId);
+        }
 
         const time = document.createElement("span");
         time.className = "time";
@@ -1060,6 +1071,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const name = document.createElement("span");
             name.className = "dm-name";
             name.textContent = friend.displayName || friend.username;
+            name.dataset.profileId = friend.id;
+            attachProfileClick(name, friend.id);
             const sub = document.createElement("span");
             sub.className = "dm-sub";
             sub.textContent = "connected";
