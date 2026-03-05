@@ -60,6 +60,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const callEndBtn = qs("[data-call-end]");
     const remoteAudioEl = qs("[data-remote-audio]");
     const audioInputSelect = qs("[data-audio-input-select]");
+    const profileDisplayInput = qs("[data-profile-display]");
+    const profileBioInput = qs("[data-profile-bio]");
+    const profileAvatarInput = qs("[data-profile-avatar-input]");
+    const profileSaveBtn = qs("[data-profile-save]");
+    const profileSaveMsg = qs("[data-profile-save-msg]");
+    const profilePreviewAvatar = qs("[data-profile-preview-avatar]");
+    const profilePreviewName = qs("[data-profile-preview-name]");
+    const profilePreviewBio = qs("[data-profile-preview-bio]");
+    const profileOverlay = qs("[data-profile-overlay]");
+    const profileOverlayClose = qs("[data-profile-close]");
+    const profileViewAvatar = qs("[data-profile-view-avatar]");
+    const profileViewDisplay = qs("[data-profile-view-display]");
+    const profileViewUsername = qs("[data-profile-view-username]");
+    const profileViewBio = qs("[data-profile-view-bio]");
 
     const supabaseUrl = document.querySelector("meta[name='supabase-url']")?.content;
     const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
@@ -146,19 +160,134 @@ document.addEventListener("DOMContentLoaded", () => {
         return `${base}-${suffix}`;
     };
 
-    const updateProfileUi = (username) => {
-        const label = username || "Guest";
-        if (profileUsername) profileUsername.textContent = label;
-        if (profileAvatar) profileAvatar.textContent = initials(label);
-        if (profileChip) profileChip.setAttribute("aria-label", `Profile · ${label}`);
-        if (settingsUsername) settingsUsername.textContent = label;
+    const sanitizeText = (value, max = 180) => {
+        if (!value) return "";
+        return value
+            .toString()
+            .replace(/[<>]/g, "")
+            .replace(/\s+/g, " ")
+            .trim()
+            .slice(0, max);
     };
+
+    const sanitizeUrl = (value) => {
+        if (!value) return "";
+        const trimmed = value.trim();
+        if (!/^https?:\/\//i.test(trimmed)) return "";
+        return trimmed.slice(0, 300);
+    };
+
+    const setAvatarVisual = (node, avatarUrl, fallbackText) => {
+        if (!node) return;
+        const clean = sanitizeUrl(avatarUrl);
+        if (clean) {
+            node.style.backgroundImage = `url('${clean}')`;
+            node.textContent = "";
+            node.classList.add("has-image");
+        } else {
+            node.style.backgroundImage = "";
+            node.textContent = fallbackText || "";
+            node.classList.remove("has-image");
+        }
+    };
+
+    const updateProfileUi = (profileData) => {
+        const profile = typeof profileData === "string" ? { username: profileData } : profileData || {};
+        const label = profile.display_name || profile.username || "Guest";
+        if (profileUsername) profileUsername.textContent = label;
+        if (profileAvatar) setAvatarVisual(profileAvatar, profile.avatar_url, initials(label));
+        if (profileChip) profileChip.setAttribute("aria-label", `Profile · ${label}`);
+        if (settingsUsername) settingsUsername.textContent = profile.username || label;
+        if (profilePreviewAvatar) setAvatarVisual(profilePreviewAvatar, profile.avatar_url, initials(label));
+        if (profilePreviewName) profilePreviewName.textContent = label;
+        if (profilePreviewBio) profilePreviewBio.textContent = profile.bio || "—";
+    };
+
+    const fillProfileForm = (profile) => {
+        if (!profile) return;
+        if (profileDisplayInput) profileDisplayInput.value = profile.display_name || "";
+        if (profileBioInput) profileBioInput.value = profile.bio || "";
+        if (profileAvatarInput) profileAvatarInput.value = profile.avatar_url || "";
+    };
+
+    const loadSelfProfile = async () => {
+        if (!supabaseClient || !state.currentUser) return;
+        const profile = await fetchOwnProfile();
+        if (!profile) return;
+        state.profile = { ...state.profile, ...profile };
+        updateProfileUi(state.profile);
+        fillProfileForm(state.profile);
+    };
+
+    const saveProfile = async () => {
+        if (!profileSaveMsg) return;
+        profileSaveMsg.textContent = "";
+        if (!supabaseClient || !state.currentUser) {
+            profileSaveMsg.textContent = "Bitte zuerst anmelden.";
+            return;
+        }
+        const displayName = sanitizeText(profileDisplayInput?.value, 40);
+        const bio = sanitizeText(profileBioInput?.value, 180);
+        const avatarUrl = sanitizeUrl(profileAvatarInput?.value);
+        const payload = { id: state.currentUser.id, display_name: displayName, bio, avatar_url: avatarUrl };
+        const { data, error } = await supabaseClient
+            .from("profiles")
+            .upsert(payload, { onConflict: "id" })
+            .select("id, username, display_name, bio, avatar_url, updated_at")
+            .maybeSingle();
+        if (error) {
+            profileSaveMsg.textContent = error.message;
+            return;
+        }
+        state.profile = { ...state.profile, ...data };
+        updateProfileUi(state.profile);
+        fillProfileForm(state.profile);
+        profileSaveMsg.textContent = "Profil aktualisiert.";
+        setTimeout(() => {
+            if (profileSaveMsg) profileSaveMsg.textContent = "";
+        }, 1600);
+    };
+
+    const setProfileOverlayVisible = (show) => {
+        if (!profileOverlay) return;
+        if (show) {
+            profileOverlay.classList.remove("is-hidden");
+            requestAnimationFrame(() => profileOverlay.classList.add("is-visible"));
+        } else {
+            profileOverlay.classList.remove("is-visible");
+            setTimeout(() => profileOverlay.classList.add("is-hidden"), 200);
+        }
+    };
+
+    async function openProfileCard(userId) {
+        if (!userId) return;
+        setProfileOverlayVisible(true);
+        if (profileViewDisplay) profileViewDisplay.textContent = "Loading…";
+        if (profileViewUsername) profileViewUsername.textContent = "";
+        if (profileViewBio) profileViewBio.textContent = "";
+        setAvatarVisual(profileViewAvatar, "", "--");
+        const profile = userId === state.currentUser?.id ? state.profile : await fetchProfile(userId);
+        const display = profile?.display_name || profile?.username || "User";
+        const username = profile?.username || "";
+        if (profileViewDisplay) profileViewDisplay.textContent = display;
+        if (profileViewUsername) profileViewUsername.textContent = username ? `@${username}` : "";
+        if (profileViewBio) profileViewBio.textContent = profile?.bio || "No bio yet.";
+        setAvatarVisual(profileViewAvatar, profile?.avatar_url, initials(display));
+    }
+
+    const closeProfileOverlay = () => setProfileOverlayVisible(false);
+
+    function attachProfileClick(node, userId) {
+        if (!node || !userId) return;
+        node.classList.add("profile-trigger");
+        node.addEventListener("click", () => openProfileCard(userId));
+    }
 
     const getFriendDisplayName = (id) => {
         if (!id) return "Friend";
-        if (state.profile?.id === id) return state.profile?.username || "You";
+        if (state.profile?.id === id) return state.profile?.display_name || state.profile?.username || "You";
         const friend = state.friends.find((f) => f.id === id);
-        return friend?.username || id;
+        return friend?.displayName || friend?.username || id;
     };
 
     const setCallAvatarLabel = (name) => {
@@ -215,7 +344,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const fetchOwnProfile = async () => {
         if (!supabaseClient || !state.currentUser) return null;
-        const { data, error } = await supabaseClient.from("profiles").select("id, username").eq("id", state.currentUser.id).maybeSingle();
+        const { data, error } = await supabaseClient
+            .from("profiles")
+            .select("id, username, display_name, bio, avatar_url, updated_at")
+            .eq("id", state.currentUser.id)
+            .maybeSingle();
         if (error) {
             console.error("Fetch profile failed", error);
             return null;
@@ -237,19 +370,33 @@ document.addEventListener("DOMContentLoaded", () => {
         return data;
     };
 
+    const fetchProfile = async (userId) => {
+        if (!supabaseClient || !userId) return null;
+        const { data, error } = await supabaseClient
+            .from("profiles")
+            .select("id, username, display_name, bio, avatar_url, updated_at")
+            .eq("id", userId)
+            .maybeSingle();
+        if (error) {
+            console.error("Fetch profile failed", error);
+            return null;
+        }
+        return data;
+    };
+
     const ensureProfileUsername = async (delayMs = 0) => {
         if (!supabaseClient || !state.currentUser) return null;
         if (delayMs > 0) await sleep(delayMs);
         const profile = await fetchOwnProfile();
         if (profile?.username) {
             state.profile = profile;
-            updateProfileUi(profile.username);
+            updateProfileUi(profile);
             return profile;
         }
         const generated = buildUsername(state.currentUser.user_metadata?.username, state.currentUser.email);
         const saved = (await upsertDefaultUsername(generated)) || profile || { id: state.currentUser.id, username: generated };
         state.profile = saved;
-        updateProfileUi(saved.username);
+        updateProfileUi(saved);
         return saved;
     };
 
@@ -766,6 +913,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateProfileUi(metadataName || "User");
 
         await ensureProfileUsername(delay);
+        await loadSelfProfile();
         await setupCallEngine(state.currentUser.id);
         await Promise.all([loadFriends(), loadPending()]);
         await subscribeFriendships();
@@ -811,7 +959,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const avatar = document.createElement("div");
         avatar.className = "avatar";
-        avatar.textContent = initials(message.user);
+        const fallbackInitials = initials(message.user);
+        setAvatarVisual(avatar, message.avatarUrl, fallbackInitials);
+        if (message.userId) {
+            avatar.dataset.profileId = message.userId;
+            attachProfileClick(avatar, message.userId);
+        }
 
         const status = document.createElement("div");
         status.className = "status-dot online";
@@ -889,7 +1042,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (friend.id === state.activeDm || (idx === 0 && !state.activeDm)) {
                 btn.classList.add("is-active");
                 state.activeDm = friend.id;
-                if (activeDmLabel) activeDmLabel.textContent = `Direct · ${friend.username}`;
+                if (activeDmLabel) activeDmLabel.textContent = `Direct · ${friend.displayName || friend.username}`;
             }
             if (slideInId && slideInId === friend.id) {
                 btn.classList.add("slide-in");
@@ -897,14 +1050,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const avatar = document.createElement("span");
-            avatar.className = "dm-avatar";
-            avatar.textContent = initials(friend.username);
+            avatar.className = "dm-avatar profile-trigger";
+            avatar.dataset.profileId = friend.id;
+            setAvatarVisual(avatar, friend.avatarUrl, initials(friend.displayName || friend.username));
+            attachProfileClick(avatar, friend.id);
 
             const meta = document.createElement("span");
             meta.className = "dm-meta";
             const name = document.createElement("span");
             name.className = "dm-name";
-            name.textContent = friend.username;
+            name.textContent = friend.displayName || friend.username;
             const sub = document.createElement("span");
             sub.className = "dm-sub";
             sub.textContent = "connected";
@@ -937,7 +1092,7 @@ document.addEventListener("DOMContentLoaded", () => {
             meta.className = "pending-meta";
             const name = document.createElement("p");
             name.className = "pending-name";
-            name.textContent = req.username || req.user_id || "Unknown";
+            name.textContent = req.displayName || req.username || req.user_id || "Unknown";
             const sub = document.createElement("p");
             sub.className = "pending-sub";
             sub.textContent = "Friend request";
@@ -983,14 +1138,20 @@ document.addEventListener("DOMContentLoaded", () => {
         if (otherIds.length > 0) {
             const { data: profileData } = await supabaseClient
                 .from("profiles")
-                .select("id, username")
+                .select("id, username, display_name, avatar_url")
                 .in("id", otherIds);
             profiles = profileData || [];
         }
         state.friends = (data || []).map((row) => {
             const otherId = row.sender_id === userId ? row.receiver_id : row.sender_id;
             const profile = profiles.find((p) => p.id === otherId);
-            return { id: otherId, username: profile?.username || otherId, status: row.status };
+            return {
+                id: otherId,
+                username: profile?.username || otherId,
+                displayName: profile?.display_name || profile?.username || otherId,
+                avatarUrl: profile?.avatar_url || "",
+                status: row.status,
+            };
         });
     };
 
@@ -1011,20 +1172,25 @@ document.addEventListener("DOMContentLoaded", () => {
         if (senderIds.length > 0) {
             const { data: profileData } = await supabaseClient
                 .from("profiles")
-                .select("id, username")
+                .select("id, username, display_name, avatar_url")
                 .in("id", senderIds);
             profiles = profileData || [];
         }
         state.pending = (data || []).map((row) => {
             const profile = profiles.find((p) => p.id === row.sender_id);
-            return { ...row, username: profile?.username || row.sender_id };
+            return {
+                ...row,
+                username: profile?.username || row.sender_id,
+                displayName: profile?.display_name || profile?.username || row.sender_id,
+                avatarUrl: profile?.avatar_url || "",
+            };
         });
     };
 
-    const addFriendLocal = (id, username) => {
+    const addFriendLocal = (id, username, displayName = "", avatarUrl = "") => {
         const exists = state.friends.some((f) => f.id === id);
         if (!exists) {
-            state.friends.push({ id, username: username || id, status: "accepted" });
+            state.friends.push({ id, username: username || id, displayName: displayName || username || id, avatarUrl, status: "accepted" });
         }
         if (!state.dmMessages[id]) state.dmMessages[id] = [];
         renderDmList(id);
@@ -1039,9 +1205,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const mapMessageRow = (row, friend) => {
         const myId = state.currentUser?.id;
         const isSelf = row.sender_id === myId;
-        const authorName = isSelf ? state.profile?.username || "You" : friend?.username || row.sender_id;
-        const handle = isSelf ? "you" : friend?.username || "friend";
+        const profileDisplay = state.profile?.display_name || state.profile?.username || "You";
+        const authorName = isSelf ? profileDisplay : friend?.displayName || friend?.username || row.sender_id;
+        const handle = isSelf ? state.profile?.username || "you" : friend?.username || "friend";
         const time = row.created_at ? new Date(row.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+        const avatarUrl = isSelf ? state.profile?.avatar_url : friend?.avatarUrl;
         return {
             id: row.id,
             user: authorName,
@@ -1049,6 +1217,8 @@ document.addEventListener("DOMContentLoaded", () => {
             content: row.content,
             time,
             self: isSelf,
+            userId: row.sender_id,
+            avatarUrl,
         };
     };
 
@@ -1083,7 +1253,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         state.pending = state.pending.filter((r) => r.id !== request.id);
         if (newStatus === "accepted") {
-            addFriendLocal(request.sender_id, request.username);
+            addFriendLocal(request.sender_id, request.username, request.displayName, request.avatarUrl);
         } else {
             renderPending();
         }
@@ -1127,15 +1297,27 @@ document.addEventListener("DOMContentLoaded", () => {
             const row = payload.new;
             if (!row || (row.sender_id !== userId && row.receiver_id !== userId)) return;
             if (row.status === "pending" && row.receiver_id === userId) {
-                void fetchProfileName(row.sender_id).then((username) => {
-                    state.pending = [...state.pending, { ...row, username }];
+                void fetchProfile(row.sender_id).then((profile) => {
+                    const username = profile?.username || row.sender_id;
+                    state.pending = [
+                        ...state.pending,
+                        {
+                            ...row,
+                            username,
+                            displayName: profile?.display_name || username,
+                            avatarUrl: profile?.avatar_url || "",
+                        },
+                    ];
                     renderPending();
                     updateBadge();
                 });
             }
             if (row.status === "accepted") {
                 const otherId = row.sender_id === userId ? row.receiver_id : row.sender_id;
-                void fetchProfileName(otherId).then((username) => addFriendLocal(otherId, username));
+                void fetchProfile(otherId).then((profile) => {
+                    const username = profile?.username || otherId;
+                    addFriendLocal(otherId, username, profile?.display_name, profile?.avatar_url || "");
+                });
                 state.pending = state.pending.filter((p) => p.id !== row.id);
                 renderPending();
             }
@@ -1218,6 +1400,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 content,
                 time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
                 self: true,
+                userId: state.currentUser?.id,
+                avatarUrl: state.profile?.avatar_url,
             });
             return;
         }
@@ -1414,6 +1598,31 @@ document.addEventListener("DOMContentLoaded", () => {
         loadDesignPrefs();
     };
 
+    const bindProfileEditor = () => {
+        profileSaveBtn?.addEventListener("click", () => {
+            void saveProfile();
+        });
+        [profileDisplayInput, profileBioInput, profileAvatarInput].forEach((input) => {
+            input?.addEventListener("input", () => {
+                const preview = {
+                    ...state.profile,
+                    display_name: sanitizeText(profileDisplayInput?.value, 40) || state.profile?.display_name,
+                    bio: sanitizeText(profileBioInput?.value, 180) || state.profile?.bio,
+                    avatar_url: sanitizeUrl(profileAvatarInput?.value) || state.profile?.avatar_url,
+                };
+                updateProfileUi(preview);
+                if (profileSaveMsg) profileSaveMsg.textContent = "";
+            });
+        });
+    };
+
+    const bindProfileOverlay = () => {
+        profileOverlayClose?.addEventListener("click", closeProfileOverlay);
+        profileOverlay?.addEventListener("click", (event) => {
+            if (event.target === profileOverlay) closeProfileOverlay();
+        });
+    };
+
     const bindFriendForm = () => {
         friendForm?.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -1558,6 +1767,8 @@ document.addEventListener("DOMContentLoaded", () => {
     bindDmComposer();
     bindAuthForms();
     bindSettings();
+    bindProfileEditor();
+    bindProfileOverlay();
     loadDesignPrefs();
     bindCallUi();
     bindAudioSelect();

@@ -129,6 +129,31 @@
                         <p class="settings-label">Dein Username</p>
                         <p class="settings-value" data-settings-username>Guest</p>
                         <p class="settings-note">Username ist fest vergeben.</p>
+                        <form class="profile-form" data-profile-form>
+                            <label>
+                                <span>Display Name</span>
+                                <input type="text" name="display-name" maxlength="40" placeholder="How should we show you?" data-profile-display />
+                            </label>
+                            <label>
+                                <span>Bio</span>
+                                <textarea name="bio" maxlength="180" rows="3" placeholder="Short bio" data-profile-bio></textarea>
+                            </label>
+                            <label>
+                                <span>Avatar URL</span>
+                                <input type="url" name="avatar" placeholder="https://…" data-profile-avatar-input />
+                            </label>
+                            <div class="profile-actions">
+                                <button class="primary-btn" type="button" data-profile-save>Profil speichern</button>
+                                <p class="settings-note" data-profile-save-msg></p>
+                            </div>
+                        </form>
+                        <div class="profile-preview" aria-label="Profile preview">
+                            <div class="profile-preview-avatar" data-profile-preview-avatar>AU</div>
+                            <div>
+                                <p class="profile-preview-name" data-profile-preview-name>Guest</p>
+                                <p class="profile-preview-bio" data-profile-preview-bio>Minimal bio</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="settings-panel" data-settings-panel="design">
                         <h3>Design</h3>
@@ -232,6 +257,20 @@
     </div>
 
     <audio data-remote-audio autoplay playsinline></audio>
+
+    <div class="profile-overlay is-hidden" data-profile-overlay>
+        <div class="profile-card" role="dialog" aria-modal="true">
+            <button class="profile-card-close" type="button" aria-label="Close profile" data-profile-close>×</button>
+            <div class="profile-card-hero">
+                <div class="profile-card-avatar" data-profile-view-avatar>--</div>
+                <div class="profile-card-meta">
+                    <p class="profile-card-name" data-profile-view-display>Loading…</p>
+                    <p class="profile-card-username" data-profile-view-username>@user</p>
+                </div>
+            </div>
+            <p class="profile-card-bio" data-profile-view-bio>Bio</p>
+        </div>
+    </div>
 
     <div class="auth-layer is-hidden" data-auth-layer>
         <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
