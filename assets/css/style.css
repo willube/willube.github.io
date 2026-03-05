@@ -159,13 +159,20 @@ body.theme-neon .bg-glow {
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: 72px 260px 1fr;
+    grid-template-columns: 280px 1fr;
     min-height: 100vh;
 }
 
 .view {
     position: relative;
     transition: opacity 300ms ease, filter 300ms ease;
+}
+
+.channel-bar .view {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    height: 100%;
 }
 
 .view.is-hidden {
@@ -299,6 +306,7 @@ body.theme-neon .bg-glow {
 .profile-chip {
     position: relative;
     min-width: 168px;
+    width: 100%;
     height: auto;
     padding: 10px 14px;
     border-radius: 16px;
@@ -787,6 +795,7 @@ body.neon-soft .settings-modal {
     gap: 18px;
     box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.02);
     position: relative;
+    min-height: 100vh;
 }
 
 .channel-header {
@@ -834,6 +843,12 @@ body.neon-soft .settings-modal {
 .channel-group {
     display: grid;
     gap: 10px;
+}
+
+.profile-dock {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--stroke);
 }
 
 .channel-group .label {
@@ -1150,10 +1165,12 @@ body.neon-soft .settings-modal {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 14px;
     padding: 10px 12px;
-    box-shadow: none;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
     backdrop-filter: blur(2px);
     overflow: hidden;
     background-clip: padding-box;
+    animation: bubbleFlow 7s cubic-bezier(0.4, 0.18, 0.2, 1) infinite;
+    will-change: box-shadow, border-color;
 }
 
 .bubble.self {
@@ -1165,7 +1182,7 @@ body.neon-soft .settings-modal {
 
 .bubble.dm {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: none;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
     background: rgba(255, 255, 255, 0.025);
     border-radius: 14px;
     background-clip: padding-box;
@@ -1175,6 +1192,28 @@ body.neon-soft .settings-modal {
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 14px;
     background-clip: padding-box;
+}
+
+.bubble:hover,
+.bubble:focus-visible {
+    animation-duration: 4s;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16), 0 0 10px rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes bubbleFlow {
+    0% {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12), 0 0 0 rgba(255, 255, 255, 0);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+    50% {
+        box-shadow: 0 7px 14px rgba(0, 0, 0, 0.14), 0 0 10px rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    100% {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12), 0 0 0 rgba(255, 255, 255, 0);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
 }
 
 .bubble.dm:not(.self) {

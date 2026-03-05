@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Screen · Futuristic realtime chat UI" />
-    <title>Screen · Futuristic chat</title>
+    <meta name="description" content="Sync" />
+    <title>Sync</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -18,26 +18,6 @@
     <div class="bg-noise"></div>
     <div class="bg-glow"></div>
     <div class="app" data-app>
-        <aside class="sidebar" aria-label="Servers and DMs">
-            <div class="sidebar-top">
-                <button class="icon-stack" data-dm aria-label="Direct messages">
-                    <span class="neon-ring"></span>
-                    <span class="dm-badge" data-dm-badge aria-hidden="true"></span>
-                    <span class="icon">∞</span>
-                </button>
-            </div>
-            <div class="sidebar-bottom">
-                <div class="profile-chip" aria-label="Profile" role="button" tabindex="0">
-                    <div class="profile-avatar">
-                        <div class="avatar-sm" data-profile-avatar>AU</div>
-                        <div class="status-dot online"></div>
-                    </div>
-                    <span class="profile-username" data-current-username>Guest</span>
-                    <button class="settings-gear" type="button" aria-label="Open settings" data-settings-toggle>⚙</button>
-                </div>
-            </div>
-        </aside>
-
         <aside class="channel-bar" aria-label="Channel rail">
             <div class="view" data-view="dm">
                 <header class="channel-header">
@@ -52,6 +32,17 @@
                     <p class="label">Messages</p>
                     <ul class="dm-list" data-dm-list></ul>
                 </section>
+
+                <div class="profile-dock">
+                    <div class="profile-chip" aria-label="Profile" role="button" tabindex="0">
+                        <div class="profile-avatar">
+                            <div class="avatar-sm" data-profile-avatar>AU</div>
+                            <div class="status-dot online"></div>
+                        </div>
+                        <span class="profile-username" data-current-username>Guest</span>
+                        <button class="settings-gear" type="button" aria-label="Open settings" data-settings-toggle>⚙</button>
+                    </div>
+                </div>
             </div>
         </aside>
 
@@ -67,7 +58,7 @@
                                 <span class="dot"></span>connected
                             </div>
                         </div>
-                        <p class="subline">Futuristic DM dashboard</p>
+                        <p class="subline">Welcome to Sync!</p>
                     </div>
                     <div class="header-actions">
                         <button class="primary-btn" type="button" data-open-friend-page>Add friend</button>
@@ -182,7 +173,6 @@
                                     <input type="radio" name="theme" value="neon" />
                                     <div class="theme-card-body">
                                         <p class="theme-title">Classic Neon</p>
-                                        <p class="theme-sub">Etwas Glow, futuristisch</p>
                                     </div>
                                 </label>
                             </div>
