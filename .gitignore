@@ -1,0 +1,2 @@
+# Ignore local env with Supabase secrets
+env.js

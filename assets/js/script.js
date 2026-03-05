@@ -1,3 +1,5 @@
+import { SUPABASE_CONFIG } from "../../env.js";
+
 const qs = (selector, scope = document) => scope.querySelector(selector);
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -58,8 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const remoteAudioEl = qs("[data-remote-audio]");
     const audioInputSelect = qs("[data-audio-input-select]");
 
-    const supabaseUrl = document.querySelector("meta[name='supabase-url']")?.content;
-    const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
     let supabaseClient = null;
     let friendshipChannel = null;
     let messageChannel = null;
@@ -251,11 +251,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const createSupabaseClient = () => {
-        if (!window.supabase || !supabaseUrl || !supabaseKey || supabaseUrl.startsWith("YOUR_")) {
-            console.warn("Supabase keys missing; running in demo mode.");
+        if (!window.supabase || !SUPABASE_CONFIG?.url || !SUPABASE_CONFIG?.key || SUPABASE_CONFIG.url.startsWith("DEINE_")) {
+            console.warn("Supabase keys missing; provide SUPABASE_CONFIG in env.js");
             return null;
         }
-        return window.supabase.createClient(supabaseUrl, supabaseKey, {
+        return window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key, {
             auth: { persistSession: true },
             realtime: { params: { eventsPerSecond: 3 } },
         });
