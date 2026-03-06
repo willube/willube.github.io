@@ -182,13 +182,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const setAvatarVisual = (node, avatarUrl, fallbackText) => {
         if (!node) return;
         const clean = sanitizeUrl(avatarUrl);
+        const existingImg = node.querySelector("img[data-avatar-image='true']");
+
+        Array.from(node.childNodes).forEach((child) => {
+            if (child.nodeType === Node.TEXT_NODE) child.remove();
+        });
+
         if (clean) {
-            node.style.backgroundImage = `url('${clean}')`;
-            node.textContent = "";
+            node.style.backgroundImage = "";
+            let img = existingImg;
+            if (!img) {
+                img = document.createElement("img");
+                img.dataset.avatarImage = "true";
+                img.loading = "lazy";
+                img.decoding = "async";
+                node.insertBefore(img, node.firstChild);
+            }
+            img.src = clean;
+            img.alt = fallbackText || "Avatar";
             node.classList.add("has-image");
         } else {
             node.style.backgroundImage = "";
-            node.textContent = fallbackText || "";
+            existingImg?.remove();
+            if (fallbackText) {
+                node.insertBefore(document.createTextNode(fallbackText), node.firstChild);
+            }
             node.classList.remove("has-image");
         }
     };
