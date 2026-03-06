@@ -480,10 +480,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const presences = channel?.presenceState?.() || {};
         const onlineIds = new Set();
         Object.entries(presences).forEach(([key, entries]) => {
-            const normalizedKey = normalizeUserId(key);
+            const normalizedKey = normalizeUserId(key).toLowerCase();
             if (normalizedKey) onlineIds.add(normalizedKey);
             (entries || []).forEach((entry) => {
-                const candidate = normalizeUserId(entry?.user_id || entry?.id || entry?.key || "");
+                const candidate = normalizeUserId(entry?.user_id || entry?.id || entry?.key || "").toLowerCase();
                 if (candidate) onlineIds.add(candidate);
             });
         });
@@ -1223,7 +1223,8 @@ document.addEventListener("DOMContentLoaded", () => {
             name.dataset.profileId = friend.id;
             const sub = document.createElement("span");
             sub.className = "dm-sub";
-            const isOnline = state.onlineUsers.has(friend.id);
+            const friendId = normalizeUserId(friend.id).toLowerCase();
+            const isOnline = state.onlineUsers.has(friendId);
             sub.textContent = isOnline ? "online" : "offline";
             meta.append(name, sub);
 
@@ -1554,6 +1555,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         online_at: new Date().toISOString(),
                     });
                     if (error) console.error("Presence track failed", error);
+                    syncOnlineUsers(channel);
                 }
                 if (status === "CHANNEL_ERROR") {
                     console.error("Presence channel error");
