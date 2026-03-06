@@ -405,11 +405,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    const normalizeUserId = (value) => {
+        if (!value) return "";
+        const raw = String(value).trim();
+        if (!raw.includes("_")) return raw;
+        const [firstPart] = raw.split("_");
+        const looksLikeUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(firstPart);
+        return looksLikeUuid ? firstPart : raw;
+    };
+
     const getFriendDisplayName = (id) => {
-        if (!id) return "Friend";
-        if (state.profile?.id === id) return state.profile?.display_name || state.profile?.username || "You";
-        const friend = state.friends.find((f) => f.id === id);
-        return friend?.displayName || friend?.username || id;
+        const normalizedId = normalizeUserId(id);
+        if (!normalizedId) return "Friend";
+        if (state.profile?.id === normalizedId) return state.profile?.display_name || state.profile?.username || "You";
+        const friend = state.friends.find((f) => f.id === normalizedId);
+        return friend?.displayName || friend?.username || normalizedId;
     };
 
     const setCallAvatarLabel = (name) => {
@@ -771,7 +781,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!call) return;
         callState.activeCall = call;
         callState.pendingCall = null;
-        callState.remoteId = call.peer;
+        callState.remotePeerId = call.peer;
+        callState.remoteId = normalizeUserId(call.peer);
         const name = getFriendDisplayName(call.peer);
         setCallAvatarLabel(name);
         setCallOverlayState({ visible: true, status: incoming ? `Verbunden mit ${name}` : `Rufe ${name} an`, sub: incoming ? "Verbunden" : "Verbindet…", showAccept: false });
