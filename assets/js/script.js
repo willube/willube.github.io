@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let supabaseClient = null;
     let friendshipChannel = null;
     let messageChannel = null;
+    let presenceChannel = null;
     let profileFetchDelayMs = 0;
 
     const getStoredVolume = (key, fallback = 0.5) => {
@@ -254,6 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
         friends: [],
         pending: [],
         profile: null,
+        onlineUsers: new Set(),
     };
 
     const initials = (text) => (text || "?").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
@@ -591,6 +593,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const stopAllLevelMonitors = () => {
         Object.keys(callState.levelMonitors).forEach((key) => stopLevelMonitor(key));
+    };
+
+    const syncOnlineUsers = (channel = presenceChannel) => {
+        const presences = channel?.presenceState?.() || {};
+        const onlineIds = new Set();
+        Object.entries(presences).forEach(([key, entries]) => {
+            const normalizedKey = normalizeUserId(key).toLowerCase();
+            if (normalizedKey) onlineIds.add(normalizedKey);
+            (entries || []).forEach((entry) => {
+                const candidate = normalizeUserId(entry?.user_id || entry?.id || entry?.key || "").toLowerCase();
+                if (candidate) onlineIds.add(candidate);
+            });
+        });
+        state.onlineUsers = onlineIds;
+        renderDmList();
     };
 
     const fetchOwnProfile = async () => {
@@ -1159,6 +1176,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!state.currentUser) {
             await teardownCallEngine();
+            await teardownPresence();
             state.friends = [];
             state.pending = [];
             state.profile = null;
@@ -1180,6 +1198,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         await ensureProfileUsername(delay);
         await loadSelfProfile();
+        await subscribePresence();
         await setupCallEngine(state.currentUser.id);
         await Promise.all([loadFriends(), loadPending()]);
         await subscribeFriendships();
@@ -1330,11 +1349,14 @@ document.addEventListener("DOMContentLoaded", () => {
             name.dataset.profileId = friend.id;
             const sub = document.createElement("span");
             sub.className = "dm-sub";
-            sub.textContent = "connected";
+            const friendId = normalizeUserId(friend.id).toLowerCase();
+            const isOnline = state.onlineUsers.has(friendId);
+            sub.textContent = isOnline ? "online" : "offline";
             meta.append(name, sub);
 
             const status = document.createElement("span");
-            status.className = "dm-status glow";
+            status.className = `dm-status${isOnline ? " glow" : ""}`;
+            status.style.opacity = isOnline ? "0.8" : "0.32";
 
             btn.append(avatar, meta, status);
             li.appendChild(btn);
@@ -1628,6 +1650,47 @@ document.addEventListener("DOMContentLoaded", () => {
         messageChannel = channel;
     };
 
+    const teardownPresence = async () => {
+        state.onlineUsers = new Set();
+        if (presenceChannel && supabaseClient) {
+            await supabaseClient.removeChannel(presenceChannel);
+        }
+        presenceChannel = null;
+    };
+
+    const subscribePresence = async () => {
+        if (!supabaseClient || !state.currentUser) return;
+        await teardownPresence();
+        const userId = state.currentUser.id;
+        const channel = supabaseClient.channel("online-status", {
+            config: {
+                presence: { key: userId },
+            },
+        });
+
+        const sync = () => syncOnlineUsers(channel);
+        channel
+            .on("presence", { event: "sync" }, sync)
+            .on("presence", { event: "join" }, sync)
+            .on("presence", { event: "leave" }, sync)
+            .subscribe(async (status) => {
+                if (status === "SUBSCRIBED") {
+                    const { error } = await channel.track({
+                        user_id: userId,
+                        username: state.profile?.username || "",
+                        online_at: new Date().toISOString(),
+                    });
+                    if (error) console.error("Presence track failed", error);
+                    syncOnlineUsers(channel);
+                }
+                if (status === "CHANNEL_ERROR") {
+                    console.error("Presence channel error");
+                }
+            });
+
+        presenceChannel = channel;
+    };
+
     const addMessage = (content, self = true) => {
         if (!content.trim()) return;
         const now = new Date();
@@ -1843,7 +1906,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const bindSettings = () => {
-        settingsToggle?.addEventListener("click", async () => {
+        settingsToggle?.addEventListener("click", async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             await refreshAudioInputs();
             setSettingsVisible(true);
         });
@@ -2069,6 +2134,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const bindProfileDelegation = () => {
         if (!appContainer) return;
         appContainer.addEventListener("click", (event) => {
+            if (event.target.closest("[data-settings-toggle]")) return;
             const target = event.target.closest("[data-profile-id]");
             if (!target) return;
             const userId = target.dataset.profileId;
