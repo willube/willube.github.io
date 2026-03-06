@@ -64,6 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const ringtoneVolumeLabel = qs("[data-ringtone-volume-label]");
     const notificationVolumeInput = qs("[data-notification-volume]");
     const notificationVolumeLabel = qs("[data-notification-volume-label]");
+    const introScreen = qs("#intro-screen");
+    const introTextEl = qs("[data-intro-text]");
+    const introCursorEl = qs("[data-intro-cursor]");
     const profileDisplayInput = qs("[data-profile-display]");
     const profileBioInput = qs("[data-profile-bio]");
     const profileAvatarInput = qs("[data-profile-avatar-input]");
@@ -155,6 +158,26 @@ document.addEventListener("DOMContentLoaded", () => {
         const ringOk = await unlockAudio(ringtoneAudio);
         const notifyOk = await unlockAudio(notificationSound);
         soundsUnlocked = ringOk || notifyOk;
+    };
+
+    const typeWriter = async (text = "", delay = 70) => {
+        if (!introTextEl) return;
+        introTextEl.textContent = "";
+        for (let i = 0; i < text.length; i += 1) {
+            introTextEl.textContent += text[i];
+            await new Promise((res) => setTimeout(res, delay));
+        }
+    };
+
+    const runIntroScreen = async () => {
+        if (!introScreen || !introTextEl || !introCursorEl) return;
+        const phrase = "Welcome to Sync";
+        await typeWriter(phrase, 70);
+        setTimeout(() => {
+            introCursorEl.classList.add("is-hidden");
+            introScreen.classList.add("is-fading");
+            setTimeout(() => introScreen.remove?.(), 520);
+        }, 900);
     };
 
     const startRingtone = async () => {
@@ -2169,6 +2192,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bindRingtoneVolume();
     bindNotificationVolume();
     wireRingtoneUnlock();
+    void runIntroScreen();
     window.startCall = startCall;
     window.addEventListener("beforeunload", () => {
         if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "ended");
