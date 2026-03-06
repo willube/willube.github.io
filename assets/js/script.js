@@ -195,12 +195,41 @@ document.addEventListener("DOMContentLoaded", () => {
         const profile = typeof profileData === "string" ? { username: profileData } : profileData || {};
         const label = profile.display_name || profile.username || "Guest";
         if (profileUsername) profileUsername.textContent = label;
-        if (profileAvatar) setAvatarVisual(profileAvatar, profile.avatar_url, initials(label));
         if (profileChip) profileChip.setAttribute("aria-label", `Profile · ${label}`);
         if (settingsUsername) settingsUsername.textContent = profile.username || label;
         if (profilePreviewAvatar) setAvatarVisual(profilePreviewAvatar, profile.avatar_url, initials(label));
         if (profilePreviewName) profilePreviewName.textContent = label;
         if (profilePreviewBio) profilePreviewBio.textContent = profile.bio || "—";
+    };
+
+    const refreshOwnAvatar = (profile) => {
+        if (!profileAvatar) return;
+        const label = profile?.display_name || profile?.username || "Guest";
+        const url = sanitizeUrl(profile?.avatar_url);
+        profileAvatar.dataset.profileId = profile?.id || "";
+        profileAvatar.classList.remove("has-image");
+        profileAvatar.style.backgroundImage = "";
+        profileAvatar.textContent = "";
+        if (url) {
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = label;
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "inherit";
+            img.style.display = "block";
+            profileAvatar.appendChild(img);
+            profileAvatar.classList.add("has-image");
+        } else {
+            profileAvatar.textContent = initials(label);
+        }
+    };
+
+    const updateLocalUI = (profile) => {
+        const label = profile?.display_name || profile?.username || "Guest";
+        refreshOwnAvatar(profile);
+        if (profileChip) profileChip.dataset.profileId = profile?.id || "";
     };
 
     const fillProfileForm = (profile) => {
@@ -217,6 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
         state.profile = { ...state.profile, ...profile };
         updateProfileUi(state.profile);
         fillProfileForm(state.profile);
+        updateLocalUI(state.profile);
         attachProfileClick(profileAvatar, state.currentUser.id);
     };
 
@@ -243,6 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
         state.profile = { ...state.profile, ...data };
         updateProfileUi(state.profile);
         fillProfileForm(state.profile);
+        updateLocalUI(state.profile);
         profileSaveMsg.textContent = "Profil aktualisiert.";
         setTimeout(() => {
             if (profileSaveMsg) profileSaveMsg.textContent = "";
@@ -280,13 +311,97 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const closeProfileOverlay = () => setProfileOverlayVisible(false);
 
+    let profileFlyout = null;
+    let profileFlyoutEls = {};
+
+    const ensureProfileFlyout = () => {
+        if (profileFlyout) return profileFlyout;
+        const wrapper = document.createElement("div");
+        wrapper.className = "profile-flyout";
+        wrapper.style.cssText =
+            "position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(5,6,8,0.65);backdrop-filter:blur(8px);z-index:60;opacity:0;pointer-events:none;transition:opacity 160ms ease";
+        wrapper.innerHTML = `
+            <div class="profile-flyout-card" role="dialog" aria-modal="true" style="width:min(440px,92vw);background:rgba(12,14,20,0.94);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:18px;box-shadow:0 18px 48px rgba(0,0,0,0.35);position:relative;">
+                <button data-flyout-close aria-label="Close profile" style="position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.05);color:#fff;cursor:pointer;font-size:16px;">×</button>
+                <div style="display:flex;gap:14px;align-items:center;">
+                    <div style="width:88px;height:88px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);flex-shrink:0;">
+                        <img data-flyout-avatar alt="Profile" style="width:100%;height:100%;object-fit:cover;display:block;" />
+                    </div>
+                    <div>
+                        <p data-flyout-name style="margin:0;font-weight:700;font-size:1.1rem;letter-spacing:0.01em;">Loading…</p>
+                        <p data-flyout-username style="margin:4px 0 0;color:#9da7b8;font-size:0.95rem;"></p>
+                    </div>
+                </div>
+                <p data-flyout-bio style="margin:14px 0 0;color:#9da7b8;line-height:1.5;white-space:pre-wrap;">Bio wird geladen…</p>
+            </div>
+        `;
+        document.body.appendChild(wrapper);
+        profileFlyout = wrapper;
+        profileFlyoutEls = {
+            avatar: wrapper.querySelector("[data-flyout-avatar]"),
+            name: wrapper.querySelector("[data-flyout-name]"),
+            username: wrapper.querySelector("[data-flyout-username]"),
+            bio: wrapper.querySelector("[data-flyout-bio]"),
+            close: wrapper.querySelector("[data-flyout-close]"),
+        };
+        const hide = () => hideProfileFlyout();
+        profileFlyoutEls.close?.addEventListener("click", hide);
+        wrapper.addEventListener("click", (event) => {
+            if (event.target === wrapper) hide();
+        });
+        return profileFlyout;
+    };
+
+    const hideProfileFlyout = () => {
+        if (!profileFlyout) return;
+        profileFlyout.style.opacity = "0";
+        profileFlyout.style.pointerEvents = "none";
+    };
+
+    const renderProfileFlyout = (profile) => {
+        const overlay = ensureProfileFlyout();
+        const display = profile?.display_name || profile?.username || "User";
+        const handle = profile?.username ? `@${profile.username}` : "";
+        const bio = profile?.bio || "No bio yet.";
+        const url = sanitizeUrl(profile?.avatar_url);
+        if (profileFlyoutEls.name) profileFlyoutEls.name.textContent = display;
+        if (profileFlyoutEls.username) profileFlyoutEls.username.textContent = handle;
+        if (profileFlyoutEls.bio) profileFlyoutEls.bio.textContent = bio;
+        if (profileFlyoutEls.avatar) {
+            if (url) {
+                profileFlyoutEls.avatar.src = url;
+                profileFlyoutEls.avatar.style.visibility = "visible";
+            } else {
+                profileFlyoutEls.avatar.removeAttribute("src");
+                profileFlyoutEls.avatar.style.visibility = "hidden";
+            }
+            profileFlyoutEls.avatar.alt = display;
+        }
+        overlay.style.opacity = "1";
+        overlay.style.pointerEvents = "auto";
+    };
+
+    const fetchAndShowProfile = async (userId) => {
+        if (!userId) return;
+        const isSelf = userId === state.currentUser?.id;
+        let profile = isSelf ? state.profile : state.friends.find((f) => f.id === userId);
+        try {
+            const fetched = await fetchProfile(userId);
+            if (fetched) profile = { ...profile, ...fetched };
+        } catch (err) {
+            console.error("Profile fetch failed", err);
+        }
+        if (!profile) profile = { id: userId, username: userId };
+        renderProfileFlyout(profile);
+    };
+
     function attachProfileClick(node, userId) {
         if (!node || !userId) return;
         node.classList.add("profile-trigger");
         node.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            void openProfileCard(userId);
+            void fetchAndShowProfile(userId);
         });
     }
 
@@ -968,10 +1083,9 @@ document.addEventListener("DOMContentLoaded", () => {
         avatar.className = "avatar";
         const fallbackInitials = initials(message.user);
         setAvatarVisual(avatar, message.avatarUrl, fallbackInitials);
-        if (message.userId) {
-            avatar.dataset.profileId = message.userId;
-            attachProfileClick(avatar, message.userId);
-        }
+            if (message.userId) {
+                avatar.dataset.profileId = message.userId;
+            }
 
         const status = document.createElement("div");
         status.className = "status-dot online";
@@ -992,7 +1106,6 @@ document.addEventListener("DOMContentLoaded", () => {
         author.textContent = `${primaryName}${secondary}`;
         if (message.userId) {
             author.dataset.profileId = message.userId;
-            attachProfileClick(author, message.userId);
         }
 
         const time = document.createElement("span");
@@ -1064,7 +1177,6 @@ document.addEventListener("DOMContentLoaded", () => {
             avatar.className = "dm-avatar profile-trigger";
             avatar.dataset.profileId = friend.id;
             setAvatarVisual(avatar, friend.avatarUrl, initials(friend.displayName || friend.username));
-            attachProfileClick(avatar, friend.id);
 
             const meta = document.createElement("span");
             meta.className = "dm-meta";
@@ -1072,7 +1184,6 @@ document.addEventListener("DOMContentLoaded", () => {
             name.className = "dm-name";
             name.textContent = friend.displayName || friend.username;
             name.dataset.profileId = friend.id;
-            attachProfileClick(name, friend.id);
             const sub = document.createElement("span");
             sub.className = "dm-sub";
             sub.textContent = "connected";
@@ -1765,6 +1876,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    const bindProfileDelegation = () => {
+        if (!appContainer) return;
+        appContainer.addEventListener("click", (event) => {
+            const target = event.target.closest("[data-profile-id]");
+            if (!target) return;
+            const userId = target.dataset.profileId;
+            if (!userId) return;
+            event.preventDefault();
+            event.stopPropagation();
+            void fetchAndShowProfile(userId);
+        });
+    };
+
     setMode(state.mode);
     renderMessages();
     renderDmThread();
@@ -1782,6 +1906,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bindSettings();
     bindProfileEditor();
     bindProfileOverlay();
+    bindProfileDelegation();
     loadDesignPrefs();
     bindCallUi();
     bindAudioSelect();
