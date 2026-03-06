@@ -60,6 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const callEndBtn = qs("[data-call-end]");
     const remoteAudioEl = qs("[data-remote-audio]");
     const audioInputSelect = qs("[data-audio-input-select]");
+    const ringtoneVolumeInput = qs("[data-ringtone-volume]");
+    const ringtoneVolumeLabel = qs("[data-ringtone-volume-label]");
+    const notificationVolumeInput = qs("[data-notification-volume]");
+    const notificationVolumeLabel = qs("[data-notification-volume-label]");
     const profileDisplayInput = qs("[data-profile-display]");
     const profileBioInput = qs("[data-profile-bio]");
     const profileAvatarInput = qs("[data-profile-avatar-input]");
@@ -81,6 +85,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let friendshipChannel = null;
     let messageChannel = null;
     let profileFetchDelayMs = 0;
+
+    const getStoredVolume = (key, fallback = 0.5) => {
+        try {
+            const stored = Number(localStorage.getItem(key));
+            if (Number.isFinite(stored)) return Math.min(Math.max(stored, 0), 1);
+        } catch (err) {
+            console.warn(`${key} volume read failed`, err);
+        }
+        return fallback;
+    };
+
     const callState = {
         peer: null,
         channel: null,
@@ -97,6 +112,110 @@ document.addEventListener("DOMContentLoaded", () => {
         myPeerId: null,
         currentCallId: null,
         callsChannel: null,
+        isRingtonePlaying: false,
+        ringtoneVolume: getStoredVolume("ringtoneVolume"),
+        notificationVolume: getStoredVolume("notificationVolume", 0.6),
+    };
+
+    const ringtoneSrc = "assets/ringtone.mp3";
+    const ringtoneAudio = new Audio(ringtoneSrc);
+    ringtoneAudio.loop = true;
+    ringtoneAudio.preload = "auto";
+    ringtoneAudio.volume = callState.ringtoneVolume;
+    ringtoneAudio.onerror = () => console.error("Klingelton konnte nicht geladen werden unter", ringtoneSrc);
+
+    const notificationSrc = "assets/notify.mp3";
+    const notificationSound = new Audio(notificationSrc);
+    notificationSound.preload = "auto";
+    notificationSound.volume = callState.notificationVolume;
+    notificationSound.onerror = () => console.error("Benachrichtigungston konnte nicht geladen werden unter", notificationSrc);
+
+    let soundsUnlocked = false;
+    const unlockAudio = async (audio) => {
+        if (!audio) return false;
+        try {
+            const prevVolume = audio.volume;
+            audio.muted = true;
+            audio.volume = 0;
+            await audio.play();
+            audio.pause();
+            audio.currentTime = 0;
+            audio.muted = false;
+            audio.volume = prevVolume;
+            return true;
+        } catch (err) {
+            console.warn("Audio unlock blocked", err);
+            return false;
+        }
+    };
+
+    const unlockSounds = async () => {
+        if (soundsUnlocked) return;
+        const ringOk = await unlockAudio(ringtoneAudio);
+        const notifyOk = await unlockAudio(notificationSound);
+        soundsUnlocked = ringOk || notifyOk;
+    };
+
+    const startRingtone = async () => {
+        if (callState.isRingtonePlaying) return;
+        try {
+            if (!soundsUnlocked) await unlockSounds();
+            ringtoneAudio.currentTime = 0;
+            ringtoneAudio.volume = callState.ringtoneVolume;
+            ringtoneAudio.muted = false;
+            await ringtoneAudio.play();
+            callState.isRingtonePlaying = true;
+            callAvatar?.classList.add("is-ringing");
+        } catch (err) {
+            console.warn("Ringtone play blocked", err);
+            soundsUnlocked = false;
+        }
+    };
+
+    const stopRingtone = () => {
+        if (!callState.isRingtonePlaying) return;
+        ringtoneAudio.pause();
+        ringtoneAudio.currentTime = 0;
+        callState.isRingtonePlaying = false;
+        callAvatar?.classList.remove("is-ringing");
+    };
+
+    const wireRingtoneUnlock = () => {
+        const tryUnlock = async () => {
+            await unlockSounds();
+            if (soundsUnlocked) {
+                document.removeEventListener("pointerdown", tryUnlock, true);
+                document.removeEventListener("keydown", tryUnlock, true);
+                document.removeEventListener("click", tryUnlock, true);
+            }
+        };
+        document.addEventListener("pointerdown", tryUnlock, true);
+        document.addEventListener("keydown", tryUnlock, true);
+        document.addEventListener("click", tryUnlock, true);
+    };
+
+    const playNotificationSound = async () => {
+        try {
+            if (!soundsUnlocked) await unlockSounds();
+            notificationSound.currentTime = 0;
+            notificationSound.volume = callState.notificationVolume;
+            notificationSound.muted = false;
+            await notificationSound.play();
+        } catch (err) {
+            console.warn("Notification sound blocked", err);
+            soundsUnlocked = false;
+        }
+    };
+
+    const shouldPlayNotification = (message, friendId) => {
+        if (!message) return false;
+        if (message.self) return false;
+        const userLower = (message.user || "").toLowerCase();
+        if (userLower === "aury") return false; // self safeguard [cite: 2026-02-12]
+        const tabHidden = document.hidden;
+        const windowUnfocused = typeof document.hasFocus === "function" ? !document.hasFocus() : false;
+        const inactiveThread = friendId && friendId !== state.activeDm;
+        return tabHidden || windowUnfocused || inactiveThread;
     };
 
     const state = {
@@ -769,6 +888,7 @@ document.addEventListener("DOMContentLoaded", () => {
         callState.pendingCall = null;
         callState.acceptOnArrival = false;
         if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "ended");
+        stopRingtone();
         stopRemoteStream();
         stopLocalStream();
         callState.remoteId = null;
@@ -779,6 +899,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const bindActiveCall = (call, { incoming } = {}) => {
         if (!call) return;
+        stopRingtone();
         callState.activeCall = call;
         callState.pendingCall = null;
         callState.remotePeerId = call.peer;
@@ -809,6 +930,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = getFriendDisplayName(callState.remoteId || incomingCall.peer);
         setCallAvatarLabel(name);
         setCallOverlayState({ visible: true, status: `${name} ruft an`, sub: "Eingehender Call", showAccept: true });
+        console.log("Ringtone volume on incoming call (peer)", ringtoneAudio.volume);
+        void startRingtone();
         if (callState.acceptOnArrival) {
             callState.acceptOnArrival = false;
             void acceptIncomingCall();
@@ -904,6 +1027,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const name = getFriendDisplayName(row.caller_id);
             setCallAvatarLabel(name);
             setCallOverlayState({ visible: true, status: `${name} ruft an`, sub: "Eingehender Call", showAccept: true });
+            console.log("Ringtone volume on incoming call (signal)", ringtoneAudio.volume);
+            void startRingtone();
         };
         const handleUpdate = (payload) => {
             const row = payload?.new;
@@ -950,6 +1075,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const acceptIncomingCall = async () => {
+        stopRingtone();
         // If we have a pending incoming PeerJS call (e.g., we are the caller and callee dialed us back)
         if (callState.pendingCall) {
             const stream = await createLocalStream();
@@ -1518,6 +1644,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const node = buildMessage(msg);
         messageList?.appendChild(node);
         messageList?.scrollTo({ top: messageList.scrollHeight, behavior: "smooth" });
+        if (shouldPlayNotification(msg, null)) void playNotificationSound();
     };
 
     const addDmMessage = (message, friendId = state.activeDm) => {
@@ -1526,6 +1653,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const exists = state.dmMessages[friendId].some((m) => m.id === message.id && message.id !== undefined);
         if (exists) return;
         state.dmMessages[friendId].push(message);
+        if (shouldPlayNotification(message, friendId)) void playNotificationSound();
         if (friendId !== state.activeDm) return;
         const node = buildMessage(message, { isDm: true });
         dmThread?.appendChild(node);
@@ -1666,6 +1794,50 @@ document.addEventListener("DOMContentLoaded", () => {
                 const newTrack = newStream?.getAudioTracks?.()[0];
                 const sender = callState.activeCall.peerConnection?.getSenders?.().find((s) => s.track?.kind === "audio");
                 if (sender && newTrack) sender.replaceTrack(newTrack);
+            }
+        });
+    };
+
+    const bindRingtoneVolume = () => {
+        if (!ringtoneVolumeInput) return;
+        const setLabel = (value) => {
+            if (ringtoneVolumeLabel) ringtoneVolumeLabel.textContent = `Klingelton: ${Math.round(value * 100)}%`;
+        };
+        ringtoneVolumeInput.value = callState.ringtoneVolume;
+        setLabel(callState.ringtoneVolume);
+        ringtoneAudio.volume = callState.ringtoneVolume;
+        ringtoneVolumeInput.addEventListener("input", (event) => {
+            const value = Number(event.target.value);
+            const clamped = Number.isFinite(value) ? Math.min(Math.max(value, 0), 1) : 0.5;
+            callState.ringtoneVolume = clamped;
+            ringtoneAudio.volume = clamped;
+            setLabel(clamped);
+            try {
+                localStorage.setItem("ringtoneVolume", String(clamped));
+            } catch (err) {
+                console.warn("ringtone volume persist failed", err);
+            }
+        });
+    };
+
+    const bindNotificationVolume = () => {
+        if (!notificationVolumeInput) return;
+        const setLabel = (value) => {
+            if (notificationVolumeLabel) notificationVolumeLabel.textContent = `Benachrichtigungen: ${Math.round(value * 100)}%`;
+        };
+        notificationVolumeInput.value = callState.notificationVolume;
+        setLabel(callState.notificationVolume);
+        notificationSound.volume = callState.notificationVolume;
+        notificationVolumeInput.addEventListener("input", (event) => {
+            const value = Number(event.target.value);
+            const clamped = Number.isFinite(value) ? Math.min(Math.max(value, 0), 1) : 0.6;
+            callState.notificationVolume = clamped;
+            notificationSound.volume = clamped;
+            setLabel(clamped);
+            try {
+                localStorage.setItem("notificationVolume", String(clamped));
+            } catch (err) {
+                console.warn("notification volume persist failed", err);
             }
         });
     };
@@ -1928,6 +2100,9 @@ document.addEventListener("DOMContentLoaded", () => {
     loadDesignPrefs();
     bindCallUi();
     bindAudioSelect();
+    bindRingtoneVolume();
+    bindNotificationVolume();
+    wireRingtoneUnlock();
     window.startCall = startCall;
     window.addEventListener("beforeunload", () => {
         if (callState.currentCallId) void updateCallStatus(callState.currentCallId, "ended");

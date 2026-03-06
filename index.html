@@ -232,7 +232,16 @@
                             </select>
                             <p class="settings-note">Wähle dein Eingabegerät aus.</p>
                         </div>
-                        <p class="settings-note">Benachrichtigungstöne – Coming soon (Platzhalter).</p>
+                        <div class="setting-row stack">
+                            <label for="ringtone-volume">Klingelton-Lautstärke</label>
+                            <input id="ringtone-volume" type="range" min="0" max="1" step="0.05" value="0.5" data-ringtone-volume />
+                            <p class="settings-note" data-ringtone-volume-label>Klingelton: 50%</p>
+                        </div>
+                        <div class="setting-row stack">
+                            <label for="notification-volume">Benachrichtigungs-Lautstärke</label>
+                            <input id="notification-volume" type="range" min="0" max="1" step="0.05" value="0.6" data-notification-volume />
+                            <p class="settings-note" data-notification-volume-label>Benachrichtigungen: 60%</p>
+                        </div>
                     </div>
                 </section>
             </div>
