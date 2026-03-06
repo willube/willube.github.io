@@ -739,6 +739,13 @@ document.addEventListener("DOMContentLoaded", () => {
         startLevelMonitor("remote", stream, callAvatar || null);
     };
 
+    const sendCallSignal = async (type) => {
+        if (!supabaseClient) return;
+        if (type === "hangup" && callState.currentCallId) {
+            await updateCallStatus(callState.currentCallId, "ended");
+        }
+    };
+
     const endCall = (reason = "ended", notifyPeer = true) => {
         const remoteId = callState.remoteId;
         if (notifyPeer && remoteId) {
