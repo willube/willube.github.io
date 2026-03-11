@@ -122,6 +122,30 @@ a:hover {
     z-index: 0;
 }
 
+body.no-noise .bg-noise {
+    opacity: 0;
+}
+
+body.reduced-motion *,
+body.reduced-motion *::before,
+body.reduced-motion *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+}
+
+body.hide-presence .dm-status,
+body.hide-presence .dm-sub,
+body.hide-presence .status-dot {
+    display: none;
+}
+
+body.high-contrast {
+    --stroke: rgba(255, 255, 255, 0.18);
+    --muted: #c1cadb;
+    --panel: rgba(12, 14, 20, 0.96);
+}
+
 body.theme-minimalist .settings-modal,
 body.theme-minimalist .composer-shell,
 body.theme-minimalist .channel-header,
@@ -608,7 +632,7 @@ body.theme-neon .bg-glow {
     border: 1px solid var(--stroke);
     border-radius: 16px;
     padding: 18px 20px;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .settings-panel {

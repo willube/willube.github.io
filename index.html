@@ -158,6 +158,13 @@
                                 <p class="profile-preview-bio" data-profile-preview-bio>Minimal bio</p>
                             </div>
                         </div>
+                        <div class="setting-row">
+                            <span>Online-Status anzeigen</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-presence-toggle />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
                     </div>
                     <div class="settings-panel" data-settings-panel="design">
                         <h3>Design</h3>
@@ -214,6 +221,27 @@
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
+                        <div class="setting-row">
+                            <span>Animationen reduzieren</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-reduced-motion-toggle />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <span>Hintergrundrauschen</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-noise-toggle />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <span>Kontrastmodus</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-contrast-toggle />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
                     </div>
                     <div class="settings-panel" data-settings-panel="security">
                         <h3>Sicherheit</h3>
@@ -246,6 +274,33 @@
                             <input id="notification-volume" type="range" min="0" max="1" step="0.05" value="0.6" data-notification-volume />
                             <p class="settings-note" data-notification-volume-label>Benachrichtigungen: 60%</p>
                         </div>
+                        <div class="setting-row stack">
+                            <label for="call-volume">Call-Lautstärke</label>
+                            <input id="call-volume" type="range" min="0" max="1" step="0.05" value="0.8" data-call-volume />
+                            <p class="settings-note" data-call-volume-label>Call: 80%</p>
+                        </div>
+                        <div class="setting-row">
+                            <span>Echo-Unterdrückung</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-audio-echo />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <span>Rauschunterdrückung</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-audio-noise />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <span>Automatische Verstärkung</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-audio-gain />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="settings-note">Audio-Filter gelten beim nächsten Call.</p>
                     </div>
                 </section>
             </div>

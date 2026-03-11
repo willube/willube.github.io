@@ -64,6 +64,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const ringtoneVolumeLabel = qs("[data-ringtone-volume-label]");
     const notificationVolumeInput = qs("[data-notification-volume]");
     const notificationVolumeLabel = qs("[data-notification-volume-label]");
+    const callVolumeInput = qs("[data-call-volume]");
+    const callVolumeLabel = qs("[data-call-volume-label]");
+    const noiseToggle = qs("[data-noise-toggle]");
+    const reducedMotionToggle = qs("[data-reduced-motion-toggle]");
+    const contrastToggle = qs("[data-contrast-toggle]");
+    const presenceToggle = qs("[data-presence-toggle]");
+    const audioEchoToggle = qs("[data-audio-echo]");
+    const audioNoiseToggle = qs("[data-audio-noise]");
+    const audioGainToggle = qs("[data-audio-gain]");
     const introScreen = qs("#intro-screen");
     const introTextEl = qs("[data-intro-text]");
     const introCursorEl = qs("[data-intro-cursor]");
@@ -119,7 +128,10 @@ document.addEventListener("DOMContentLoaded", () => {
         isRingtonePlaying: false,
         ringtoneVolume: getStoredVolume("ringtoneVolume"),
         notificationVolume: getStoredVolume("notificationVolume", 0.6),
+        callVolume: getStoredVolume("callVolume", 0.8),
     };
+
+    if (remoteAudioEl) remoteAudioEl.volume = callState.callVolume;
 
     const ringtoneSrc = "assets/ringtone.mp3";
     const ringtoneAudio = new Audio(ringtoneSrc);
@@ -859,6 +871,80 @@ document.addEventListener("DOMContentLoaded", () => {
         applyAccent(accent, { markCustom: prefs.customAccent });
     };
 
+    const uiPrefDefaults = {
+        reducedMotion: false,
+        showNoise: true,
+        highContrast: false,
+        showPresence: true,
+    };
+
+    const parseUiPrefs = () => {
+        try {
+            const raw = localStorage.getItem("uiPrefs");
+            const parsed = raw ? JSON.parse(raw) : {};
+            return { ...uiPrefDefaults, ...parsed };
+        } catch (err) {
+            return { ...uiPrefDefaults };
+        }
+    };
+
+    const saveUiPrefs = (prefs) => {
+        try {
+            localStorage.setItem("uiPrefs", JSON.stringify(prefs));
+        } catch (err) {
+            console.warn("ui prefs persist failed", err);
+        }
+    };
+
+    const applyUiPrefs = (prefs) => {
+        document.body.classList.toggle("reduced-motion", prefs.reducedMotion);
+        document.body.classList.toggle("no-noise", !prefs.showNoise);
+        document.body.classList.toggle("high-contrast", prefs.highContrast);
+        document.body.classList.toggle("hide-presence", !prefs.showPresence);
+        if (reducedMotionToggle) reducedMotionToggle.checked = prefs.reducedMotion;
+        if (noiseToggle) noiseToggle.checked = prefs.showNoise;
+        if (contrastToggle) contrastToggle.checked = prefs.highContrast;
+        if (presenceToggle) presenceToggle.checked = prefs.showPresence;
+    };
+
+    const loadUiPrefs = () => {
+        applyUiPrefs(parseUiPrefs());
+    };
+
+    const audioPrefDefaults = {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+    };
+
+    const parseAudioPrefs = () => {
+        try {
+            const raw = localStorage.getItem("audioPrefs");
+            const parsed = raw ? JSON.parse(raw) : {};
+            return { ...audioPrefDefaults, ...parsed };
+        } catch (err) {
+            return { ...audioPrefDefaults };
+        }
+    };
+
+    const saveAudioPrefs = (prefs) => {
+        try {
+            localStorage.setItem("audioPrefs", JSON.stringify(prefs));
+        } catch (err) {
+            console.warn("audio prefs persist failed", err);
+        }
+    };
+
+    const applyAudioPrefs = (prefs) => {
+        if (audioEchoToggle) audioEchoToggle.checked = prefs.echoCancellation;
+        if (audioNoiseToggle) audioNoiseToggle.checked = prefs.noiseSuppression;
+        if (audioGainToggle) audioGainToggle.checked = prefs.autoGainControl;
+    };
+
+    const loadAudioPrefs = () => {
+        applyAudioPrefs(parseAudioPrefs());
+    };
+
     const refreshAudioInputs = async () => {
         if (!audioInputSelect || !navigator.mediaDevices?.enumerateDevices) return;
         try {
@@ -897,9 +983,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const createLocalStream = async () => {
+        const audioPrefs = parseAudioPrefs();
         const constraints = {
             audio: {
                 deviceId: callState.micDeviceId ? { exact: callState.micDeviceId } : undefined,
+                echoCancellation: audioPrefs.echoCancellation,
+                noiseSuppression: audioPrefs.noiseSuppression,
+                autoGainControl: audioPrefs.autoGainControl,
             },
         };
         try {
@@ -921,6 +1011,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (remoteAudioEl) {
             remoteAudioEl.srcObject = stream;
             remoteAudioEl.autoplay = true;
+            remoteAudioEl.volume = callState.callVolume;
             remoteAudioEl.play?.().catch((err) => console.warn("remote audio play blocked", err));
         }
         startLevelMonitor("remote", stream, callAvatar || null);
@@ -1946,6 +2037,28 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    const bindCallVolume = () => {
+        if (!callVolumeInput) return;
+        const setLabel = (value) => {
+            if (callVolumeLabel) callVolumeLabel.textContent = `Call: ${Math.round(value * 100)}%`;
+        };
+        callVolumeInput.value = callState.callVolume;
+        setLabel(callState.callVolume);
+        if (remoteAudioEl) remoteAudioEl.volume = callState.callVolume;
+        callVolumeInput.addEventListener("input", (event) => {
+            const value = Number(event.target.value);
+            const clamped = Number.isFinite(value) ? Math.min(Math.max(value, 0), 1) : 0.8;
+            callState.callVolume = clamped;
+            if (remoteAudioEl) remoteAudioEl.volume = clamped;
+            setLabel(clamped);
+            try {
+                localStorage.setItem("callVolume", String(clamped));
+            } catch (err) {
+                console.warn("call volume persist failed", err);
+            }
+        });
+    };
+
     const bindSettings = () => {
         settingsToggle?.addEventListener("click", async (event) => {
             event.preventDefault();
@@ -1961,6 +2074,18 @@ document.addEventListener("DOMContentLoaded", () => {
         settingsTabs.forEach((tab) => {
             tab.addEventListener("click", () => setSettingsTab(tab.dataset.settingsTab));
         });
+
+        const updateUiPrefs = (next) => {
+            const prefs = { ...parseUiPrefs(), ...next };
+            saveUiPrefs(prefs);
+            applyUiPrefs(prefs);
+        };
+
+        const updateAudioPrefs = (next) => {
+            const prefs = { ...parseAudioPrefs(), ...next };
+            saveAudioPrefs(prefs);
+            applyAudioPrefs(prefs);
+        };
 
         accentChips.forEach((chip) => {
             chip.addEventListener("click", () => {
@@ -1984,6 +2109,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
         neonToggle?.addEventListener("change", (event) => {
             applyNeonState(event.target.checked);
+        });
+
+        reducedMotionToggle?.addEventListener("change", (event) => {
+            updateUiPrefs({ reducedMotion: event.target.checked });
+        });
+
+        noiseToggle?.addEventListener("change", (event) => {
+            updateUiPrefs({ showNoise: event.target.checked });
+        });
+
+        contrastToggle?.addEventListener("change", (event) => {
+            updateUiPrefs({ highContrast: event.target.checked });
+        });
+
+        presenceToggle?.addEventListener("change", (event) => {
+            updateUiPrefs({ showPresence: event.target.checked });
+        });
+
+        audioEchoToggle?.addEventListener("change", (event) => {
+            updateAudioPrefs({ echoCancellation: event.target.checked });
+        });
+
+        audioNoiseToggle?.addEventListener("change", (event) => {
+            updateAudioPrefs({ noiseSuppression: event.target.checked });
+        });
+
+        audioGainToggle?.addEventListener("change", (event) => {
+            updateAudioPrefs({ autoGainControl: event.target.checked });
         });
 
         logoutBtn?.addEventListener("click", async () => {
@@ -2016,6 +2169,8 @@ document.addEventListener("DOMContentLoaded", () => {
         setSettingsTab("profile");
         loadNeonState();
         loadDesignPrefs();
+        loadUiPrefs();
+        loadAudioPrefs();
     };
 
     const bindProfileEditor = () => {
@@ -2209,6 +2364,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bindAudioSelect();
     bindRingtoneVolume();
     bindNotificationVolume();
+    bindCallVolume();
     wireRingtoneUnlock();
     void runIntroScreen();
     window.startCall = startCall;
