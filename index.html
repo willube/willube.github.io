@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <meta name="supabase-url" content="https://gknoagucgiiieovujwxy.supabase.co" />
     <meta name="supabase-key" content="sb_publishable_uAVNNb6KkFY5aiwWLiIUxA_NwRiePFp" />
+    <link rel="icon" type="image/png" href="assets/sync-icon.black.PNG" data-sync-favicon />
     <link rel="stylesheet" href="assets/css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer crossorigin="anonymous"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer crossorigin="anonymous"></script>
@@ -20,6 +21,9 @@
     <div class="app" data-app>
         <aside class="channel-bar" aria-label="Channel rail">
             <div class="view" data-view="dm">
+                <div class="sync-brand-rail" aria-label="Sync brand">
+                    <img src="assets/sync-icon.black.PNG" alt="Sync" data-sync-logo />
+                </div>
                 <header class="channel-header">
                     <div>
                         <p class="eyebrow">Direct</p>
@@ -154,6 +158,13 @@
                     </div>
                     <div class="settings-panel" data-settings-panel="design">
                         <h3>Design</h3>
+                        <div class="setting-row">
+                            <span>Light Mode</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-color-mode-toggle />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
                         <div class="setting-row stack">
                             <div class="setting-row-head">
                                 <span>Akzentfarben</span>
@@ -204,6 +215,27 @@
                             <span>Neon-Glow Intensität</span>
                             <label class="toggle">
                                 <input type="checkbox" data-neon-toggle />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <span>Animationen reduzieren</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-reduced-motion-toggle />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <span>Hintergrundrauschen</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-noise-toggle />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <span>Kontrastmodus</span>
+                            <label class="toggle">
+                                <input type="checkbox" data-contrast-toggle />
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>

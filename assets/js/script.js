@@ -44,6 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const settingsPanels = Array.from(document.querySelectorAll("[data-settings-panel]"));
     const settingsUsername = qs("[data-settings-username]");
     const neonToggle = qs("[data-neon-toggle]");
+    const reducedMotionToggle = qs("[data-reduced-motion-toggle]");
+    const noiseToggle = qs("[data-noise-toggle]");
+    const contrastToggle = qs("[data-contrast-toggle]");
+    const colorModeToggle = qs("[data-color-mode-toggle]");
     const accentChips = Array.from(document.querySelectorAll("[data-accent-chip]"));
     const accentPicker = qs("[data-accent-picker]");
     const themeCards = Array.from(document.querySelectorAll("[data-theme-choice]"));
@@ -74,6 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileViewDisplay = qs("[data-profile-view-display]");
     const profileViewUsername = qs("[data-profile-view-username]");
     const profileViewBio = qs("[data-profile-view-bio]");
+    const syncLogo = qs("[data-sync-logo]");
+    const syncFavicon = qs("[data-sync-favicon]");
 
     const supabaseUrl = document.querySelector("meta[name='supabase-url']")?.content;
     const supabaseKey = document.querySelector("meta[name='supabase-key']")?.content;
@@ -616,11 +622,49 @@ document.addEventListener("DOMContentLoaded", () => {
         applyNeonState(isHigh);
     };
 
+    const uiPrefDefaults = {
+        reducedMotion: false,
+        showNoise: true,
+        highContrast: false,
+    };
+
+    const parseUiPrefs = () => {
+        try {
+            const raw = localStorage.getItem("uiPrefs");
+            const parsed = raw ? JSON.parse(raw) : {};
+            return { ...uiPrefDefaults, ...parsed };
+        } catch (err) {
+            return { ...uiPrefDefaults };
+        }
+    };
+
+    const saveUiPrefs = (prefs) => {
+        try {
+            localStorage.setItem("uiPrefs", JSON.stringify(prefs));
+        } catch (err) {
+            console.warn("ui prefs persist failed", err);
+        }
+    };
+
+    const applyUiPrefs = (prefs) => {
+        document.body.classList.toggle("reduced-motion", prefs.reducedMotion);
+        document.body.classList.toggle("no-noise", !prefs.showNoise);
+        document.body.classList.toggle("high-contrast", prefs.highContrast);
+        if (reducedMotionToggle) reducedMotionToggle.checked = prefs.reducedMotion;
+        if (noiseToggle) noiseToggle.checked = prefs.showNoise;
+        if (contrastToggle) contrastToggle.checked = prefs.highContrast;
+    };
+
+    const loadUiPrefs = () => {
+        applyUiPrefs(parseUiPrefs());
+    };
+
     const designDefaults = {
         accent: "#6bc1b6",
         accent2: "#9eddd3",
         theme: "stealth",
         customAccent: false,
+        colorMode: "dark",
     };
 
     const themeAccentDefaults = {
@@ -641,6 +685,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const saveDesignPrefs = (prefs) => {
         localStorage.setItem("designPrefs", JSON.stringify(prefs));
+    };
+
+    const syncIconByMode = {
+        light: "assets/sync-icon-white.PNG",
+        dark: "assets/sync-icon.black.PNG",
+    };
+
+    const applySyncIcon = (mode = "dark") => {
+        const iconPath = mode === "light" ? syncIconByMode.light : syncIconByMode.dark;
+        if (syncLogo) syncLogo.src = iconPath;
+        if (syncFavicon) {
+            syncFavicon.type = "image/png";
+            syncFavicon.href = `${iconPath}?v=${mode}`;
+        }
+    };
+
+    const applyColorMode = (mode = "dark") => {
+        const nextMode = mode === "light" ? "light" : "dark";
+        document.body.classList.toggle("mode-light", nextMode === "light");
+        document.body.classList.toggle("mode-dark", nextMode === "dark");
+        applySyncIcon(nextMode);
+        if (colorModeToggle) colorModeToggle.checked = nextMode === "light";
+        const prefs = parseDesignPrefs();
+        if (prefs.colorMode !== nextMode) {
+            saveDesignPrefs({ ...prefs, colorMode: nextMode });
+        }
     };
 
     const hexToRgb = (hex) => {
@@ -692,6 +762,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const loadDesignPrefs = () => {
         const prefs = parseDesignPrefs();
+        applyColorMode(prefs.colorMode || "dark");
         const theme = prefs.theme || "stealth";
         applyThemePreset(theme, { applyThemeAccent: false });
         const themeAccent = themeAccentDefaults[theme] || designDefaults.accent;
@@ -1773,6 +1844,28 @@ document.addEventListener("DOMContentLoaded", () => {
             applyNeonState(event.target.checked);
         });
 
+        reducedMotionToggle?.addEventListener("change", (event) => {
+            const prefs = { ...parseUiPrefs(), reducedMotion: event.target.checked };
+            saveUiPrefs(prefs);
+            applyUiPrefs(prefs);
+        });
+
+        noiseToggle?.addEventListener("change", (event) => {
+            const prefs = { ...parseUiPrefs(), showNoise: event.target.checked };
+            saveUiPrefs(prefs);
+            applyUiPrefs(prefs);
+        });
+
+        contrastToggle?.addEventListener("change", (event) => {
+            const prefs = { ...parseUiPrefs(), highContrast: event.target.checked };
+            saveUiPrefs(prefs);
+            applyUiPrefs(prefs);
+        });
+
+        colorModeToggle?.addEventListener("change", (event) => {
+            applyColorMode(event.target.checked ? "light" : "dark");
+        });
+
         logoutBtn?.addEventListener("click", async () => {
             if (!supabaseClient) return;
             await supabaseClient.auth.signOut();
@@ -1802,6 +1895,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setSettingsTab("profile");
         loadNeonState();
+        loadUiPrefs();
         loadDesignPrefs();
     };
 
