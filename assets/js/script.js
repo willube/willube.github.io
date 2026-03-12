@@ -304,6 +304,24 @@ document.addEventListener("DOMContentLoaded", () => {
             .slice(0, max);
     };
 
+    const escapeHTML = (value = "") =>
+        value
+            .toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+
+    const isScriptOnlyMessage = (value) => {
+        if (!value) return false;
+        const trimmed = value.toString().trim();
+        if (!trimmed) return false;
+        const fullScriptTag = /^<\s*script\b[^>]*>[\s\S]*<\s*\/\s*script\s*>$/i;
+        const singleScriptTag = /^<\s*\/?\s*script\b[^>]*\s*>$/i;
+        return fullScriptTag.test(trimmed) || singleScriptTag.test(trimmed);
+    };
+
     const sanitizeUrl = (value) => {
         if (!value) return "";
         const trimmed = value.trim();
@@ -1399,7 +1417,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const renderDmThread = () => {
         if (!dmThread) return;
-        dmThread.innerHTML = "";
+        dmThread.textContent = "";
         const thread = state.dmMessages[state.activeDm] || [];
         thread.forEach((msg, idx) => {
             const node = buildMessage(msg, { isDm: true });
@@ -1819,13 +1837,15 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const sendDmMessage = async (content) => {
-        if (!content.trim()) return;
+        const trimmed = String(content ?? "").trim();
+        if (!trimmed) return;
+        if (isScriptOnlyMessage(trimmed)) return;
         if (!supabaseClient || !state.currentUser) {
             addDmMessage({
                 id: Date.now(),
                 user: "You",
                 handle: "you",
-                content,
+                content: trimmed,
                 time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
                 self: true,
                 userId: state.currentUser?.id,
@@ -1838,7 +1858,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!friendId) return;
         const { data, error } = await supabaseClient
             .from("messages")
-            .insert({ sender_id: myId, receiver_id: friendId, content })
+            .insert({ sender_id: myId, receiver_id: friendId, content: trimmed })
             .select("id,sender_id,receiver_id,content,created_at")
             .maybeSingle();
         if (error) {
