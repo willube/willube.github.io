@@ -41,12 +41,14 @@
                 </section>
 
                 <div class="profile-dock">
-                    <div class="profile-chip" aria-label="Profile" role="button" tabindex="0">
-                        <div class="profile-avatar">
-                            <div class="avatar-sm" data-profile-avatar>AU</div>
-                            <div class="status-dot online"></div>
-                        </div>
-                        <span class="profile-username" data-current-username>Guest</span>
+                    <div class="profile-chip">
+                        <button class="profile-chip-main" type="button" aria-label="Open profile">
+                            <div class="profile-avatar">
+                                <div class="avatar-sm" data-profile-avatar>AU</div>
+                                <div class="status-dot online"></div>
+                            </div>
+                            <span class="profile-username" data-current-username>Guest</span>
+                        </button>
                         <button class="settings-gear" type="button" aria-label="Open settings" data-settings-toggle>⚙</button>
                     </div>
                 </div>
@@ -357,7 +359,7 @@
                     <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
                 </label>
                 <button type="submit" class="primary-btn">Login</button>
-                <p class="auth-switch" data-auth-switch data-target="register">No account? Register</p>
+                <button type="button" class="auth-switch" data-auth-switch data-target="register">No account? Register</button>
                 <p class="auth-error" data-auth-error></p>
             </form>
             <form class="auth-form is-hidden" data-auth-form="register">
@@ -374,7 +376,7 @@
                     <input type="password" name="password" placeholder="At least 6 characters" autocomplete="new-password" required />
                 </label>
                    <button type="submit" class="primary-btn" disabled>Create account</button>
-                <p class="auth-switch" data-auth-switch data-target="login">Already here? Login</p>
+                <button type="button" class="auth-switch" data-auth-switch data-target="login">Already here? Login</button>
                 <p class="auth-error" data-auth-error></p>
             </form>
         </div>

@@ -1,20 +1,12 @@
 const qs = (selector, scope = document) => scope.querySelector(selector);
 
 document.addEventListener("DOMContentLoaded", () => {
-    const channelButtons = Array.from(document.querySelectorAll("[data-channel]"));
-    const serverButtons = Array.from(document.querySelectorAll("[data-server]"));
-    const dmButton = qs("[data-dm]");
     const dmBadge = qs("[data-dm-badge]");
     const dmList = qs("[data-dm-list]");
     const views = Array.from(document.querySelectorAll(".view"));
-    const sidebar = qs(".sidebar");
     const channelBar = qs(".channel-bar");
-    const activeChannelLabel = qs("[data-active-channel]");
     const activeDmLabel = qs("[data-active-dm]");
-    const messageList = qs("[data-message-list]");
     const dmThread = qs("[data-dm-thread]");
-    const composer = qs("[data-composer]");
-    const composerInput = composer?.querySelector("input[name='message']");
     const dmComposer = qs("[data-dm-composer]");
     const dmInput = dmComposer?.querySelector("input[name='dm-message']");
     const addFriendNav = qs("[data-open-friend-page]");
@@ -33,8 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const registerUsernameInput = registerForm?.querySelector("input[name='username']");
     const registerSubmitButton = registerForm?.querySelector("button[type='submit']");
     const authHeading = qs("#auth-title");
-    const profileChip = qs(".profile-chip");
-    const profileAvatar = profileChip?.querySelector("[data-profile-avatar]");
+    const profileChipButton = qs(".profile-chip-main");
+    const profileAvatar = qs("[data-profile-avatar]");
     const profileUsername = qs("[data-current-username]");
     const settingsToggle = qs("[data-settings-toggle]");
     const settingsOverlay = qs("[data-settings-overlay]");
@@ -140,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ringtoneAudio.volume = callState.ringtoneVolume;
     ringtoneAudio.onerror = () => console.error("Klingelton konnte nicht geladen werden unter", ringtoneSrc);
 
-    const notificationSrc = "assets/notify.mp3";
+    const notificationSrc = "assets/notify.wav";
     const notificationSound = new Audio(notificationSrc);
     notificationSound.preload = "auto";
     notificationSound.volume = callState.notificationVolume;
@@ -246,8 +238,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const shouldPlayNotification = (message, friendId) => {
         if (!message) return false;
         if (message.self) return false;
-        const userLower = (message.user || "").toLowerCase();
-        if (userLower === "aury") return false; // self safeguard [cite: 2026-02-12]
+        const currentId = state.currentUser?.id;
+        if (currentId && message.userId && message.userId === currentId) return false;
+        const currentHandle = state.profile?.username?.toLowerCase();
+        if (currentHandle && message.handle?.toLowerCase() === currentHandle) return false;
         const tabHidden = document.hidden;
         const windowUnfocused = typeof document.hasFocus === "function" ? !document.hasFocus() : false;
         const inactiveThread = friendId && friendId !== state.activeDm;
@@ -256,37 +250,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const state = {
         mode: "dm",
-        activeChannel: "quantum-lab",
-        activeServer: "core",
         activeDm: null,
         currentUser: null,
-        messages: [
-            {
-                id: 1,
-                user: "Nora",
-                handle: "nora.ai",
-                content: "Deploy preview is live. Check neon glow on mobile and log latency in the realtime feed.",
-                time: "09:12",
-                self: false,
-            },
-            {
-                id: 2,
-                user: "Sven",
-                handle: "sv3n",
-                content: "New motion preset for chat bubbles: blur-in + slide-up. Looks crisp.",
-                time: "09:14",
-                self: false,
-            },
-            {
-                id: 3,
-                user: "Aury",
-                handle: "auri.ops",
-                content: "Pinned: Realtime schema + policies. Review by 11:00 then merge.",
-                time: "09:18",
-                self: true,
-            },
-        ],
         dmMessages: {},
+        unreadById: {},
         friends: [],
         pending: [],
         profile: null,
@@ -296,6 +263,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const initials = (text) => (text || "?").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
 
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const bumpUnread = (friendId) => {
+        if (!friendId) return;
+        const current = state.unreadById[friendId] || 0;
+        state.unreadById[friendId] = current + 1;
+    };
+
+    const clearUnread = (friendId) => {
+        if (!friendId) return;
+        if (state.unreadById[friendId]) delete state.unreadById[friendId];
+    };
 
     const sanitizeUsername = (value) => {
         if (!value) return "";
@@ -369,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const profile = typeof profileData === "string" ? { username: profileData } : profileData || {};
         const label = profile.display_name || profile.username || "Guest";
         if (profileUsername) profileUsername.textContent = label;
-        if (profileChip) profileChip.setAttribute("aria-label", `Profile · ${label}`);
+        if (profileChipButton) profileChipButton.setAttribute("aria-label", `Profile · ${label}`);
         if (settingsUsername) settingsUsername.textContent = profile.username || label;
         if (profilePreviewAvatar) setAvatarVisual(profilePreviewAvatar, profile.avatar_url, initials(label));
         if (profilePreviewName) profilePreviewName.textContent = label;
@@ -403,7 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const updateLocalUI = (profile) => {
         const label = profile?.display_name || profile?.username || "Guest";
         refreshOwnAvatar(profile);
-        if (profileChip) profileChip.dataset.profileId = profile?.id || "";
+        if (profileChipButton) profileChipButton.dataset.profileId = profile?.id || "";
     };
 
     const fillProfileForm = (profile) => {
@@ -1419,17 +1397,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return wrapper;
     };
 
-    const renderMessages = () => {
-        if (!messageList) return;
-        messageList.innerHTML = "";
-        state.messages.forEach((msg, index) => {
-            const node = buildMessage(msg);
-            node.style.animationDelay = `${index * 40}ms`;
-            messageList.appendChild(node);
-        });
-        messageList.scrollTop = messageList.scrollHeight;
-    };
-
     const renderDmThread = () => {
         if (!dmThread) return;
         dmThread.innerHTML = "";
@@ -1461,6 +1428,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (friend.id === state.activeDm || (idx === 0 && !state.activeDm)) {
                 btn.classList.add("is-active");
                 state.activeDm = friend.id;
+                clearUnread(friend.id);
                 if (activeDmLabel) activeDmLabel.textContent = `Direct · ${friend.displayName || friend.username}`;
             }
             if (slideInId && slideInId === friend.id) {
@@ -1490,7 +1458,18 @@ document.addEventListener("DOMContentLoaded", () => {
             status.className = `dm-status${isOnline ? " glow" : ""}`;
             status.style.opacity = isOnline ? "0.8" : "0.32";
 
-            btn.append(avatar, meta, status);
+            const indicators = document.createElement("span");
+            indicators.className = "dm-indicators";
+            const unreadCount = state.unreadById[friend.id] || 0;
+            if (unreadCount > 0) {
+                const badge = document.createElement("span");
+                badge.className = "dm-unread";
+                badge.textContent = unreadCount > 99 ? "99+" : String(unreadCount);
+                indicators.appendChild(badge);
+            }
+            indicators.appendChild(status);
+
+            btn.append(avatar, meta, indicators);
             li.appendChild(btn);
             dmList.appendChild(li);
         });
@@ -1767,9 +1746,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const involvesMe = isMine || row.receiver_id === userId;
             if (!involvesMe) return;
             if (isMine) return; // skip self inserts; already added after send
-            const activeFriend = state.activeDm;
             const friendId = row.sender_id === userId ? row.receiver_id : row.sender_id;
-            if (activeFriend && friendId !== activeFriend) return;
             const friend = state.friends.find((f) => f.id === friendId);
             const mapped = mapMessageRow(row, friend);
             addDmMessage(mapped, friendId);
@@ -1823,33 +1800,19 @@ document.addEventListener("DOMContentLoaded", () => {
         presenceChannel = channel;
     };
 
-    const addMessage = (content, self = true) => {
-        if (!content.trim()) return;
-        const now = new Date();
-        const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        const msg = {
-            id: Date.now(),
-            user: self ? "Aury" : "Screen Bot",
-            handle: self ? "auri.ops" : "relay",
-            content,
-            time,
-            self,
-        };
-        state.messages.push(msg);
-        const node = buildMessage(msg);
-        messageList?.appendChild(node);
-        messageList?.scrollTo({ top: messageList.scrollHeight, behavior: "smooth" });
-        if (shouldPlayNotification(msg, null)) void playNotificationSound();
-    };
-
     const addDmMessage = (message, friendId = state.activeDm) => {
         if (!message || !message.content?.trim() || !friendId) return;
         if (!state.dmMessages[friendId]) state.dmMessages[friendId] = [];
         const exists = state.dmMessages[friendId].some((m) => m.id === message.id && message.id !== undefined);
         if (exists) return;
         state.dmMessages[friendId].push(message);
+        const isActive = friendId === state.activeDm;
+        if (!isActive && !message.self) {
+            bumpUnread(friendId);
+            renderDmList();
+        }
         if (shouldPlayNotification(message, friendId)) void playNotificationSound();
-        if (friendId !== state.activeDm) return;
+        if (!isActive) return;
         const node = buildMessage(message, { isDm: true });
         dmThread?.appendChild(node);
         if (dmThread) dmThread.scrollTop = dmThread.scrollHeight;
@@ -1887,62 +1850,21 @@ document.addEventListener("DOMContentLoaded", () => {
         addDmMessage(mapped, friendId);
     };
 
-    const simulateReply = () => {
-        setTimeout(() => {
-            addMessage("Echo received. Routing to neon renderer and realtime channel.", false);
-        }, 900);
-    };
-
     const setMode = (mode) => {
         state.mode = mode;
         views.forEach((view) => {
             const isActive = view.dataset.view === mode;
             view.classList.toggle("is-hidden", !isActive);
         });
-        sidebar?.setAttribute("data-mode", mode);
         channelBar?.setAttribute("data-mode", mode);
-        dmButton?.classList.toggle("is-dm-active", mode === "dm");
-    };
-
-    const bindChannels = () => {
-        channelButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                channelButtons.forEach((b) => b.classList.remove("is-active"));
-                btn.classList.add("is-active");
-                state.activeChannel = btn.dataset.channel || "channel";
-                if (activeChannelLabel) {
-                    activeChannelLabel.textContent = `# ${state.activeChannel}`;
-                }
-                if (composerInput) {
-                    composerInput.placeholder = `Send to #${state.activeChannel}`;
-                }
-            });
-        });
-    };
-
-    const bindServers = () => {
-        serverButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                serverButtons.forEach((b) => b.classList.remove("active"));
-                btn.classList.add("active");
-                state.activeServer = btn.dataset.server || "core";
-                setMode("server");
-            });
-        });
-    };
-
-    const bindDmButton = () => {
-        dmButton?.addEventListener("click", () => {
-            setMode("dm");
-        });
     };
 
     const bindDmList = () => {
         dmList?.querySelectorAll("[data-dm-id]").forEach((btn) => {
             btn.addEventListener("click", async () => {
-                dmList.querySelectorAll(".dm").forEach((b) => b.classList.remove("is-active"));
-                btn.classList.add("is-active");
                 state.activeDm = btn.dataset.dmId || "dm";
+                clearUnread(state.activeDm);
+                renderDmList();
                 if (activeDmLabel) {
                     activeDmLabel.textContent = `Direct · ${btn.querySelector(".dm-name")?.textContent || state.activeDm}`;
                 }
@@ -2304,18 +2226,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateRegisterButtonState();
     };
 
-    const bindComposer = () => {
-        composer?.addEventListener("submit", (event) => {
-            event.preventDefault();
-            if (!composerInput) return;
-            const content = composerInput.value.trim();
-            if (!content) return;
-            addMessage(content, true);
-            composerInput.value = "";
-            simulateReply();
-        });
-    };
-
     const bindDmComposer = () => {
         dmComposer?.addEventListener("submit", (event) => {
             event.preventDefault();
@@ -2342,17 +2252,12 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     setMode(state.mode);
-    renderMessages();
     renderDmThread();
     renderDmList();
     renderPending();
-    bindChannels();
-    bindServers();
-    bindDmButton();
     bindDmList();
     bindFriendNavigation();
     bindFriendForm();
-    bindComposer();
     bindDmComposer();
     bindAuthForms();
     bindSettings();
