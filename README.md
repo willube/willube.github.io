@@ -1,14 +1,24 @@
-# Screen · Futuristic Realtime Chat
+# Aury — Founder & Lead Dev of DeadSense
 
-A futuristic, neon-styled realtime chat application hosted as a GitHub Pages site. Built with vanilla HTML, CSS, and JavaScript, backed by [Supabase](https://supabase.com) for authentication and realtime messaging.
+> High-performance Single-Page Application portfolio for **Aury (Founder & Lead Developer of DeadSense)** built with Next.js 14+ (App Router), Tailwind CSS, Lucide Icons, and Framer Motion. Optimized for GitHub Pages (`willube.github.io`).
 
-## ✨ Highlights
+## ⚡ DeadSense
 
-- Realtime direct messaging between users via Supabase Realtime.
-- Email/password authentication with registration (username selection) and login.
-- Friend requests: send and accept friend requests by username.
-- Futuristic dark UI with neon-glow effects, glassmorphism cards, and a cinematic noise/glow backdrop.
-- Settings panel with profile info, neon-glow intensity toggle, password change, and logout.
-- No build step — pure static files.
+- **Description**: Developed an internal cheat and utility suite for Deadlock, featuring a secure C++ client loader and a full-stack web platform at [deadsense.cc](https://deadsense.cc) for user authentication via Discord, license key management, and community access.
+- **Tech**: C++, Next.js, React, Tailwind CSS, Supabase, Discord API.
+
+## 🛠️ Tech Stack & Focus
+
+- **Client & Low-Level Systems**: C++, Win32, Process Memory Management, Loader Architecture
+- **Web & Full-Stack**: Next.js (App Router), React, TypeScript, Tailwind CSS, Framer Motion
+- **Cloud & Security**: Supabase (PostgreSQL with RLS), Discord OAuth2 SSO, HWID Key Cryptography
+
+## 📬 Contact & Connect
+
+- **Discord**: `@zetg`
+- **Email**: `privataury@gmail.com`
+- **Web Platform**: [deadsense.cc](https://deadsense.cc)
+
 ---
-Built with curiosity. Ready to chat.
+
+© 2025 Aury. All rights reserved.

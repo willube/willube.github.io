@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #191919;
+  --foreground: #fbf9f6;
+  --accent-orange: #e05a47;
+  --border-muted: #3e3e3e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(224, 90, 71, 0.35);
+  color: #fbf9f6;
+}
+
+/* Custom Editorial Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #191919;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3e3e3e;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #505050;
+}
+
+/* Crisp Text Editor Grid Background */
+.bg-grid-editor {
+  background-size: 36px 36px;
+  background-image: 
+    linear-gradient(to right, rgba(62, 62, 62, 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(62, 62, 62, 0.45) 1px, transparent 1px);
+}
+
+.bg-editor-dots {
+  background-image: radial-gradient(rgba(62, 62, 62, 0.65) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Text Editor & Architectural Panels */
+.editor-panel {
+  background-color: #1f1f1f;
+  border: 1px solid #3e3e3e;
+}
+
+.editor-panel-hover {
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.editor-panel-hover:hover {
+  border-color: #555555;
+  background-color: #232323;
+}
+
+/* Visually stable mixed fonts */
+.editorial-text {
+  font-size-adjust: from-font;
+}
+
+@supports not (font-size-adjust: from-font) {
+  .editorial-text {
+    line-height: 1.6;
+  }
+}
