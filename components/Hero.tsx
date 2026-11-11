@@ -1,121 +1,22 @@
 "use client";
-
-import React from "react";
-import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-
-export const Hero: React.FC = () => {
-  return (
-    <section className="relative min-h-[75vh] flex flex-col justify-center items-center px-4 pt-28 pb-16 overflow-hidden">
-      {/* Editorial Status Tag */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="inline-flex items-center gap-2.5 px-3 py-1 bg-[#212121] border border-[#3E3E3E] mb-8 font-mono text-xs"
-      >
-        <span className="w-1.5 h-1.5 rounded-full bg-[#E05A47]" />
-        <span className="text-[#A09D98]">SYS: ACTIVE</span>
-        <span className="text-[#3E3E3E]">|</span>
-        <span className="text-[#FBF9F6]">Founder &amp; Lead Dev // DeadSense</span>
-      </motion.div>
-
-      {/* Main Editorial Serif Headline */}
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="max-w-3xl text-center"
-      >
-        <h1 className="font-serif text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-[#FBF9F6] mb-3">
-          Aury
-        </h1>
-
-        <h2 className="font-serif italic text-xl sm:text-2xl md:text-3xl text-[#A09D98] font-normal mb-6">
-          Founder &amp; Lead Developer of DeadSense
-        </h2>
-
-        {/* Short Bio */}
-        <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-[#A09D98] font-sans leading-relaxed mb-8 text-balance">
-          Systems and full-stack developer. Creator of{" "}
-          <a
-            href="https://deadsense.cc"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#FBF9F6] underline decoration-[#3E3E3E] hover:decoration-[#E05A47] underline-offset-4 transition-colors"
-          >
-            DeadSense
-          </a>{" "}
-          (deadsense.cc) — a software platform and utility suite for Deadlock, combining high-performance native desktop software, Discord SSO authentication, Vercel edge deployment, and Cloudflare infrastructure.
-        </p>
-
-        {/* Primary Action Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 font-mono text-xs">
-          <a
-            href="https://deadsense.cc"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-sm bg-[#E05A47] hover:bg-[#C84A38] text-[#FBF9F6] font-semibold transition-colors"
-          >
-            <span>VISIT DEADSENSE.CC</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </a>
-
-          <a
-            href="#deadsense"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-sm bg-[#212121] border border-[#3E3E3E] text-[#FBF9F6] hover:border-[#5A5A5A] transition-colors"
-          >
-            <span>OVERVIEW</span>
-          </a>
-
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-sm bg-[#212121] border border-[#3E3E3E] text-[#A09D98] hover:text-[#FBF9F6] hover:border-[#5A5A5A] transition-colors"
-          >
-            <span>CONTACT</span>
-          </a>
-        </div>
-      </motion.div>
-
-      {/* Structured 4-Column Technical Specification Grid */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.25 }}
-        className="mt-14 sm:mt-18 w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 border border-[#3E3E3E] bg-[#1E1E1E]"
-      >
-        <div className="p-4 border-b sm:border-b-0 sm:border-r border-[#3E3E3E] text-left">
-          <div className="font-mono text-[11px] text-[#E05A47] mb-1">01 // SYSTEMS</div>
-          <div className="font-serif font-bold text-sm text-[#FBF9F6] mb-1">Native C++</div>
-          <p className="font-mono text-[11px] text-[#A09D98] leading-tight">
-            High-performance native desktop client architecture.
-          </p>
-        </div>
-
-        <div className="p-4 border-b sm:border-b-0 md:border-r border-[#3E3E3E] text-left">
-          <div className="font-mono text-[11px] text-[#E05A47] mb-1">02 // WEB &amp; EDGE</div>
-          <div className="font-serif font-bold text-sm text-[#FBF9F6] mb-1">Next.js &amp; Vercel</div>
-          <p className="font-mono text-[11px] text-[#A09D98] leading-tight">
-            Cloudflare edge CDN &amp; Vercel deployment at deadsense.cc.
-          </p>
-        </div>
-
-        <div className="p-4 border-b sm:border-b-0 sm:border-r border-[#3E3E3E] text-left">
-          <div className="font-mono text-[11px] text-[#E05A47] mb-1">03 // DATABASE</div>
-          <div className="font-serif font-bold text-sm text-[#FBF9F6] mb-1">Supabase Edge</div>
-          <p className="font-mono text-[11px] text-[#A09D98] leading-tight">
-            PostgreSQL data layer with Row Level Security.
-          </p>
-        </div>
-
-        <div className="p-4 text-left">
-          <div className="font-mono text-[11px] text-[#E05A47] mb-1">04 // AUTH &amp; SSO</div>
-          <div className="font-serif font-bold text-sm text-[#FBF9F6] mb-1">Discord OAuth2</div>
-          <p className="font-mono text-[11px] text-[#A09D98] leading-tight">
-            Automated role validation &amp; account management.
-          </p>
-        </div>
-      </motion.div>
-    </section>
-  );
-};
+import { PortraitDepth } from "./PortraitDepth";
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform, MotionValue } from "framer-motion";
+function NameLetter({letter,index,progress}:{letter:string;index:number;progress:MotionValue<number>}) {
+ const reduced=useReducedMotion();
+ const y=useTransform(progress,[0,.75],[0,(index%2===0?-1:1)*(100+index*24)]);
+ const x=useTransform(progress,[0,.75],[0,(index-2)*48]);
+ const rotate=useTransform(progress,[0,.75],[0,(index-2)*12]);
+ return <motion.span className={letter==="."?"letter name-dot":"letter"} aria-hidden="true" style={reduced?{}:{x,y,rotate}}>{letter}</motion.span>;
+}
+export function Hero() {
+ const ref=useRef<HTMLElement>(null); const reduced=useReducedMotion();
+ const {scrollYProgress}=useScroll({target:ref,offset:["start start","end start"]});
+ const imageY=useTransform(scrollYProgress,[0,1],[0,-160]);
+ const copyY=useTransform(scrollYProgress,[0,1],[0,-220]);
+ const rotate=useTransform(scrollYProgress,[0,1],[0,-12]);
+ const rotateY=useTransform(scrollYProgress,[0,1],[0,28]);
+ const imageScale=useTransform(scrollYProgress,[0,1],[1,1.35]);
+ const fade=useTransform(scrollYProgress,[0,.8],[1,.1]);
+ return <section ref={ref} id="home" className="hero container"><div className="hero-top caption-4"><span>Systems & full stack developer</span><span>Portfolio / 2026</span></div><div className="hero-layout"><motion.div className="hero-copy" style={reduced?{}:{y:copyY,opacity:fade}}><motion.p className="eyebrow caption-4" initial={reduced?false:{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:.8}}>Aury / @willube</motion.p><h1 className="hero-name scattered-name" aria-label="Aury">{"Aury.".split("").map((letter,i)=><NameLetter key={i} letter={letter} index={i} progress={scrollYProgress}/>)}</h1><motion.div initial={reduced?false:{opacity:0,y:24}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.2,ease:[.22,1,.36,1]}}><p className="heading-3 hero-role">Native software.<br/>Connected experiences.</p><p className="body-3 hero-description">Founder & lead developer of DeadSense.<br/>C++, web platforms and the systems behind them.</p><a className="button button-md" href="#deadsense">View my work <span aria-hidden="true">↘</span></a><a className="hero-github caption-2" href="https://github.com/willube" target="_blank" rel="noreferrer">GitHub ↗</a></motion.div></motion.div><motion.figure className="portrait" initial={reduced?false:{opacity:0,y:48}} animate={{opacity:1,y:0}} transition={{duration:1.2,delay:.1,ease:[.22,1,.36,1]}} style={reduced?{}:{y:imageY,rotate,rotateY}}><PortraitDepth><motion.img src="/aury-profile.jpg" width="735" height="490" alt="Aury’s black and white profile image: a figure wearing a metallic mask" fetchPriority="high" style={reduced?{}:{scale:imageScale}}/></PortraitDepth><motion.div className="portrait-shutter" aria-hidden="true" initial={reduced?false:{scaleY:1}} animate={{scaleY:0}} transition={{duration:1.4,delay:.2,ease:[.22,1,.36,1]}}/><figcaption className="caption-4"><span>Aury</span><span>Developer & founder</span></figcaption></motion.figure></div><div className="hero-bottom caption-4"><a href="https://deadsense.cc" target="_blank" rel="noreferrer">Currently building DeadSense ↗</a><a href="#deadsense" className="scroll-cue">Scroll to explore <span>↓</span></a></div></section>;
+}

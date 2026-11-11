@@ -1,0 +1,1 @@
+export default function NotFound(){return <main className="not-found container"><p className="caption-3 accent">404 / Outside the orbit</p><h1 className="heading-1">Nothing here.<br/>Yet.</h1><a href="/" className="button button-md">Back to Aury ↗</a></main>;}
