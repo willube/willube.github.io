@@ -1,7 +1,13 @@
-# GitHub Pages publication
+# Portfolio publication
 
-This repository publishes its static export from the main branch root using the existing GitHub Pages branch deployment. The Next.js source remains in app/ and components/.
+GitHub Pages is configured to publish the `gh-pages` branch at `/`.
+The Next.js source and history are maintained on `main`.
 
-To publish a new version, run npm ci and npm run build, then copy the contents of out/ into the repository root, including .nojekyll and _next/. Commit the source and export together.
+## Publish a new version
 
-The optional deploy.yml workflow is manual because custom GitHub Actions are currently blocked by the account billing status. The Pages branch deployment is the publication path for this release.
+1. Run `npm ci` when dependencies are missing, then `npm run build`.
+2. Copy the contents of `out/` into a checkout of `gh-pages`, including `.nojekyll` and `_next/`.
+3. Commit and push the `gh-pages` branch.
+4. Verify the Pages deployment and the public page. A successful push alone is not a successful deployment.
+
+The custom Actions workflow is manual. It is not needed to build the already exported static website.
