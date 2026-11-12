@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-const links = [["Work", "#deadsense"], ["Expertise", "#stack"], ["About", "#about"]];
+const links = [["Work", "#deadsense"], ["Inside", "#inside"], ["Expertise", "#stack"], ["About", "#about"]];
 export function Navbar() {
  const [open,setOpen] = useState(false); const [active,setActive] = useState(""); const menu = useRef<HTMLDivElement>(null); const toggle=useRef<HTMLButtonElement>(null);
  useEffect(()=>{const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)setActive(`#${e.target.id}`);}),{rootMargin:"-20% 0px -50% 0px"}); document.querySelectorAll("main section[id]").forEach(e=>observer.observe(e)); return()=>observer.disconnect();},[]);

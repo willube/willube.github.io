@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 import "./polish.css";
+import "./expansion.css";
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 export const metadata: Metadata = {
   title: "Aury — Systems & full stack developer",
